@@ -58,4 +58,6 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsEnum(Object.values(Role))
   role: Role;
+
+  profileCompleted: boolean;
 }

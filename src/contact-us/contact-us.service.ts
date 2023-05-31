@@ -23,7 +23,7 @@ export class ContactUsService {
     const item = await this.ContactUs.findById(id);
 
     if (!item) {
-      throw new NotFoundException();
+      throw new NotFoundException('no contact us item found');
     }
 
     return item;

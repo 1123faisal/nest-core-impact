@@ -23,7 +23,7 @@ export class CmsPagesService {
     const page = await this.cmsPage.findOne({ key });
 
     if (!page) {
-      throw new NotFoundException();
+      throw new NotFoundException('no page found');
     }
 
     return page;

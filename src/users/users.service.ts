@@ -1,5 +1,9 @@
 import { Upload } from '@aws-sdk/lib-storage';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
@@ -16,13 +20,18 @@ export class UsersService {
   ) {}
 
   async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
-    const user = await this.userModel.findOne({ _id: userId }).exec();
+    const existingUser = await this.userModel.findOne({ _id: userId }).exec();
 
-    if (!user) {
-      throw new NotFoundException();
+    if (!existingUser) {
+      throw new NotFoundException('no user found');
     }
 
-    return await this.userModel.findByIdAndUpdate(user.id, updateProfileDto);
+    updateProfileDto.profileCompleted = true;
+
+    return await this.userModel.findByIdAndUpdate(
+      existingUser.id,
+      updateProfileDto,
+    );
   }
 
   async updateProfilePic(
@@ -32,32 +41,34 @@ export class UsersService {
     const user = await this.userModel.findOne({ _id: userId }).exec();
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('no user found');
     }
 
-    if (updateProfilePic.avatar) {
-      const s3 = this.s3Provider.getS3Instance();
-
-      const uniqueFileName = `${uuidv4()}${updateProfilePic.avatar.originalname.substring(
-        updateProfilePic.avatar.originalname.lastIndexOf('.'),
-      )}`;
-
-      const uploadParams = {
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: uniqueFileName,
-        Body: updateProfilePic.avatar.buffer,
-      };
-
-      const upload = new Upload({
-        client: s3,
-        params: uploadParams,
-      });
-
-      await upload.done();
-
-      (updateProfilePic as any).avatar =
-        process.env.AWS_BUCKET_URL + uniqueFileName;
+    if (!updateProfilePic.avatar) {
+      throw new BadRequestException('avatar is required.');
     }
+
+    const s3 = this.s3Provider.getS3Instance();
+
+    const uniqueFileName = `${uuidv4()}${updateProfilePic.avatar.originalname.substring(
+      updateProfilePic.avatar.originalname.lastIndexOf('.'),
+    )}`;
+
+    const uploadParams = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: uniqueFileName,
+      Body: updateProfilePic.avatar.buffer,
+    };
+
+    const upload = new Upload({
+      client: s3,
+      params: uploadParams,
+    });
+
+    await upload.done();
+
+    (updateProfilePic as any).avatar =
+      process.env.AWS_BUCKET_URL + uniqueFileName;
 
     return await this.userModel.findByIdAndUpdate(user.id, updateProfilePic, {
       new: true,

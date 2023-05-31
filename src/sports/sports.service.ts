@@ -58,10 +58,30 @@ export class SportsService {
     const sport = await this.sportModel.findById(id);
 
     if (!sport) {
-      throw new NotFoundException();
+      throw new NotFoundException('no sport found');
     }
 
     return sport;
+  }
+
+  async updateSportByUser(updateSportDto: UpdateSportDto, userId: string) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user || !user.sport) {
+      throw new NotFoundException('no user/sport found!');
+    }
+
+    const updatedSport = await this.sportModel.findByIdAndUpdate(
+      user.sport,
+      updateSportDto,
+      { new: true },
+    );
+
+    if (!updatedSport) {
+      throw new NotFoundException('no sport found!');
+    }
+
+    return updatedSport;
   }
 
   async update(id: string, updateSportDto: UpdateSportDto) {
@@ -72,7 +92,7 @@ export class SportsService {
     );
 
     if (!updatedSport) {
-      throw new NotFoundException();
+      throw new NotFoundException('no sport found');
     }
 
     return updatedSport;
@@ -82,7 +102,7 @@ export class SportsService {
     const deletedSport = await this.sportModel.findByIdAndRemove(id);
 
     if (!deletedSport) {
-      throw new NotFoundException();
+      throw new NotFoundException('no sport found');
     }
 
     await this.userModel.findByIdAndUpdate(deletedSport.user, {

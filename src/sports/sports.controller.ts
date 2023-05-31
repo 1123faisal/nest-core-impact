@@ -10,14 +10,9 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiExtraModels,
-  ApiOkResponse,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ApiPaginatedResponse } from 'src/decorators/paginated-response.decorator';
 import { CreateSportDto } from './dto/create-sport.dto';
 import { GetAllSportQueryParamDto } from './dto/get-all-sport-query.dto';
 import { PaginatedDto } from './dto/paginates.dto';
@@ -41,21 +36,7 @@ export class SportsController {
     return this.sportsService.create(createSportDto, req.user.id);
   }
 
-  @ApiOkResponse({
-    schema: {
-      allOf: [
-        { $ref: getSchemaPath(PaginatedDto) },
-        {
-          properties: {
-            result: {
-              type: 'array',
-              items: { $ref: getSchemaPath(Sport) },
-            },
-          },
-        },
-      ],
-    },
-  })
+  @ApiPaginatedResponse(Sport)
   @Get()
   findAll(
     @Query() getAllSportQueryParamDto?: GetAllSportQueryParamDto,
@@ -79,5 +60,13 @@ export class SportsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.sportsService.remove(id);
+  }
+
+  @Patch('users/update')
+  updateSportByUser(
+    @Body() updateSportDto: UpdateSportDto,
+    @Request() req,
+  ): Promise<Sport> {
+    return this.sportsService.updateSportByUser(updateSportDto, req.user.id);
   }
 }

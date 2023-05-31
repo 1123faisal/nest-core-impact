@@ -28,25 +28,28 @@ export class AuthService {
   }
 
   async getProfile(userId: string): Promise<User> {
-    const user = await this.userModel.findById(userId);
+    const user = await this.userModel.findById(userId).populate('sport').exec();
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('no user found');
     }
 
     return user;
   }
 
   async userSignUp(userSignUpDto: UserSignUpDto): Promise<AuthResponse> {
-    const createdCat = new this.userModel({
+    const createdUser = new this.userModel({
       email: userSignUpDto.email,
       password: userSignUpDto.password,
       role: userSignUpDto.role,
     });
-    const user = await createdCat.save();
+
+    const user = await createdUser.save();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, otp, otpExpiration, ...result } = user.toJSON();
+
     return {
-      email: user.email,
-      role: user.role,
+      ...result,
       token: this.getJwtToken(user.id),
     };
   }
@@ -75,9 +78,15 @@ export class AuthService {
 
   async login(user: any): Promise<AuthResponse> {
     const payload = { email: user.email, id: user.id };
+
+    const existingUser = await this.userModel.findById(user.id);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, otp, otpExpiration, ...result } =
+      existingUser.toJSON();
+
     return {
-      email: user.email,
-      role: user.role,
+      ...result,
       token: this.jwtService.sign(payload),
     };
   }

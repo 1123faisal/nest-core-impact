@@ -99,7 +99,7 @@ export class Sport extends Document {
   staticMovement: StaticMovement;
 
   @ApiProperty({ example: new Types.ObjectId() })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'users' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
 }
 

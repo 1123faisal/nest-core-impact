@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Post,
   Request,
   UploadedFile,
@@ -42,11 +45,23 @@ export class UsersController {
   @Post('update-profile-pic')
   @HttpCode(HttpStatus.OK)
   async updateProfilePic(
-    @UploadedFile() avatar: any,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 1000 * 1000 * 1 /** accept in byte , max size is 1mb*/,
+          }),
+          new FileTypeValidator({
+            fileType: /^(image\/(jpg|jpeg|png))$/,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
     @Body() updateProfilePicDto: UpdateProfilePicDto,
     @Request() request: any,
   ): Promise<User> {
-    updateProfilePicDto.avatar = avatar;
+    updateProfilePicDto.avatar = file;
     return this.usersService.updateProfilePic(
       updateProfilePicDto,
       request.user.id,

@@ -1,25 +1,37 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import {
+  CacheInterceptor,
+  Controller,
+  Get,
+  Inject,
+  Query,
+  Req,
+  Res,
+  UseInterceptors,
+} from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import { ApiTags } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
-  HttpHealthIndicator,
   MongooseHealthIndicator,
 } from '@nestjs/terminus';
-import { InjectConnection } from '@nestjs/mongoose';
+import { Cache } from 'cache-manager';
+import { Request, Response } from 'express';
 import { Connection } from 'mongoose';
+import * as sharp from 'sharp';
+import { S3Provider } from './providers/s3.provider';
 
 @ApiTags('App')
+@UseInterceptors(CacheInterceptor)
 @Controller()
 export class AppController {
   constructor(
-    private readonly appService: AppService,
     private health: HealthCheckService,
-    private http: HttpHealthIndicator,
     private db: MongooseHealthIndicator,
+    private s3Provider: S3Provider,
     @InjectConnection()
     private defaultConnection: Connection,
+    @Inject('CACHE_MANAGER') private cacheManager: Cache,
   ) {}
 
   @Get('/health')
@@ -30,5 +42,39 @@ export class AppController {
       () =>
         this.db.pingCheck('database', { connection: this.defaultConnection }),
     ]);
+  }
+
+  @Get('image')
+  async serveOptimizedImage(
+    @Query('height') height: number,
+    @Query('width') width: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const data = await this.cacheManager.get(req.url);
+
+    console.log(req.url, data);
+    if (data) {
+      console.log({ data });
+    }
+
+    // Retrieve the image from S3 based on your existing logic
+    const originalImageBuffer = await this.s3Provider.retrieveImageFromS3(
+      'https://fetch-delivery.s3.amazonaws.com/a572c4c7-bc61-489d-93a4-df74efacd1e8.jpg',
+    );
+
+    // Apply image optimization based on the provided query parameters
+    const optimizedImageBuffer = await sharp(originalImageBuffer)
+      .resize(Number(height), Number(width))
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    res.set({
+      'Content-Type': 'image/jpeg', // Adjust the content type based on your image format
+      'Content-Length': originalImageBuffer.length.toString(),
+    });
+
+    // Send the image buffer as the response
+    return res.send(optimizedImageBuffer);
   }
 }

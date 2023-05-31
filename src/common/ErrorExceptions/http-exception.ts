@@ -17,14 +17,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     console.log(validationErrors);
 
-    const msg =
-      typeof validationErrors === 'object'
-        ? validationErrors[0]
-        : 'An Error Occurred!';
+    let msg = 'An Error Occurred!';
+
+    if (typeof validationErrors === 'object') {
+      msg = validationErrors[0];
+    }
+
+    if (typeof validationErrors === 'string') {
+      msg = validationErrors;
+    }
 
     response.status(status).json({
       statusCode: status,
-      message: msg || 'An Error Occurred!',
+      message: msg,
       errors: validationErrors,
     });
   }

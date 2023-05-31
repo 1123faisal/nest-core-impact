@@ -15,10 +15,13 @@ import { ContactUsModule } from './contact-us/contact-us.module';
 import { SportsModule } from './sports/sports.module';
 import { UsersModule } from './users/users.module';
 import { SharedModule } from './decorators/shared.module';
+import { S3Provider } from './providers/s3.provider';
 
 @Module({
   imports: [
     CacheModule.register({
+      ttl: 60 * 10, // Cache duration in seconds
+      max: 10, // Maximum number of items to cache
       isGlobal: true,
     }),
     ConfigModule.forRoot(),
@@ -38,6 +41,7 @@ import { SharedModule } from './decorators/shared.module';
   controllers: [AppController],
   providers: [
     AppService,
+    S3Provider,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
