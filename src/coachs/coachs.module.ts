@@ -9,6 +9,7 @@ import { CoachsService } from './coachs.service';
 import { Coach, CoachSchema } from './entities/coach.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { CoachLocalStrategy } from './local.strategy';
+import { IsCoachEmailAlreadyExistConstraint } from 'src/decorators/is-coach-email-registered.decorator';
 
 @Module({
   imports: [
@@ -28,7 +29,13 @@ import { CoachLocalStrategy } from './local.strategy';
     }),
   ],
   controllers: [CoachsController],
-  providers: [CoachsService, CoachLocalStrategy, JwtStrategy, S3Provider],
+  providers: [
+    CoachsService,
+    CoachLocalStrategy,
+    JwtStrategy,
+    S3Provider,
+    IsCoachEmailAlreadyExistConstraint,
+  ],
   exports: [CoachsService],
 })
 export class CoachsModule {}

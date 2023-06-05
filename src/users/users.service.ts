@@ -8,9 +8,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
 import { v4 as uuidv4 } from 'uuid';
-import { UpdateProfileDto } from './dto/update-profile-dto';
 import { UpdateProfilePicDto } from './dto/update-profile-pic-dto';
 import { User } from './entities/user.entity';
+import { UpdateUserProfileDto } from './dto/update-profile-dto';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +19,7 @@ export class UsersService {
     private readonly s3Provider: S3Provider,
   ) {}
 
-  async updateProfile(updateProfileDto: UpdateProfileDto, userId: string) {
+  async updateProfile(updateProfileDto: UpdateUserProfileDto, userId: string) {
     const existingUser = await this.userModel.findOne({ _id: userId }).exec();
 
     if (!existingUser) {

@@ -2,7 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Gender, Role } from '../entities/types';
 
-export class UpdateProfileDto {
+export class UpdateUserProfileDto {
+  @ApiProperty({ example: 'John Doe', required: false })
+  @IsOptional()
+  @IsString()
+  name1: string;
+
   @ApiProperty({ example: 'John Doe', required: false })
   @IsOptional()
   @IsString()

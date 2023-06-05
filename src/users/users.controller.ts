@@ -16,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
-import { UpdateProfileDto } from './dto/update-profile-dto';
+import { UpdateUserProfileDto } from './dto/update-profile-dto';
 import { UpdateProfilePicDto } from './dto/update-profile-pic-dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -32,7 +32,7 @@ export class UsersController {
   @Post('update-profile')
   @HttpCode(HttpStatus.OK)
   async updateProfile(
-    @Body() updateProfileDto: UpdateProfileDto,
+    @Body() updateProfileDto: UpdateUserProfileDto,
     @Request() request: any,
   ): Promise<User> {
     return this.usersService.updateProfile(updateProfileDto, request.user.id);

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
+import { IsOrgUserEmailAlreadyExistConstraint } from 'src/decorators/is-org-user-email-registered.decorator';
 import { S3Provider } from 'src/providers/s3.provider';
 import { OrgUser, OrgUserSchema } from './entities/org-user.entity';
 import { JwtStrategy } from './jwt.strategy';
@@ -28,7 +29,13 @@ import { OrgUsersService } from './org-users.service';
     }),
   ],
   controllers: [OrgUsersController],
-  providers: [OrgUsersService, LocalStrategy, JwtStrategy, S3Provider],
+  providers: [
+    OrgUsersService,
+    LocalStrategy,
+    JwtStrategy,
+    S3Provider,
+    IsOrgUserEmailAlreadyExistConstraint,
+  ],
   exports: [OrgUsersService],
 })
 export class OrgUsersModule {}
