@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, HydratedDocument } from 'mongoose';
 import { Password } from 'src/common/password';
+import { Gender } from 'src/users/entities/types';
 
 export type CoachDocument = HydratedDocument<Coach>;
 
@@ -34,6 +35,10 @@ export class Coach extends Document {
   @ApiProperty({ example: new Date() })
   @Prop()
   otpExpiration: Date;
+
+  @ApiProperty({ example: Object.values(Gender) })
+  @Prop()
+  gender: Gender;
 }
 
 const CoachSchema = SchemaFactory.createForClass(Coach);

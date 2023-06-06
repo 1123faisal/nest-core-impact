@@ -15,38 +15,38 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 import { JwtAuthGuard } from 'src/org-users/jwt-auth.guard';
-import { CoachsService } from './coachs.service';
-import { CreateCoachDto } from './dto/create-coach.dto';
-import { UpdateCoachDto } from './dto/update-coach.dto';
-import { Coach } from './entities/coach.entity';
+import { User } from 'src/users/entities/user.entity';
+import { AthletesService } from './athletes.service';
+import { CreateAthleteDto } from './dto/create-athlete.dto';
+import { UpdateAthleteDto } from './dto/update-athlete.dto';
 
+@ApiTags('Athletes')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
-@ApiTags("Coach's")
-@Controller('coachs')
-export class CoachsController {
-  constructor(private readonly coachService: CoachsService) {}
+@UseGuards(JwtAuthGuard) // Protect the route with JWT authentication
+@Controller('athletes')
+export class AthletesController {
+  constructor(private readonly athletesService: AthletesService) {}
 
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post()
   create(
     @UploadedFile(isValidAvatar)
-    file: Express.Multer.File,
-    @Body() createAthleteDto: CreateCoachDto,
+    avatar: Express.Multer.File,
+    @Body() createAthleteDto: CreateAthleteDto,
   ) {
-    createAthleteDto.avatar = file;
-    return this.coachService.create(createAthleteDto);
+    createAthleteDto.avatar = avatar;
+    return this.athletesService.create(createAthleteDto);
   }
 
   @Get()
-  findAll(): Promise<Coach[]> {
-    return this.coachService.findAll();
+  findAll(): Promise<User[]> {
+    return this.athletesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', isMongoIdPipe) id: string): Promise<Coach> {
-    return this.coachService.findOne(id);
+  findOne(@Param('id', isMongoIdPipe) id: string): Promise<User> {
+    return this.athletesService.findOne(id);
   }
 
   @ApiConsumes('multipart/form-data')
@@ -56,14 +56,14 @@ export class CoachsController {
     @UploadedFile(isValidAvatar)
     file: Express.Multer.File,
     @Param('id', isMongoIdPipe) id: string,
-    @Body() updateAthleteDto: UpdateCoachDto,
-  ): Promise<Coach> {
+    @Body() updateAthleteDto: UpdateAthleteDto,
+  ): Promise<User> {
     updateAthleteDto.avatar = file;
-    return this.coachService.update(id, updateAthleteDto);
+    return this.athletesService.update(id, updateAthleteDto);
   }
 
   @Delete(':id')
   remove(@Param('id', isMongoIdPipe) id: string) {
-    return this.coachService.remove(id);
+    return this.athletesService.remove(id);
   }
 }

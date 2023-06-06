@@ -14,26 +14,26 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
+import { CoachsAuthService } from './coachs-auth.service';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UserSignInDto } from './dto/user-signin.dto';
-import { OrgUserSignUpDto } from './dto/user-signup.dto';
+import { CoachSignInDto } from './dto/user-signin.dto';
+import { CoachSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
-import { OrgUsersService } from './org-users.service';
 
-@ApiTags('Org Users')
-@Controller('org-users')
-export class OrgUsersController {
-  constructor(private readonly orgUsersService: OrgUsersService) {}
+@ApiTags("Coach's")
+@Controller('coachs')
+export class CoachsAuthController {
+  constructor(private readonly coachAuthService: CoachsAuthService) {}
 
   @Post('signup')
-  create(@Body() orgUserSignUpDto: OrgUserSignUpDto) {
-    return this.orgUsersService.userSignUp(orgUserSignUpDto);
+  create(@Body() coachSignUpDto: CoachSignUpDto) {
+    return this.coachAuthService.userSignUp(coachSignUpDto);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -42,9 +42,9 @@ export class OrgUsersController {
   async login(
     @Request() req,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Body() _userSignInDto: UserSignInDto,
+    @Body() _userSignInDto: CoachSignInDto,
   ): Promise<AuthResponse> {
-    return this.orgUsersService.login(req.user);
+    return this.coachAuthService.login(req.user);
   }
 
   @ApiBearerAuth()
@@ -52,7 +52,7 @@ export class OrgUsersController {
   @UseInterceptors(ProfileInterceptor)
   @Get('profile')
   getProfile(@Request() req) {
-    return this.orgUsersService.getProfile(req.user.id);
+    return this.coachAuthService.getProfile(req.user.id);
   }
 
   @Post('forget-password/send-otp')
@@ -60,7 +60,7 @@ export class OrgUsersController {
   async sendOtp(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
   ): Promise<string> {
-    return await this.orgUsersService.sendOtp(sendForgotPasswordOTPDto);
+    return await this.coachAuthService.sendOtp(sendForgotPasswordOTPDto);
   }
 
   @Post('resend-otp')
@@ -68,7 +68,7 @@ export class OrgUsersController {
   async resendOTP(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
   ): Promise<string> {
-    return await this.orgUsersService.resendOTP(sendForgotPasswordOTPDto);
+    return await this.coachAuthService.resendOTP(sendForgotPasswordOTPDto);
   }
 
   @Post('forget-password/verify-otp')
@@ -76,7 +76,7 @@ export class OrgUsersController {
   async verifyOtp(
     @Body() verifyForgotPasswordOTPDto: VerifyForgotPasswordOTPDto,
   ): Promise<{ success: boolean }> {
-    await this.orgUsersService.verifyOtp(verifyForgotPasswordOTPDto);
+    await this.coachAuthService.verifyOtp(verifyForgotPasswordOTPDto);
     return { success: true };
   }
 
@@ -85,7 +85,7 @@ export class OrgUsersController {
   async updatePassword(
     @Body() updateForgotPasswordDto: UpdateForgotPasswordDto,
   ): Promise<{ success: boolean }> {
-    await this.orgUsersService.updatePassword(updateForgotPasswordDto);
+    await this.coachAuthService.updatePassword(updateForgotPasswordDto);
     return { success: true };
   }
 
@@ -97,7 +97,7 @@ export class OrgUsersController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Request() req,
   ): Promise<{ success: boolean }> {
-    await this.orgUsersService.changePassword(changePasswordDto, req.user.id);
+    await this.coachAuthService.changePassword(changePasswordDto, req.user.id);
     return { success: true };
   }
 
@@ -114,7 +114,7 @@ export class OrgUsersController {
     @Request() req,
   ): Promise<{ success: boolean }> {
     updateProfileDto.avatar = file;
-    await this.orgUsersService.updateProfile(updateProfileDto, req.user.id);
+    await this.coachAuthService.updateProfile(updateProfileDto, req.user.id);
     return { success: true };
   }
 }

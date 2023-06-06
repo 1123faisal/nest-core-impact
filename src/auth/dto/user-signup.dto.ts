@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
-import { IsEmailUserAlreadyExist } from 'src/decorators/is-email-registered.decorator';
-import { IsPasswordSameAsConfirm } from 'src/decorators/match-password.decorator';
+import { IsEmailUserAlreadyExist } from 'src/common/decorators/is-email-registered.decorator';
+import { IsPasswordSameAsConfirm } from 'src/common/decorators/match-password.decorator';
 import { normalizeEmail } from 'validator';
 import { Role } from '../../users/entities/types';
 

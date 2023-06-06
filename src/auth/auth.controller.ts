@@ -91,14 +91,13 @@ export class AuthController {
     return { success: true };
   }
 
-  // google auth
-
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  googleLogin() {
-    // The user will be redirected to the Google OAuth2 login page
-    // for authentication. This route will be handled by the GoogleStrategy.
-  }
+  // // google auth
+  // @Get('google')
+  // @UseGuards(AuthGuard('google'))
+  // googleLogin() {
+  //   // The user will be redirected to the Google OAuth2 login page
+  //   // for authentication. This route will be handled by the GoogleStrategy.
+  // }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -110,12 +109,12 @@ export class AuthController {
     return { tokens };
   }
 
-  @Post('signout')
-  @UseGuards(JwtAuthGuard)
-  async signOut(@Req() req) {
-    // Handle sign out logic, including invalidating the JWT token or any other necessary steps
-    await this.authService.signOut(req.user);
-    // Return any necessary response
-    return { message: 'Successfully signed out' };
-  }
+  // @Post('signout')
+  // @UseGuards(JwtAuthGuard)
+  // async signOut(@Req() req) {
+  //   // Handle sign out logic, including invalidating the JWT token or any other necessary steps
+  //   await this.authService.signOut(req.user);
+  //   // Return any necessary response
+  //   return { message: 'Successfully signed out' };
+  // }
 }

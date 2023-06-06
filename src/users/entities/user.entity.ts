@@ -41,7 +41,7 @@ export class User extends Document {
   @Prop({
     enum: Object.values(Gender),
   })
-  gender: string;
+  gender: Gender;
 
   @ApiProperty({ example: 'US' })
   @Prop()

@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
-import { IsOrgUserEmailAlreadyExistConstraint } from 'src/decorators/is-org-user-email-registered.decorator';
+import { IsOrgUserEmailAlreadyExistConstraint } from 'src/common/decorators/is-org-user-email-registered.decorator';
 import { S3Provider } from 'src/providers/s3.provider';
 import { OrgUser, OrgUserSchema } from './entities/org-user.entity';
 import { JwtStrategy } from './jwt.strategy';

@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
-import { IsEmailUserAlreadyExist } from 'src/decorators/is-email-registered.decorator';
-import { IsOrgUserEmailAlreadyExist } from 'src/decorators/is-org-user-email-registered.decorator';
+import { IsOrgUserEmailAlreadyExist } from 'src/common/decorators/is-org-user-email-registered.decorator';
 import { normalizeEmail } from 'validator';
 
 export class OrgUserSignUpDto {

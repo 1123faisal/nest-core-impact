@@ -3,13 +3,15 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
+import { IsCoachEmailAlreadyExistConstraint } from 'src/common/decorators/is-coach-email-registered.decorator';
 import { S3Provider } from 'src/providers/s3.provider';
+import { CoachsAuthController } from './coachs-auth.controller';
+import { CoachsAuthService } from './coachs-auth.service';
 import { CoachsController } from './coachs.controller';
 import { CoachsService } from './coachs.service';
 import { Coach, CoachSchema } from './entities/coach.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { CoachLocalStrategy } from './local.strategy';
-import { IsCoachEmailAlreadyExistConstraint } from 'src/decorators/is-coach-email-registered.decorator';
 
 @Module({
   imports: [
@@ -28,14 +30,15 @@ import { IsCoachEmailAlreadyExistConstraint } from 'src/decorators/is-coach-emai
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  controllers: [CoachsController],
+  controllers: [CoachsAuthController, CoachsController],
   providers: [
+    CoachsAuthService,
     CoachsService,
     CoachLocalStrategy,
     JwtStrategy,
     S3Provider,
     IsCoachEmailAlreadyExistConstraint,
   ],
-  exports: [CoachsService],
+  exports: [CoachsAuthService, CoachsService],
 })
 export class CoachsModule {}

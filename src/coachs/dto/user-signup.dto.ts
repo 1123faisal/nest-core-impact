@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
-import { IsCoachEmailAlreadyExist } from 'src/decorators/is-coach-email-registered.decorator';
+import { IsCoachEmailAlreadyExist } from 'src/common/decorators/is-coach-email-registered.decorator';
 import { normalizeEmail } from 'validator';
 
 export class CoachSignUpDto {

@@ -18,6 +18,7 @@ import { S3Provider } from './providers/s3.provider';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { OrgUsersModule } from './org-users/org-users.module';
 import { CoachsModule } from './coachs/coachs.module';
+import { AthletesModule } from './athlets/athletes.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { CoachsModule } from './coachs/coachs.module';
     ContactUsModule,
     OrgUsersModule,
     CoachsModule,
+    AthletesModule,
   ],
   controllers: [AppController],
   providers: [
@@ -54,10 +56,10 @@ import { CoachsModule } from './coachs/coachs.module';
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ResponseInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: ResponseInterceptor,
+    // },
   ],
 })
 export class AppModule {}

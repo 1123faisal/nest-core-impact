@@ -6,11 +6,6 @@ export class UpdateUserProfileDto {
   @ApiProperty({ example: 'John Doe', required: false })
   @IsOptional()
   @IsString()
-  name1: string;
-
-  @ApiProperty({ example: 'John Doe', required: false })
-  @IsOptional()
-  @IsString()
   name: string;
 
   @ApiProperty({ example: 'JD', required: false })

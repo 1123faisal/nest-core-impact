@@ -1,17 +1,17 @@
 import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
+import { User } from 'src/users/entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateCoachDto } from './dto/create-coach.dto';
-import { UpdateCoachDto } from './dto/update-coach.dto';
-import { Coach } from './entities/coach.entity';
+import { CreateAthleteDto } from './dto/create-athlete.dto';
+import { UpdateAthleteDto } from './dto/update-athlete.dto';
 
 @Injectable()
-export class CoachsService {
+export class AthletesService {
   constructor(
-    @InjectModel(Coach.name) private readonly userModel: Model<Coach>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly s3Provider: S3Provider,
   ) {}
 
@@ -42,7 +42,7 @@ export class CoachsService {
     return process.env.AWS_BUCKET_URL + uniqueFileName;
   }
 
-  async create(createAthleteDto: CreateCoachDto) {
+  async create(createAthleteDto: CreateAthleteDto) {
     if (createAthleteDto.avatar) {
       createAthleteDto.avatar = await this.uploadFile(createAthleteDto.avatar);
     }
@@ -64,7 +64,7 @@ export class CoachsService {
     return user;
   }
 
-  async update(id: string, updateAthleteDto: UpdateCoachDto) {
+  async update(id: string, updateAthleteDto: UpdateAthleteDto) {
     const user = await this.findOne(id);
 
     if (updateAthleteDto.avatar) {

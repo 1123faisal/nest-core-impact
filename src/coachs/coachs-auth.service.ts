@@ -1,35 +1,41 @@
+import { Upload } from '@aws-sdk/lib-storage';
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Model, ObjectId } from 'mongoose';
 import * as otpGenerator from 'otp-generator';
-import { Password } from '../common/password';
-import { User } from '../users/entities/user.entity';
+import { Password } from 'src/common/password';
+import { S3Provider } from 'src/providers/s3.provider';
+import { v4 as uuidv4 } from 'uuid';
 import { AuthResponse } from './dto/auth-response.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
-import { UserSignUpDto } from './dto/user-signup.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { CoachSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
+import { Coach } from './entities/coach.entity';
 
 @Injectable()
-export class AuthService {
+export class CoachsAuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(Coach.name) private readonly coachModel: Model<Coach>,
     private jwtService: JwtService,
+    private s3Provider: S3Provider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
     return this.jwtService.sign({ id: userId });
   }
 
-  async getProfile(userId: string): Promise<User> {
-    const user = await this.userModel.findById(userId).populate('sport').exec();
+  async getProfile(userId: string): Promise<Coach> {
+    const user = await this.coachModel.findById(userId).exec();
 
     if (!user) {
       throw new NotFoundException('no user found');
@@ -38,11 +44,11 @@ export class AuthService {
     return user;
   }
 
-  async userSignUp(userSignUpDto: UserSignUpDto): Promise<AuthResponse> {
-    const createdUser = new this.userModel({
+  async userSignUp(userSignUpDto: CoachSignUpDto): Promise<AuthResponse> {
+    const createdUser = new this.coachModel({
+      name: userSignUpDto.name,
       email: userSignUpDto.email,
       password: userSignUpDto.password,
-      role: userSignUpDto.role,
     });
 
     const user = await createdUser.save();
@@ -56,7 +62,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.userModel.findOne({ email });
+    const user = await this.coachModel.findOne({ email });
 
     if (!user) {
       return null;
@@ -71,20 +77,16 @@ export class AuthService {
     return null;
   }
 
-  async findUser(condition: Record<string, any>): Promise<User> {
-    const user = await this.userModel.findOne(condition);
+  async findUser(condition: Record<string, any>): Promise<Coach> {
+    const user = await this.coachModel.findOne(condition);
     if (user) return user;
     return null;
   }
 
   async login(user: any): Promise<AuthResponse> {
-    const payload = { email: user.email, id: user._id };
+    const payload = { email: user.email, id: user.id };
 
-    const existingUser = await this.userModel.findById(user._id);
-
-    if (!existingUser) {
-      throw new UnauthorizedException();
-    }
+    const existingUser = await this.coachModel.findById(user.id);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =
@@ -99,7 +101,7 @@ export class AuthService {
   async sendOtp(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
   ): Promise<string> {
-    const user = await this.userModel
+    const user = await this.coachModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
 
@@ -129,7 +131,7 @@ export class AuthService {
   async resendOTP(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
   ): Promise<string> {
-    const user = await this.userModel
+    const user = await this.coachModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
 
@@ -166,7 +168,7 @@ export class AuthService {
   async verifyOtp(
     verifyForgotPasswordOTPDto: VerifyForgotPasswordOTPDto,
   ): Promise<boolean> {
-    const user = await this.userModel
+    const user = await this.coachModel
       .findOne({ email: verifyForgotPasswordOTPDto.email })
       .exec();
 
@@ -193,7 +195,7 @@ export class AuthService {
   async updatePassword(
     updateForgotPasswordDto: UpdateForgotPasswordDto,
   ): Promise<void> {
-    const user = await this.userModel
+    const user = await this.coachModel
       .findOne({ email: updateForgotPasswordDto.email })
       .exec();
 
@@ -213,16 +215,67 @@ export class AuthService {
     await user.save();
   }
 
-  // google auth
-  async handleGoogleLogin(profile: any): Promise<any> {
-    // Handle the Google login logic, including user creation or authentication using the Google profile
-    // You can generate and return JWT tokens or any other necessary response
-    // For simplicity, we'll just return the user object
-    return profile;
+  async changePassword(
+    changePasswordDto: ChangePasswordDto,
+    userId: string,
+  ): Promise<void> {
+    const user = await this.coachModel.findById(userId).exec();
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    if (
+      !(await Password.comparePassword(
+        changePasswordDto.oldPassword,
+        user.password,
+      ))
+    ) {
+      throw new BadRequestException('incorrect old password');
+    }
+
+    user.password = changePasswordDto.confirmPassword;
+    await user.save();
   }
 
-  async signOut(user: User): Promise<void> {
-    // Handle the sign out logic, including invalidating the JWT token or any other necessary steps
-    // You can use the user object to identify the user and perform any necessary actions
+  async updateProfile(
+    updateProfileDto: UpdateProfileDto,
+    userId: string,
+  ): Promise<void> {
+    const user = await this.coachModel.findOne({ _id: userId }).exec();
+
+    if (!user) {
+      throw new NotFoundException('no user found');
+    }
+
+    if (!updateProfileDto.avatar) {
+      throw new BadRequestException('avatar is required.');
+    }
+
+    const s3 = this.s3Provider.getS3Instance();
+
+    const uniqueFileName = `${uuidv4()}${updateProfileDto.avatar.originalname.substring(
+      updateProfileDto.avatar.originalname.lastIndexOf('.'),
+    )}`;
+
+    const uploadParams = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: uniqueFileName,
+      Body: updateProfileDto.avatar.buffer,
+    };
+
+    const upload = new Upload({
+      client: s3,
+      params: uploadParams,
+    });
+
+    await upload.done();
+
+    (updateProfileDto as any).avatar =
+      process.env.AWS_BUCKET_URL + uniqueFileName;
+
+    return await this.coachModel.findByIdAndUpdate(user.id, updateProfileDto, {
+      new: true,
+    });
   }
 }

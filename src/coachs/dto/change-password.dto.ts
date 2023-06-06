@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, Length, Matches } from 'class-validator';
-import { IsPasswordSameAsConfirm } from 'src/decorators/match-password.decorator';
+import { IsPasswordSameAsConfirm } from 'src/common/decorators/match-password.decorator';
 // import { Match } from 'src/decorators/match-password.decorator';
 
 export class ChangePasswordDto {

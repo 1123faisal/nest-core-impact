@@ -5,16 +5,22 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { CoachsService } from 'src/coachs/coachs.service';
+import { CoachsAuthService } from 'src/coachs/coachs-auth.service';
 
 @ValidatorConstraint({ name: 'IsCoachEmailAlreadyExist', async: true })
 @Injectable()
 export class IsCoachEmailAlreadyExistConstraint
   implements ValidatorConstraintInterface
 {
-  constructor(protected readonly coachService: CoachsService) {}
+  constructor(protected readonly coachService: CoachsAuthService) {}
 
   async validate(text: string) {
+    const v = await this.coachService.findUser({
+      email: text,
+    });
+
+    console.log({ v });
+
     return !(await this.coachService.findUser({
       email: text,
     }));
