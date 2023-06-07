@@ -10,6 +10,7 @@ import { User } from 'src/users/entities/user.entity';
 import { CreateAthleteDto } from './dto/create-athlete.dto';
 import { UpdateAthleteDto } from './dto/update-athlete.dto';
 import { CoachsService } from 'src/coachs/coachs.service';
+import { SportsService } from 'src/sports/sports.service';
 
 @Injectable()
 export class AthletesService {
@@ -17,6 +18,7 @@ export class AthletesService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly s3Provider: S3Provider,
     private readonly coachService: CoachsService,
+    private readonly sportService: SportsService,
   ) {}
 
   async create(createAthleteDto: CreateAthleteDto) {
@@ -30,15 +32,11 @@ export class AthletesService {
   }
 
   async findAll() {
-    return await this.userModel
-      .find()
-      .populate({ path: 'coach', select: '-athletes' });
+    return await this.userModel.find();
   }
 
   async findOne(id: string) {
-    const user = await this.userModel
-      .findById(id)
-      .populate({ path: 'coach', select: '-athletes' });
+    const user = await this.userModel.findById(id);
 
     if (!user) {
       throw new NotFoundException('no user found.');
@@ -69,6 +67,12 @@ export class AthletesService {
   }
 
   async remove(id: string) {
+    const user = await this.findOne(id);
+    // delete sport of this user
+    this.sportService.remove(user.sport as any);
+
+    // remove this user from coach
+
     return await this.userModel.findByIdAndDelete(id);
   }
 
@@ -78,9 +82,7 @@ export class AthletesService {
 
     return await this.userModel.findByIdAndUpdate(
       athleteId,
-      {
-        coach: coachId,
-      },
+      { coach: coachId },
       { new: true },
     );
   }

@@ -8,19 +8,19 @@ export type ContactDocument = HydratedDocument<Contact>;
 @Schema()
 export class Contact extends Document {
   @ApiProperty({ example: 'test@test.com' })
-  @Prop()
+  @Prop({ default: '' })
   email: string;
 
   @ApiProperty({ example: 'John' })
-  @Prop()
+  @Prop({ default: '' })
   name: string;
 
   @ApiProperty({ example: 'test message...' })
-  @Prop()
+  @Prop({ default: '' })
   message: string;
 
   @ApiProperty({ example: new Types.ObjectId() })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'users' })
+  @Prop({ default: null, type: mongoose.Schema.Types.ObjectId, ref: 'users' })
   user: User;
 }
 

@@ -4,45 +4,50 @@ import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Password } from 'src/common/password';
 import { Gender } from 'src/users/entities/types';
 import { User } from 'src/users/entities/user.entity';
+import * as mongooseAutoPopulate from 'mongoose-autopopulate';
 
 export type CoachDocument = HydratedDocument<Coach>;
 
 @Schema()
 export class Coach extends Document {
   @ApiProperty({ example: 'image.jpg' })
-  @Prop()
+  @Prop({ default: null })
   avatar: string;
 
   @ApiProperty({ example: 'John Doe' })
-  @Prop()
+  @Prop({ default: '' })
   name: string;
 
   @ApiProperty({ example: 'test@test.com' })
-  @Prop()
+  @Prop({ default: '' })
   email: string;
 
   @ApiProperty({ example: '+91 9879879789' })
-  @Prop()
+  @Prop({ default: '' })
   mobile: string;
 
   @ApiProperty({ example: 'Test@123' })
-  @Prop()
+  @Prop({ default: null })
   password: string;
 
   @ApiProperty({ example: '1234' })
-  @Prop()
+  @Prop({ default: null })
   otp: string;
 
   @ApiProperty({ example: new Date() })
-  @Prop()
+  @Prop({ default: null })
   otpExpiration: Date;
 
   @ApiProperty({ example: Object.values(Gender) })
-  @Prop()
+  @Prop({ default: Gender.Male })
   gender: Gender;
 
   @ApiProperty({ example: [new Types.ObjectId()] })
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  @Prop({
+    default: null,
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    autopopulate: true,
+  })
   athletes: [User];
 }
 
@@ -57,5 +62,7 @@ CoachSchema.pre('save', async function (next) {
   user.password = await Password.hashPassword(user.password);
   next();
 });
+
+CoachSchema.plugin(mongooseAutoPopulate as any);
 
 export { CoachSchema };

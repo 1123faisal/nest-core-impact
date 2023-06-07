@@ -8,31 +8,31 @@ export type OrgUserDocument = HydratedDocument<OrgUser>;
 @Schema()
 export class OrgUser extends Document {
   @ApiProperty({ example: 'image.jpg' })
-  @Prop()
+  @Prop({ default: null })
   avatar: string;
 
   @ApiProperty({ example: 'John Doe' })
-  @Prop()
+  @Prop({ default: '' })
   name: string;
 
   @ApiProperty({ example: 'test@test.com' })
-  @Prop()
+  @Prop({ default: '' })
   email: string;
 
-  @ApiProperty({ example: '+91 9879879789' })
-  @Prop()
+  @ApiProperty({ example: '9879879789' })
+  @Prop({ default: '' })
   mobile: string;
 
   @ApiProperty({ example: 'Test@123' })
-  @Prop()
+  @Prop({ default: null })
   password: string;
 
   @ApiProperty({ example: '1234' })
-  @Prop()
+  @Prop({ default: null })
   otp: string;
 
   @ApiProperty({ example: new Date() })
-  @Prop()
+  @Prop({ default: null })
   otpExpiration: Date;
 }
 

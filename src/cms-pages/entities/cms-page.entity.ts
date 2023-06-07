@@ -8,15 +8,15 @@ export type CmsPageDocument = HydratedDocument<CmsPage>;
 @Schema()
 export class CmsPage extends Document {
   @ApiProperty({ example: 'About Us' })
-  @Prop()
+  @Prop({ default: '' })
   name: string;
 
   @ApiProperty({ example: 'about content' })
-  @Prop()
+  @Prop({ default: '' })
   key: string;
 
   @ApiProperty({ example: 'about content' })
-  @Prop()
+  @Prop({ default: '' })
   content: string;
 }
 

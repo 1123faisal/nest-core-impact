@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsString } from 'class-validator';
 import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { User } from 'src/users/entities/user.entity';
+import * as mongooseAutoPopulate from 'mongoose-autopopulate';
 
 export type SportDocument = HydratedDocument<Sport>;
 
@@ -75,34 +76,36 @@ export class BatSpecification {
 @Schema()
 export class Sport extends Document {
   @ApiProperty({ example: 'Baseball' })
-  @Prop()
+  @Prop({ default: '' })
   name: string;
 
   @ApiProperty()
-  @Prop({ type: HandedType })
+  @Prop({ type: HandedType, default: Object.values(HandedType) })
   handedType: HandedType;
 
   @ApiProperty()
-  @Prop({ type: BatType })
+  @Prop({ type: BatType, default: Object.values(BatType) })
   batType: BatType;
 
   @ApiProperty()
-  @Prop({ type: KineticMovement })
+  @Prop({ type: KineticMovement, default: Object.values(KineticMovement) })
   kineticMovement: KineticMovement;
 
   @ApiProperty()
-  @Prop({ type: BatSpecification })
+  @Prop({ type: BatSpecification, default: Object.values(BatSpecification) })
   batSpec: BatSpecification;
 
   @ApiProperty()
-  @Prop({ type: StaticMovement })
+  @Prop({ type: StaticMovement, default: Object.values(StaticMovement) })
   staticMovement: StaticMovement;
 
   @ApiProperty({ example: new Types.ObjectId() })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  @Prop({ default: null, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
 }
 
 const SportSchema = SchemaFactory.createForClass(Sport);
+
+SportSchema.plugin(mongooseAutoPopulate as any);
 
 export { SportSchema };

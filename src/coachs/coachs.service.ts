@@ -74,6 +74,18 @@ export class CoachsService {
     return await this.coachModel.findByIdAndDelete(id);
   }
 
+  async doUnAssignAthlete(coachId: string, athleteIds: string[]) {
+    await this.findOne(coachId);
+
+    return await this.coachModel.findByIdAndUpdate(
+      coachId,
+      {
+        $pull: { athletes: { $in: athleteIds } },
+      },
+      { new: true },
+    );
+  }
+
   async assignAthletes(coachId: string, athleteIds: string[]) {
     await this.findOne(coachId);
 

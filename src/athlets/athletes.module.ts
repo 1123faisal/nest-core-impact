@@ -7,6 +7,7 @@ import { AthletesController } from './athletes.controller';
 import { AthletesService } from './athletes.service';
 import { S3Provider } from 'src/providers/s3.provider';
 import { CoachsModule } from 'src/coachs/coachs.module';
+import { SportsModule } from 'src/sports/sports.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CoachsModule } from 'src/coachs/coachs.module';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     UsersModule,
     CoachsModule,
+    SportsModule,
   ],
   controllers: [AthletesController],
   providers: [AthletesService, S3Provider],

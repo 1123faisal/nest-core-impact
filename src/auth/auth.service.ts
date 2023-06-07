@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   async getProfile(userId: string): Promise<User> {
-    const user = await this.userModel.findById(userId).populate('sport').exec();
+    const user = await this.userModel.findById(userId);
 
     if (!user) {
       throw new NotFoundException('no user found');
