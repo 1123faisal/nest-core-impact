@@ -253,6 +253,15 @@ export class OrgUsersService {
       throw new NotFoundException('no user found');
     }
 
+    const isDuplicateEmail = await this.orgUserModel.findOne({
+      email: updateProfileDto.email,
+      _id: { $ne: user.id },
+    });
+
+    if (isDuplicateEmail) {
+      throw new BadRequestException('This email already in use.');
+    }
+
     if (!updateProfileDto.avatar) {
       throw new BadRequestException('avatar is required.');
     }

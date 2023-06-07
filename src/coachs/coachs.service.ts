@@ -1,5 +1,9 @@
 import { Upload } from '@aws-sdk/lib-storage';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
@@ -47,6 +51,15 @@ export class CoachsService {
 
   async update(id: string, updateAthleteDto: UpdateCoachDto) {
     const user = await this.findOne(id);
+
+    const isDuplicateEmail = await this.coachModel.findOne({
+      email: updateAthleteDto.email,
+      _id: { $ne: id },
+    });
+
+    if (isDuplicateEmail) {
+      throw new BadRequestException('This email already in use.');
+    }
 
     if (updateAthleteDto.avatar) {
       updateAthleteDto.avatar = await this.uploadFile(updateAthleteDto.avatar);
