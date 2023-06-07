@@ -19,7 +19,7 @@ export class Coach extends Document {
   name: string;
 
   @ApiProperty({ example: 'test@test.com' })
-  @Prop({ default: '' })
+  @Prop({ default: '', unique: true })
   email: string;
 
   @ApiProperty({ example: '+91 9879879789' })

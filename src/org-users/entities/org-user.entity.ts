@@ -16,7 +16,7 @@ export class OrgUser extends Document {
   name: string;
 
   @ApiProperty({ example: 'test@test.com' })
-  @Prop({ default: '' })
+  @Prop({ default: '', unique: true })
   email: string;
 
   @ApiProperty({ example: '9879879789' })

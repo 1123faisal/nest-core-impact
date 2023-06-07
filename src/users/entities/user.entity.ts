@@ -59,7 +59,7 @@ export class User extends Document {
   zipCode: string;
 
   @ApiProperty({ example: 'test@test.com' })
-  @Prop({ default: '' })
+  @Prop({ default: '', unique: true })
   email: string;
 
   @ApiProperty({ example: 'Test@123' })
