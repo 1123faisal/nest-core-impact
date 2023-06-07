@@ -73,6 +73,10 @@ export class User extends Document {
   @Prop()
   otp: string;
 
+  @ApiProperty({ example: '9879879877' })
+  @Prop()
+  mobile: string;
+
   @ApiProperty({ example: new Date() })
   @Prop()
   otpExpiration: Date;

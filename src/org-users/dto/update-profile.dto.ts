@@ -17,5 +17,5 @@ export class UpdateProfileDto {
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()
   @IsString()
-  avatar: Express.Multer.File;
+  avatar: Express.Multer.File | string;
 }

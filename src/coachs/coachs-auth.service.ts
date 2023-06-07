@@ -252,27 +252,9 @@ export class CoachsAuthService {
       throw new BadRequestException('avatar is required.');
     }
 
-    const s3 = this.s3Provider.getS3Instance();
-
-    const uniqueFileName = `${uuidv4()}${updateProfileDto.avatar.originalname.substring(
-      updateProfileDto.avatar.originalname.lastIndexOf('.'),
-    )}`;
-
-    const uploadParams = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: uniqueFileName,
-      Body: updateProfileDto.avatar.buffer,
-    };
-
-    const upload = new Upload({
-      client: s3,
-      params: uploadParams,
-    });
-
-    await upload.done();
-
-    (updateProfileDto as any).avatar =
-      process.env.AWS_BUCKET_URL + uniqueFileName;
+    updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(
+      updateProfileDto.avatar,
+    );
 
     return await this.coachModel.findByIdAndUpdate(user.id, updateProfileDto, {
       new: true,

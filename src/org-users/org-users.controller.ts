@@ -4,27 +4,36 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Request,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { OrgSettingDto } from './dto/org-db-setting.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserSignInDto } from './dto/user-signin.dto';
 import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
+import { OrgSetting } from './entities/settings.entity';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { OrgUsersService } from './org-users.service';
+import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pipe';
 
 @ApiTags('Org Users')
 @Controller('org-users')
@@ -116,5 +125,37 @@ export class OrgUsersController {
     updateProfileDto.avatar = file;
     await this.orgUsersService.updateProfile(updateProfileDto, req.user.id);
     return { success: true };
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard) // Protect the route with JWT authentication
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'logo', maxCount: 1 },
+      { name: 'banner', maxCount: 1 },
+    ]),
+  )
+  @Patch('update-db-settings')
+  @HttpCode(HttpStatus.OK)
+  async updateDashboardSetting(
+    @UploadedFiles(checkLogoAndBannerPipe)
+    files: {
+      logo: Express.Multer.File[];
+      banner: Express.Multer.File[];
+    },
+    @Body() orgSettingDto: OrgSettingDto, // : Promise<OrgSetting>
+  ): Promise<OrgSetting> {
+    orgSettingDto.logo = files.logo ? files.logo.at(0) : null;
+    orgSettingDto.banner = files.banner ? files.banner.at(0) : null;
+    return await this.orgUsersService.updateDashboardSetting(orgSettingDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('db-settings')
+  @HttpCode(HttpStatus.OK)
+  async getDashboardSetting(): Promise<OrgSetting> {
+    return this.orgUsersService.getDashboardSetting();
   }
 }

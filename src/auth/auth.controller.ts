@@ -82,11 +82,6 @@ export class AuthController {
   async updatePassword(
     @Body() updateForgotPasswordDto: UpdateForgotPasswordDto,
   ): Promise<{ success: boolean }> {
-    await this.authService.verifyOtp({
-      email: updateForgotPasswordDto.email,
-      otp: updateForgotPasswordDto.otp,
-    });
-
     await this.authService.updatePassword(updateForgotPasswordDto);
     return { success: true };
   }

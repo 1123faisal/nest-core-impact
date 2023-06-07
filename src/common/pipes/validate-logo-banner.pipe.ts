@@ -2,15 +2,20 @@ import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { matches } from 'class-validator';
 
 @Injectable()
-export class isValidAvatar implements PipeTransform<any> {
-  transform(value: any) {
-    console.log({ value });
-
+export class checkLogoAndBannerPipe implements PipeTransform<any> {
+  transform(value: {
+    logo: Express.Multer.File[];
+    banner: Express.Multer.File[];
+  }) {
     if (!value) return value;
 
-    if (!this.isFile(value)) {
+    if (
+      !value.logo?.every((v) => this.isFile(v)) &&
+      !value.banner?.every((v) => this.isFile(v))
+    ) {
       throw new BadRequestException('File validation failed!');
     }
+
     return value;
   }
 

@@ -10,6 +10,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { OrgUsersController } from './org-users.controller';
 import { OrgUsersService } from './org-users.service';
+import { OrgSetting, OrgSettingSchema } from './entities/settings.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,9 @@ import { OrgUsersService } from './org-users.service';
       isGlobal: true,
     }),
     MongooseModule.forFeature([{ name: OrgUser.name, schema: OrgUserSchema }]),
+    MongooseModule.forFeature([
+      { name: OrgSetting.name, schema: OrgSettingSchema },
+    ]),
     PassportModule.register({
       defaultStrategy: 'org-jwt',
       property: 'user',

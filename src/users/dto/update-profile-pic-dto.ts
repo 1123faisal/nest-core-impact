@@ -9,5 +9,5 @@ export class UpdateProfilePicDto {
   @FileApiProperty()
   @IsOptional()
   @IsString()
-  avatar: Express.Multer.File;
+  avatar: Express.Multer.File | string;
 }

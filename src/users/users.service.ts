@@ -48,27 +48,9 @@ export class UsersService {
       throw new BadRequestException('avatar is required.');
     }
 
-    const s3 = this.s3Provider.getS3Instance();
-
-    const uniqueFileName = `${uuidv4()}${updateProfilePic.avatar.originalname.substring(
-      updateProfilePic.avatar.originalname.lastIndexOf('.'),
-    )}`;
-
-    const uploadParams = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: uniqueFileName,
-      Body: updateProfilePic.avatar.buffer,
-    };
-
-    const upload = new Upload({
-      client: s3,
-      params: uploadParams,
-    });
-
-    await upload.done();
-
-    (updateProfilePic as any).avatar =
-      process.env.AWS_BUCKET_URL + uniqueFileName;
+    updateProfilePic.avatar = await this.s3Provider.uploadFileToS3(
+      updateProfilePic.avatar,
+    );
 
     return await this.userModel.findByIdAndUpdate(user.id, updateProfilePic, {
       new: true,

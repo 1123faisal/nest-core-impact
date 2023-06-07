@@ -21,11 +21,14 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { OrgUser } from './entities/org-user.entity';
+import { OrgSetting } from './entities/settings.entity';
+import { OrgSettingDto } from './dto/org-db-setting.dto';
 
 @Injectable()
 export class OrgUsersService {
   constructor(
     @InjectModel(OrgUser.name) private readonly orgUserModel: Model<OrgUser>,
+    @InjectModel(OrgSetting.name) private readonly Setting: Model<OrgSetting>,
     private jwtService: JwtService,
     private readonly s3Provider: S3Provider,
   ) {}
@@ -252,27 +255,9 @@ export class OrgUsersService {
       throw new BadRequestException('avatar is required.');
     }
 
-    const s3 = this.s3Provider.getS3Instance();
-
-    const uniqueFileName = `${uuidv4()}${updateProfileDto.avatar.originalname.substring(
-      updateProfileDto.avatar.originalname.lastIndexOf('.'),
-    )}`;
-
-    const uploadParams = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: uniqueFileName,
-      Body: updateProfileDto.avatar.buffer,
-    };
-
-    const upload = new Upload({
-      client: s3,
-      params: uploadParams,
-    });
-
-    await upload.done();
-
-    (updateProfileDto as any).avatar =
-      process.env.AWS_BUCKET_URL + uniqueFileName;
+    updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(
+      updateProfileDto.avatar,
+    );
 
     return await this.orgUserModel.findByIdAndUpdate(
       user.id,
@@ -281,5 +266,36 @@ export class OrgUsersService {
         new: true,
       },
     );
+  }
+
+  async getDashboardSetting(): Promise<OrgSetting> {
+    let setting = await this.Setting.findOne();
+
+    if (!setting) {
+      setting = await this.Setting.create({});
+    }
+
+    return setting;
+  }
+
+  async updateDashboardSetting(
+    orgSettingDto: OrgSettingDto,
+  ): Promise<OrgSetting> {
+    let setting = await this.Setting.findOne();
+
+    if (!setting) {
+      setting = await this.Setting.create({});
+    }
+
+    orgSettingDto.banner = await this.s3Provider.uploadFileToS3(
+      orgSettingDto.banner,
+    );
+    orgSettingDto.logo = await this.s3Provider.uploadFileToS3(
+      orgSettingDto.logo,
+    );
+
+    return await this.Setting.findOneAndUpdate({}, orgSettingDto, {
+      new: true,
+    });
   }
 }

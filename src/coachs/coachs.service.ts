@@ -20,26 +20,7 @@ export class CoachsService {
       return;
     }
 
-    const s3 = this.s3Provider.getS3Instance();
-
-    const uniqueFileName = `${uuidv4()}${file.originalname.substring(
-      file.originalname.lastIndexOf('.'),
-    )}`;
-
-    const uploadParams = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: uniqueFileName,
-      Body: file.buffer,
-    };
-
-    const upload = new Upload({
-      client: s3,
-      params: uploadParams,
-    });
-
-    await upload.done();
-
-    return process.env.AWS_BUCKET_URL + uniqueFileName;
+    return await this.s3Provider.uploadFileToS3(file);
   }
 
   async create(createAthleteDto: CreateCoachDto) {
