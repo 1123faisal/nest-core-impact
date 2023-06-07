@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document, HydratedDocument } from 'mongoose';
+import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Password } from 'src/common/password';
 import { Gender } from 'src/users/entities/types';
+import { User } from 'src/users/entities/user.entity';
 
 export type CoachDocument = HydratedDocument<Coach>;
 
@@ -39,6 +40,10 @@ export class Coach extends Document {
   @ApiProperty({ example: Object.values(Gender) })
   @Prop()
   gender: Gender;
+
+  @ApiProperty({ example: [new Types.ObjectId()] })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  athletes: [User];
 }
 
 const CoachSchema = SchemaFactory.createForClass(Coach);

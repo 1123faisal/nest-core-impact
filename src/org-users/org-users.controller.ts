@@ -15,10 +15,10 @@ import {
 import {
   FileFieldsInterceptor,
   FileInterceptor,
-  FilesInterceptor,
 } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
+import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pipe';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -33,7 +33,7 @@ import { OrgSetting } from './entities/settings.entity';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { OrgUsersService } from './org-users.service';
-import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pipe';
+import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 
 @ApiTags('Org Users')
 @Controller('org-users')
@@ -157,5 +157,22 @@ export class OrgUsersController {
   @HttpCode(HttpStatus.OK)
   async getDashboardSetting(): Promise<OrgSetting> {
     return this.orgUsersService.getDashboardSetting();
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('assign-coach')
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'athleteId',
+    type: String,
+    description: 'ID of the athlete',
+  })
+  @ApiParam({ name: 'coachId', type: String, description: 'ID of the coach' })
+  async assignCoach(
+    @Body('athleteId', isMongoIdPipe) athleteId: string,
+    @Body('coachId', isMongoIdPipe) coachId: string,
+  ) {
+    await this.orgUsersService.assignCoach(athleteId, coachId);
   }
 }

@@ -11,7 +11,7 @@ import { Coach } from './entities/coach.entity';
 @Injectable()
 export class CoachsService {
   constructor(
-    @InjectModel(Coach.name) private readonly userModel: Model<Coach>,
+    @InjectModel(Coach.name) private readonly coachModel: Model<Coach>,
     private readonly s3Provider: S3Provider,
   ) {}
 
@@ -28,15 +28,15 @@ export class CoachsService {
       createAthleteDto.avatar = await this.uploadFile(createAthleteDto.avatar);
     }
 
-    return await this.userModel.create(createAthleteDto);
+    return await this.coachModel.create(createAthleteDto);
   }
 
   async findAll() {
-    return await this.userModel.find();
+    return await this.coachModel.find();
   }
 
   async findOne(id: string) {
-    const user = await this.userModel.findById(id);
+    const user = await this.coachModel.findById(id);
 
     if (!user) {
       throw new NotFoundException('no user found.');
@@ -52,12 +52,24 @@ export class CoachsService {
       updateAthleteDto.avatar = await this.uploadFile(updateAthleteDto.avatar);
     }
 
-    return await this.userModel.findByIdAndUpdate(user.id, updateAthleteDto, {
+    return await this.coachModel.findByIdAndUpdate(user.id, updateAthleteDto, {
       new: true,
     });
   }
 
   async remove(id: string) {
-    return await this.userModel.findByIdAndDelete(id);
+    return await this.coachModel.findByIdAndDelete(id);
+  }
+
+  async assignAthletes(coachId: string, athleteIds: string[]) {
+    await this.findOne(coachId);
+
+    return await this.coachModel.findByIdAndUpdate(
+      coachId,
+      {
+        athletes: athleteIds,
+      },
+      { new: true },
+    );
   }
 }

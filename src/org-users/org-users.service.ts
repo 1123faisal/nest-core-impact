@@ -1,4 +1,3 @@
-import { Upload } from '@aws-sdk/lib-storage';
 import {
   BadRequestException,
   ConflictException,
@@ -11,10 +10,10 @@ import * as moment from 'moment';
 import { Model, ObjectId } from 'mongoose';
 import * as otpGenerator from 'otp-generator';
 import { S3Provider } from 'src/providers/s3.provider';
-import { v4 as uuidv4 } from 'uuid';
 import { Password } from '../common/password';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { OrgSettingDto } from './dto/org-db-setting.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -22,7 +21,8 @@ import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { OrgUser } from './entities/org-user.entity';
 import { OrgSetting } from './entities/settings.entity';
-import { OrgSettingDto } from './dto/org-db-setting.dto';
+import { AthletesService } from 'src/athlets/athletes.service';
+import { CoachsService } from 'src/coachs/coachs.service';
 
 @Injectable()
 export class OrgUsersService {
@@ -31,6 +31,8 @@ export class OrgUsersService {
     @InjectModel(OrgSetting.name) private readonly Setting: Model<OrgSetting>,
     private jwtService: JwtService,
     private readonly s3Provider: S3Provider,
+    private athleteService: AthletesService,
+    private coachService: CoachsService,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
@@ -297,5 +299,10 @@ export class OrgUsersService {
     return await this.Setting.findOneAndUpdate({}, orgSettingDto, {
       new: true,
     });
+  }
+
+  async assignCoach(athleteId: string, coachId: string) {
+    await this.athleteService.assignCoach(athleteId, coachId);
+    await this.coachService.assignAthletes(coachId, [athleteId]);
   }
 }

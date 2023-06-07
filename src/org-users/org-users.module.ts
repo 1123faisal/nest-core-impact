@@ -11,6 +11,10 @@ import { LocalStrategy } from './local.strategy';
 import { OrgUsersController } from './org-users.controller';
 import { OrgUsersService } from './org-users.service';
 import { OrgSetting, OrgSettingSchema } from './entities/settings.entity';
+import { AthletesService } from 'src/athlets/athletes.service';
+import { CoachsService } from 'src/coachs/coachs.service';
+import { AthletesModule } from 'src/athlets/athletes.module';
+import { CoachsModule } from 'src/coachs/coachs.module';
 
 @Module({
   imports: [
@@ -31,6 +35,8 @@ import { OrgSetting, OrgSettingSchema } from './entities/settings.entity';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
     }),
+    AthletesModule,
+    CoachsModule,
   ],
   controllers: [OrgUsersController],
   providers: [

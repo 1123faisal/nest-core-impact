@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import mongoose, { Document, HydratedDocument } from 'mongoose';
+import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Password } from 'src/common/password';
 import { Sport } from 'src/sports/entities/sport.entity';
 import { Gender, Role } from './types';
+import { Coach } from 'src/coachs/entities/coach.entity';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -87,6 +88,10 @@ export class User extends Document {
   @ApiProperty({ example: true })
   @Prop({ default: false })
   profileCompleted: boolean;
+
+  @ApiProperty({ example: [new Types.ObjectId()] })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Coach' })
+  coach: Coach;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);

@@ -4,8 +4,6 @@ import { matches } from 'class-validator';
 @Injectable()
 export class isValidAvatar implements PipeTransform<any> {
   transform(value: any) {
-    console.log({ value });
-
     if (!value) return value;
 
     if (!this.isFile(value)) {
