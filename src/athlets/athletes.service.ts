@@ -11,6 +11,7 @@ import { CreateAthleteDto } from './dto/create-athlete.dto';
 import { UpdateAthleteDto } from './dto/update-athlete.dto';
 import { CoachsService } from 'src/coachs/coachs.service';
 import { SportsService } from 'src/sports/sports.service';
+import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 
 @Injectable()
 export class AthletesService {
@@ -31,8 +32,35 @@ export class AthletesService {
     return await this.userModel.create(createAthleteDto);
   }
 
-  async findAll() {
-    return await this.userModel.find();
+  async findAll(skip?: number, limit?: number): Promise<PaginatedDto<User>> {
+    return {
+      results: await this.userModel
+        .find()
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'physician_coach',
+          select: { name: 1 },
+        })
+        .populate({
+          path: 'batting_coach',
+          select: { name: 1 },
+        })
+        .populate({
+          path: 'trainer_coach',
+          select: { name: 1 },
+        })
+        .populate({
+          path: 'pitching_coach',
+          select: { name: 1 },
+        })
+        .populate({
+          path: 'sport',
+          select: { name: 1 },
+        }),
+      total: await this.userModel.countDocuments(),
+    };
   }
 
   async findOne(id: string) {
@@ -76,13 +104,14 @@ export class AthletesService {
     return await this.userModel.findByIdAndDelete(id);
   }
 
-  async assignCoach(athleteId: string, coachId: string) {
-    await this.coachService.findOne(coachId);
+  async assignCoach(athleteId: string, ...coaches: string[]) {
     await this.findOne(athleteId);
+    const [physician_coach, batting_coach, trainer_coach, pitching_coach] =
+      coaches;
 
     return await this.userModel.findByIdAndUpdate(
       athleteId,
-      { coach: coachId },
+      { physician_coach, batting_coach, trainer_coach, pitching_coach },
       { new: true },
     );
   }

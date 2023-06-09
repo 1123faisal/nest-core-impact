@@ -1,4 +1,3 @@
-import { Upload } from '@aws-sdk/lib-storage';
 import {
   BadRequestException,
   Injectable,
@@ -7,15 +6,20 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
-import { v4 as uuidv4 } from 'uuid';
+import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 import { CreateCoachDto } from './dto/create-coach.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';
 import { Coach } from './entities/coach.entity';
+import { CoachSetting } from './entities/settings.entity';
+import { CoachSettingDto } from './dto/coach-db-setting.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class CoachsService {
   constructor(
     @InjectModel(Coach.name) private readonly coachModel: Model<Coach>,
+    @InjectModel(CoachSetting.name)
+    private readonly Setting: Model<CoachSetting>,
     private readonly s3Provider: S3Provider,
   ) {}
 
@@ -35,8 +39,19 @@ export class CoachsService {
     return await this.coachModel.create(createAthleteDto);
   }
 
-  async findAll() {
-    return await this.coachModel.find();
+  async findAll(skip?: number, limit?: number): Promise<PaginatedDto<Coach>> {
+    return {
+      results: await this.coachModel
+        .find()
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'athletes',
+          select: 'name',
+        }),
+      total: await this.coachModel.countDocuments(),
+    };
   }
 
   async findOne(id: string) {
@@ -86,15 +101,72 @@ export class CoachsService {
     );
   }
 
-  async assignAthletes(coachId: string, athleteIds: string[]) {
-    await this.findOne(coachId);
+  async assignAthletes(athleteId: string, ...coaches: string[]) {
+    const [physician_coach, batting_coach, trainer_coach, pitching_coach] =
+      coaches;
 
-    return await this.coachModel.findByIdAndUpdate(
-      coachId,
+    const uniqueCoaches = new Set(coaches);
+
+    const count = await this.coachModel.countDocuments({
+      _id: { $in: uniqueCoaches },
+    });
+
+    if (count == uniqueCoaches.size) {
+      throw new BadRequestException('invalid coach ids detected');
+    }
+
+    return await this.coachModel.updateMany(
       {
-        athletes: athleteIds,
+        _id: {
+          $in: coaches,
+        },
+      },
+      {
+        $addToSet: { athletes: athleteId },
       },
       { new: true },
     );
+  }
+
+  async getDashboardSetting(): Promise<CoachSetting> {
+    let setting = await this.Setting.findOne();
+
+    if (!setting) {
+      setting = await this.Setting.create({});
+    }
+
+    return setting;
+  }
+
+  async updateDashboardSetting(
+    orgSettingDto: CoachSettingDto,
+  ): Promise<CoachSetting> {
+    let setting = await this.Setting.findOne();
+
+    if (!setting) {
+      setting = await this.Setting.create({});
+    }
+
+    orgSettingDto.banner = await this.s3Provider.uploadFileToS3(
+      orgSettingDto.banner,
+    );
+    orgSettingDto.logo = await this.s3Provider.uploadFileToS3(
+      orgSettingDto.logo,
+    );
+
+    return await this.Setting.findOneAndUpdate({}, orgSettingDto, {
+      new: true,
+    });
+  }
+
+  async getAthletes(coachId: string): Promise<User[]> {
+    const coach = await this.findOne(coachId);
+
+    const { athletes } = await coach.populate({
+      path: 'athletes',
+      select: 'name avatar email',
+    });
+
+    return athletes;
   }
 }

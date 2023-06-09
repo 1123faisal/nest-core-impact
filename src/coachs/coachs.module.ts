@@ -12,6 +12,7 @@ import { CoachsService } from './coachs.service';
 import { Coach, CoachSchema } from './entities/coach.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { CoachLocalStrategy } from './local.strategy';
+import { CoachSetting, CoachSettingSchema } from './entities/settings.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,9 @@ import { CoachLocalStrategy } from './local.strategy';
       isGlobal: true,
     }),
     MongooseModule.forFeature([{ name: Coach.name, schema: CoachSchema }]),
+    MongooseModule.forFeature([
+      { name: CoachSetting.name, schema: CoachSettingSchema },
+    ]),
     PassportModule.register({
       defaultStrategy: 'coach-jwt',
       property: 'user',

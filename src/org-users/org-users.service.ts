@@ -310,8 +310,26 @@ export class OrgUsersService {
     });
   }
 
-  async assignCoach(athleteId: string, coachId: string) {
-    await this.athleteService.assignCoach(athleteId, coachId);
-    await this.coachService.assignAthletes(coachId, [athleteId]);
+  async assignCoach(
+    athleteId: string,
+    physician_coach,
+    batting_coach,
+    trainer_coach,
+    pitching_coach,
+  ) {
+    await this.athleteService.assignCoach(
+      athleteId,
+      physician_coach,
+      batting_coach,
+      trainer_coach,
+      pitching_coach,
+    );
+    await this.coachService.assignAthletes(
+      athleteId,
+      physician_coach,
+      batting_coach,
+      trainer_coach,
+      pitching_coach,
+    );
   }
 }

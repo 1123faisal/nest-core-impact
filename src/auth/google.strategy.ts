@@ -1,8 +1,8 @@
 // google.strategy.ts
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -11,6 +11,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientID: configService.get('GOOGLE_CLIENT_ID'),
       clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
       callbackURL: configService.get('GOOGLE_CALLBACK_URL'),
+      scope: ['email', 'profile'],
     });
   }
 
@@ -21,7 +22,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     done: VerifyCallback,
   ): Promise<void> {
     // You can perform any necessary validation or user creation logic here
-    // For simplicity, we'll just pass the profile to the callback
-    done(null, profile);
+    // For simplicity, we'll just pass the profile and idToken to the callback
+    const user = { ...profile, idToken: accessToken };
+    done(null, user);
   }
 }

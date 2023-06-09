@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsString } from 'class-validator';
 import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { User } from 'src/users/entities/user.entity';
-import * as mongooseAutoPopulate from 'mongoose-autopopulate';
 
 export type SportDocument = HydratedDocument<Sport>;
 
@@ -105,7 +104,5 @@ export class Sport extends Document {
 }
 
 const SportSchema = SchemaFactory.createForClass(Sport);
-
-SportSchema.plugin(mongooseAutoPopulate as any);
 
 export { SportSchema };

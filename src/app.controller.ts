@@ -38,6 +38,7 @@ export class AppController {
   async serveOptimizedImage(
     @Query('height') height: number,
     @Query('width') width: number,
+    @Query('uri') uri: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -55,12 +56,13 @@ export class AppController {
 
     // Retrieve the image from S3 based on your existing logic
     const originalImageBuffer = await this.s3Provider.retrieveImageFromS3(
-      'https://fetch-delivery.s3.amazonaws.com/a572c4c7-bc61-489d-93a4-df74efacd1e8.jpg',
+      uri ||
+        'https://fetch-delivery.s3.amazonaws.com/a572c4c7-bc61-489d-93a4-df74efacd1e8.jpg',
     );
 
     // Apply image optimization based on the provided query parameters
     const optimizedImageBuffer = await sharp(originalImageBuffer)
-      .resize(Number(height), Number(width))
+      .resize(+height || 100, +width || 100)
       .jpeg({ quality: 80 })
       .toBuffer();
 

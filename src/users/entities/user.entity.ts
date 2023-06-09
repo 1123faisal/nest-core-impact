@@ -5,7 +5,6 @@ import { Password } from 'src/common/password';
 import { Sport } from 'src/sports/entities/sport.entity';
 import { Gender, Role } from './types';
 import { Coach } from 'src/coachs/entities/coach.entity';
-import * as mongooseAutopopulate from 'mongoose-autopopulate';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -81,6 +80,14 @@ export class User extends Document {
   @Prop({ default: null })
   mobile: string;
 
+  @ApiProperty({ example: '9879879877' })
+  @Prop({ default: null })
+  provider?: string;
+
+  @ApiProperty({ example: '9879879877' })
+  @Prop({ default: null })
+  sub?: string;
+
   @ApiProperty({ example: new Date() })
   @Prop({ default: null })
   otpExpiration: Date;
@@ -89,7 +96,6 @@ export class User extends Document {
     default: null,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Sport',
-    autopopulate: true,
   })
   sport: Sport;
 
@@ -102,9 +108,32 @@ export class User extends Document {
     default: null,
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Coach',
-    autopopulate: true,
   })
-  coach: Coach;
+  physician_coach: Coach;
+
+  @ApiProperty({ example: [new Types.ObjectId()] })
+  @Prop({
+    default: null,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coach',
+  })
+  batting_coach: Coach;
+
+  @ApiProperty({ example: [new Types.ObjectId()] })
+  @Prop({
+    default: null,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coach',
+  })
+  trainer_coach: Coach;
+
+  @ApiProperty({ example: [new Types.ObjectId()] })
+  @Prop({
+    default: null,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coach',
+  })
+  pitching_coach: Coach;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
@@ -118,7 +147,5 @@ UserSchema.pre('save', async function (next) {
   user.password = await Password.hashPassword(user.password);
   next();
 });
-
-UserSchema.plugin(mongooseAutopopulate as any);
 
 export { UserSchema };

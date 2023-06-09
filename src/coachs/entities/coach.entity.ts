@@ -4,7 +4,6 @@ import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Password } from 'src/common/password';
 import { Gender } from 'src/users/entities/types';
 import { User } from 'src/users/entities/user.entity';
-import * as mongooseAutoPopulate from 'mongoose-autopopulate';
 
 export type CoachDocument = HydratedDocument<Coach>;
 
@@ -46,7 +45,6 @@ export class Coach extends Document {
   @Prop({
     default: null,
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    autopopulate: true,
   })
   athletes: [User];
 }
@@ -62,7 +60,5 @@ CoachSchema.pre('save', async function (next) {
   user.password = await Password.hashPassword(user.password);
   next();
 });
-
-CoachSchema.plugin(mongooseAutoPopulate as any);
 
 export { CoachSchema };

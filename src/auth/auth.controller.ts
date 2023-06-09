@@ -10,7 +10,9 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
 import { AuthService } from './auth.service';
 import { AuthResponse } from './dto/auth-response.dto';
@@ -21,7 +23,6 @@ import { UserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -86,13 +87,15 @@ export class AuthController {
     return { success: true };
   }
 
-  // // google auth
-  // @Get('google')
-  // @UseGuards(AuthGuard('google'))
-  // googleLogin() {
-  //   // The user will be redirected to the Google OAuth2 login page
-  //   // for authentication. This route will be handled by the GoogleStrategy.
-  // }
+  // google auth
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin() {
+    // await this.validateToken();
+    // return '';
+    // The user will be redirected to the Google OAuth2 login page
+    // for authentication. This route will be handled by the GoogleStrategy.
+  }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -100,16 +103,51 @@ export class AuthController {
     // Handle the callback after successful authentication
     // The user information is available in req.user
     // You can create/update the user in your AuthService and return the necessary tokens or user data
-    const tokens = await this.authService.handleGoogleLogin(req.user);
-    return { tokens };
+    const profile = req.user;
+    const { _json, provider } = profile;
+    const { name, sub, picture, email } = _json;
+
+    const result = await this.authService.handleGoogleLogin(
+      name,
+      picture,
+      email,
+      provider,
+      sub,
+    );
+    return result;
   }
 
-  // @Post('signout')
-  // @UseGuards(JwtAuthGuard)
-  // async signOut(@Req() req) {
-  //   // Handle sign out logic, including invalidating the JWT token or any other necessary steps
-  //   await this.authService.signOut(req.user);
-  //   // Return any necessary response
-  //   return { message: 'Successfully signed out' };
-  // }
+  @Post('signout')
+  @UseGuards(JwtAuthGuard)
+  async signOut(@Req() req) {
+    // Handle sign out logic, including invalidating the JWT token or any other necessary steps
+    await this.authService.signOut(req.user);
+    // Return any necessary response
+    return { message: 'Successfully signed out' };
+  }
+
+  @Post('google-sign-in')
+  @HttpCode(HttpStatus.OK)
+  @ApiBody({ schema: { properties: { idToken: { type: 'string' } } } })
+  async googleSignIn(@Body('idToken') idToken: string): Promise<boolean> {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload: TokenPayload = ticket.getPayload();
+
+    const result = await this.authService.handleGoogleLogin(
+      payload.name,
+      payload.picture,
+      payload.email,
+      'google',
+      payload.sub,
+    );
+
+    // Return true if the token is valid
+    return result;
+  }
 }

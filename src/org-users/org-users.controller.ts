@@ -168,11 +168,39 @@ export class OrgUsersController {
     type: String,
     description: 'ID of the athlete',
   })
-  @ApiParam({ name: 'coachId', type: String, description: 'ID of the coach' })
+  @ApiParam({
+    name: 'physician_coach',
+    type: String,
+    description: 'ID of the physician_coach',
+  })
+  @ApiParam({
+    name: 'batting_coach',
+    type: String,
+    description: 'ID of the batting_coach',
+  })
+  @ApiParam({
+    name: 'trainer_coach',
+    type: String,
+    description: 'ID of the trainer_coach',
+  })
+  @ApiParam({
+    name: 'pitching_coach',
+    type: String,
+    description: 'ID of the pitching_coach',
+  })
   async assignCoach(
     @Body('athleteId', isMongoIdPipe) athleteId: string,
-    @Body('coachId', isMongoIdPipe) coachId: string,
+    @Body('physician_coach', isMongoIdPipe) physician_coach: string,
+    @Body('batting_coach', isMongoIdPipe) batting_coach: string,
+    @Body('trainer_coach', isMongoIdPipe) trainer_coach: string,
+    @Body('pitching_coach', isMongoIdPipe) pitching_coach: string,
   ) {
-    await this.orgUsersService.assignCoach(athleteId, coachId);
+    await this.orgUsersService.assignCoach(
+      athleteId,
+      physician_coach,
+      batting_coach,
+      trainer_coach,
+      pitching_coach,
+    );
   }
 }

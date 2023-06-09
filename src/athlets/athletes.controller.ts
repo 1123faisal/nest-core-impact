@@ -4,8 +4,10 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -19,6 +21,7 @@ import { User } from 'src/users/entities/user.entity';
 import { AthletesService } from './athletes.service';
 import { CreateAthleteDto } from './dto/create-athlete.dto';
 import { UpdateAthleteDto } from './dto/update-athlete.dto';
+import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 
 @ApiTags('Athletes')
 @ApiBearerAuth()
@@ -40,8 +43,11 @@ export class AthletesController {
   }
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.athletesService.findAll();
+  findAll(
+    @Query('skip', ParseIntPipe) skip?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
+  ): Promise<PaginatedDto<User>> {
+    return this.athletesService.findAll(skip, limit);
   }
 
   @Get(':id')

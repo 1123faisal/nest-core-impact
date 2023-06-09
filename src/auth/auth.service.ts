@@ -214,11 +214,33 @@ export class AuthService {
   }
 
   // google auth
-  async handleGoogleLogin(profile: any): Promise<any> {
+  async handleGoogleLogin(name, avatar, email, provider, sub): Promise<any> {
     // Handle the Google login logic, including user creation or authentication using the Google profile
     // You can generate and return JWT tokens or any other necessary response
     // For simplicity, we'll just return the user object
-    return profile;
+
+    let existingUser = await this.userModel.findOne({ sub, email });
+
+    if (!existingUser) {
+      existingUser = await this.userModel.create({
+        name,
+        nickname: name,
+        avatar,
+        email,
+        provider,
+        sub,
+      });
+    }
+
+    const { password, __v, otp, otpExpiration, ...result } =
+      existingUser.toJSON();
+
+    const payload = { email: existingUser.email, id: existingUser._id };
+
+    return {
+      ...result,
+      token: this.jwtService.sign(payload),
+    };
   }
 
   async signOut(user: User): Promise<void> {
