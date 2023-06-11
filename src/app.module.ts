@@ -19,6 +19,7 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { OrgUsersModule } from './org-users/org-users.module';
 import { CoachsModule } from './coachs/coachs.module';
 import { AthletesModule } from './athlets/athletes.module';
+import { TrainingsModule } from './trainings/trainings.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { AthletesModule } from './athlets/athletes.module';
     OrgUsersModule,
     CoachsModule,
     AthletesModule,
+    TrainingsModule,
   ],
   controllers: [AppController],
   providers: [
