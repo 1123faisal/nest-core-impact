@@ -30,7 +30,7 @@ import { UserSignInDto } from './dto/user-signin.dto';
 import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { OrgSetting } from './entities/settings.entity';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuardIsOrg } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { OrgUsersService } from './org-users.service';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
@@ -57,7 +57,7 @@ export class OrgUsersController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuardIsOrg)
   @UseInterceptors(ProfileInterceptor)
   @Get('profile')
   getProfile(@Request() req) {
@@ -99,7 +99,7 @@ export class OrgUsersController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuardIsOrg)
   @Post('change-password')
   @HttpCode(HttpStatus.OK)
   async changePassword(
@@ -111,7 +111,7 @@ export class OrgUsersController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard) // Protect the route with JWT authentication
+  @UseGuards(JwtAuthGuardIsOrg) // Protect the route with JWT authentication
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post('update-profile')
@@ -128,7 +128,7 @@ export class OrgUsersController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard) // Protect the route with JWT authentication
+  @UseGuards(JwtAuthGuardIsOrg) // Protect the route with JWT authentication
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -152,7 +152,7 @@ export class OrgUsersController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuardIsOrg)
   @Get('db-settings')
   @HttpCode(HttpStatus.OK)
   async getDashboardSetting(): Promise<OrgSetting> {
@@ -160,7 +160,7 @@ export class OrgUsersController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuardIsOrg)
   @Post('assign-coach')
   @HttpCode(HttpStatus.OK)
   @ApiParam({

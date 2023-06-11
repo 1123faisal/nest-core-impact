@@ -16,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
-import { JwtAuthGuard } from 'src/org-users/jwt-auth.guard';
+import { JwtAuthGuardIsOrg } from 'src/org-users/jwt-auth.guard';
 import { User } from 'src/users/entities/user.entity';
 import { AthletesService } from './athletes.service';
 import { CreateAthleteDto } from './dto/create-athlete.dto';
@@ -25,7 +25,7 @@ import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 
 @ApiTags('Athletes')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard) // Protect the route with JWT authentication
+@UseGuards(JwtAuthGuardIsOrg) // Protect the route with JWT authentication
 @Controller('athletes')
 export class AthletesController {
   constructor(private readonly athletesService: AthletesService) {}
@@ -65,6 +65,8 @@ export class AthletesController {
     @Body() updateAthleteDto: UpdateAthleteDto,
   ): Promise<User> {
     updateAthleteDto.avatar = file;
+    console.log(updateAthleteDto);
+
     return this.athletesService.update(id, updateAthleteDto);
   }
 

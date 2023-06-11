@@ -41,6 +41,10 @@ export class Coach extends Document {
   @Prop({ default: Gender.Male })
   gender: Gender;
 
+  @ApiProperty({ example: true })
+  @Prop({ default: false })
+  status: boolean;
+
   @ApiProperty({ example: [new Types.ObjectId()] })
   @Prop({
     default: null,

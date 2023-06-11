@@ -159,14 +159,44 @@ export class CoachsService {
     });
   }
 
-  async getAthletes(coachId: string): Promise<User[]> {
+  async getAthletes(
+    coachId: string,
+    skip?: number,
+    limit?: number,
+  ): Promise<PaginatedDto<User>> {
     const coach = await this.findOne(coachId);
 
     const { athletes } = await coach.populate({
       path: 'athletes',
-      select: 'name avatar email',
+      populate: [
+        {
+          path: 'physician_coach',
+          select: { name: 1 },
+        },
+        {
+          path: 'batting_coach',
+          select: { name: 1 },
+        },
+        {
+          path: 'trainer_coach',
+          select: { name: 1 },
+        },
+        {
+          path: 'pitching_coach',
+          select: { name: 1 },
+        },
+        {
+          path: 'sport',
+          select: { name: 1 },
+        },
+      ],
     });
 
-    return athletes;
+    limit = limit || athletes.length;
+
+    return {
+      results: athletes.slice(skip, skip + limit),
+      total: athletes.length,
+    };
   }
 }

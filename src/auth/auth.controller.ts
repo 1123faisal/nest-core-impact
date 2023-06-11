@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Request,
+  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -131,11 +132,16 @@ export class AuthController {
   @ApiBody({ schema: { properties: { idToken: { type: 'string' } } } })
   async googleSignIn(@Body('idToken') idToken: string): Promise<boolean> {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    let ticket;
 
-    const ticket = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+    try {
+      ticket = await client.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('invalid token');
+    }
 
     const payload: TokenPayload = ticket.getPayload();
 

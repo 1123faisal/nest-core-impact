@@ -1,11 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
+  IsBooleanString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
+  isBooleanString,
 } from 'class-validator';
 import { IsEmailUserAlreadyExist } from 'src/common/decorators/is-email-registered.decorator';
 import { Gender } from 'src/users/entities/types';
@@ -26,6 +29,11 @@ export class CreateAthleteDto {
 
   @IsNotEmpty()
   mobile: string;
+
+  @Transform(({ value }) => (value === 'true' ? true : false))
+  @IsBoolean()
+  @IsOptional()
+  status: boolean;
 
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()

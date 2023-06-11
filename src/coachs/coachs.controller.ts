@@ -23,7 +23,6 @@ import {
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
-import { JwtAuthGuard } from 'src/org-users/jwt-auth.guard';
 import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 import { CoachsService } from './coachs.service';
 import { CreateCoachDto } from './dto/create-coach.dto';
@@ -33,14 +32,15 @@ import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pi
 import { OrgSettingDto } from 'src/org-users/dto/org-db-setting.dto';
 import { OrgSetting } from 'src/org-users/entities/settings.entity';
 import { User } from 'src/users/entities/user.entity';
+import { JwtAuthGuardIsCoach } from './jwt-auth.guard';
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @ApiTags("Coach's")
 @Controller('coachs')
 export class CoachsController {
   constructor(private readonly coachService: CoachsService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuardIsCoach)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post()
@@ -53,9 +53,14 @@ export class CoachsController {
     return this.coachService.create(createAthleteDto);
   }
 
-  @Get()
-  getAthletes(@Req() { user }): Promise<User[]> {
-    return this.coachService.getAthletes(user.id);
+  @UseGuards(JwtAuthGuardIsCoach)
+  @Get('athletes')
+  getAthletes(
+    @Req() req: any,
+    @Query('skip', ParseIntPipe) skip?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
+  ): Promise<PaginatedDto<User>> {
+    return this.coachService.getAthletes(req.user.id, skip, limit);
   }
 
   @Get()
@@ -64,6 +69,14 @@ export class CoachsController {
     @Query('limit', ParseIntPipe) limit?: number,
   ): Promise<PaginatedDto<Coach>> {
     return this.coachService.findAll(skip, limit);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuardIsCoach)
+  @Get('db-settings')
+  @HttpCode(HttpStatus.OK)
+  async getDashboardSetting(): Promise<OrgSetting> {
+    return this.coachService.getDashboardSetting();
   }
 
   @Get(':id')
@@ -89,6 +102,8 @@ export class CoachsController {
     return this.coachService.remove(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuardIsCoach)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -109,11 +124,5 @@ export class CoachsController {
     orgSettingDto.logo = files.logo ? files.logo.at(0) : null;
     orgSettingDto.banner = files.banner ? files.banner.at(0) : null;
     return await this.coachService.updateDashboardSetting(orgSettingDto);
-  }
-
-  @Get('db-settings')
-  @HttpCode(HttpStatus.OK)
-  async getDashboardSetting(): Promise<OrgSetting> {
-    return this.coachService.getDashboardSetting();
   }
 }

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -26,6 +27,11 @@ export class CreateCoachDto {
 
   @IsNotEmpty()
   mobile: string;
+
+  @Transform(({ value }) => (value === 'true' ? true : false))
+  @IsBoolean()
+  @IsOptional()
+  status: boolean;
 
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()

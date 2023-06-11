@@ -61,6 +61,10 @@ export class User extends Document {
   @Prop({ default: '', unique: true })
   email: string;
 
+  @ApiProperty({ example: true })
+  @Prop({ default: false })
+  status: boolean;
+
   @ApiProperty({ example: 'Test@123' })
   @Prop({ default: null })
   password: string;

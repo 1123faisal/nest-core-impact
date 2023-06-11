@@ -23,7 +23,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CoachSignInDto } from './dto/user-signin.dto';
 import { CoachSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuardIsCoach } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags("Coach's")
@@ -48,7 +48,7 @@ export class CoachsAuthController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuardIsCoach)
   @UseInterceptors(ProfileInterceptor)
   @Get('profile')
   getProfile(@Request() req) {
@@ -90,7 +90,7 @@ export class CoachsAuthController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuardIsCoach)
   @Post('change-password')
   @HttpCode(HttpStatus.OK)
   async changePassword(
@@ -102,7 +102,7 @@ export class CoachsAuthController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard) // Protect the route with JWT authentication
+  @UseGuards(JwtAuthGuardIsCoach) // Protect the route with JWT authentication
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post('update-profile')
