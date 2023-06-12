@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -130,7 +131,7 @@ export class AuthController {
   @Post('google-sign-in')
   @HttpCode(HttpStatus.OK)
   @ApiBody({ schema: { properties: { idToken: { type: 'string' } } } })
-  async googleSignIn(@Body('idToken') idToken: string): Promise<boolean> {
+  async googleSignIn(@Body('idToken') idToken: string): Promise<any> {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     let ticket;
 
@@ -155,5 +156,17 @@ export class AuthController {
 
     // Return true if the token is valid
     return result;
+  }
+
+  @Post('apple-sign-in')
+  @HttpCode(HttpStatus.OK)
+  @ApiBody({ schema: { properties: { idToken: { type: 'string' } } } })
+  async appleSignIn(@Body('idToken') idToken: string): Promise<any> {
+    try {
+      return await this.authService.handleAppleLogin(idToken);
+    } catch (error) {
+      console.error('Error validating Apple Sign-In:', error);
+      throw new BadRequestException('Error validating Apple Sign-In.');
+    }
   }
 }

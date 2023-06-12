@@ -4,6 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import verifyAppleToken from 'verify-apple-id-token';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
@@ -228,6 +229,51 @@ export class AuthService {
         avatar,
         email,
         provider,
+        sub,
+      });
+    }
+
+    const { password, __v, otp, otpExpiration, ...result } =
+      existingUser.toJSON();
+
+    const payload = { email: existingUser.email, id: existingUser._id };
+
+    return {
+      ...result,
+      token: this.jwtService.sign(payload),
+    };
+  }
+
+  async handleAppleLogin(idToken: string): Promise<any> {
+    // Handle the Google login logic, including user creation or authentication using the Google profile
+    // You can generate and return JWT tokens or any other necessary response
+    // For simplicity, we'll just return the user object
+
+    const {
+      iss,
+      aud,
+      exp,
+      iat,
+      sub,
+      c_hash,
+      email,
+      email_verified,
+      auth_time,
+      nonce_supported,
+    } = await verifyAppleToken({
+      idToken: idToken,
+      clientId: 'com.web.baseball',
+      // nonce: 'nonce', // optional
+    });
+
+    let existingUser = await this.userModel.findOne({ sub, email });
+
+    if (!existingUser) {
+      existingUser = await this.userModel.create({
+        name,
+        nickname: name,
+        email,
+        provider: 'apple',
         sub,
       });
     }
