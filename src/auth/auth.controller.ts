@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -8,13 +7,11 @@ import {
   Post,
   Req,
   Request,
-  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
 import { AuthService } from './auth.service';
 import { AuthResponse } from './dto/auth-response.dto';
@@ -109,7 +106,7 @@ export class AuthController {
     const { _json, provider } = profile;
     const { name, sub, picture, email } = _json;
 
-    const result = await this.authService.handleGoogleLogin(
+    const result = await this.authService.handleServerGoogleLogin(
       name,
       picture,
       email,
@@ -132,41 +129,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiBody({ schema: { properties: { idToken: { type: 'string' } } } })
   async googleSignIn(@Body('idToken') idToken: string): Promise<any> {
-    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    let ticket;
-
-    try {
-      ticket = await client.verifyIdToken({
-        idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-    } catch (error) {
-      throw new UnauthorizedException('invalid token');
-    }
-
-    const payload: TokenPayload = ticket.getPayload();
-
-    const result = await this.authService.handleGoogleLogin(
-      payload.name,
-      payload.picture,
-      payload.email,
-      'google',
-      payload.sub,
-    );
-
-    // Return true if the token is valid
-    return result;
+    return await this.authService.handleGoogleLogin(idToken);
   }
 
   @Post('apple-sign-in')
   @HttpCode(HttpStatus.OK)
   @ApiBody({ schema: { properties: { idToken: { type: 'string' } } } })
   async appleSignIn(@Body('idToken') idToken: string): Promise<any> {
-    try {
-      return await this.authService.handleAppleLogin(idToken);
-    } catch (error) {
-      console.error('Error validating Apple Sign-In:', error);
-      throw new BadRequestException('Error validating Apple Sign-In.');
-    }
+    return await this.authService.handleAppleLogin(idToken);
   }
 }

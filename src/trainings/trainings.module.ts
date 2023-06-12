@@ -4,6 +4,7 @@ import { TrainingsController } from './trainings.controller';
 import { CoachsModule } from 'src/coachs/coachs.module';
 import { Training, TrainingSchema } from './entities/training.entity';
 import { MongooseModule } from '@nestjs/mongoose';
+import { S3Provider } from 'src/providers/s3.provider';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
   ],
   controllers: [TrainingsController],
-  providers: [TrainingsService],
+  providers: [TrainingsService, S3Provider],
 })
 export class TrainingsModule {}

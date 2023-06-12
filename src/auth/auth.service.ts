@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -17,6 +18,7 @@ import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
@@ -215,10 +217,22 @@ export class AuthService {
   }
 
   // google auth
-  async handleGoogleLogin(name, avatar, email, provider, sub): Promise<any> {
-    // Handle the Google login logic, including user creation or authentication using the Google profile
-    // You can generate and return JWT tokens or any other necessary response
-    // For simplicity, we'll just return the user object
+  async handleGoogleLogin(idToken: string): Promise<any> {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    let ticket;
+
+    try {
+      ticket = await client.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('invalid token');
+    }
+
+    const payload: TokenPayload = ticket.getPayload();
+
+    const { name, picture, email, sub } = payload;
 
     let existingUser = await this.userModel.findOne({ sub, email });
 
@@ -226,9 +240,9 @@ export class AuthService {
       existingUser = await this.userModel.create({
         name,
         nickname: name,
-        avatar,
+        avatar: picture,
         email,
-        provider,
+        provider: 'google',
         sub,
       });
     }
@@ -236,11 +250,11 @@ export class AuthService {
     const { password, __v, otp, otpExpiration, ...result } =
       existingUser.toJSON();
 
-    const payload = { email: existingUser.email, id: existingUser._id };
+    const jwtPayload = { email: existingUser.email, id: existingUser._id };
 
     return {
       ...result,
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(jwtPayload),
     };
   }
 
@@ -248,6 +262,18 @@ export class AuthService {
     // Handle the Google login logic, including user creation or authentication using the Google profile
     // You can generate and return JWT tokens or any other necessary response
     // For simplicity, we'll just return the user object
+    let payload;
+
+    try {
+      payload = await verifyAppleToken({
+        idToken: idToken,
+        clientId: process.env.APP_BUNDLE_ID,
+        // nonce: 'nonce', // optional
+      });
+    } catch (error) {
+      console.error('Error validating Apple Sign-In:', error);
+      throw new BadRequestException('Error validating Apple Sign-In.');
+    }
 
     const {
       iss,
@@ -260,18 +286,12 @@ export class AuthService {
       email_verified,
       auth_time,
       nonce_supported,
-    } = await verifyAppleToken({
-      idToken: idToken,
-      clientId: 'com.web.baseball',
-      // nonce: 'nonce', // optional
-    });
+    } = payload;
 
     let existingUser = await this.userModel.findOne({ sub, email });
 
     if (!existingUser) {
       existingUser = await this.userModel.create({
-        name,
-        nickname: name,
         email,
         provider: 'apple',
         sub,
@@ -281,11 +301,42 @@ export class AuthService {
     const { password, __v, otp, otpExpiration, ...result } =
       existingUser.toJSON();
 
-    const payload = { email: existingUser.email, id: existingUser._id };
+    const jwtPayload = { email: existingUser.email, id: existingUser._id };
 
     return {
       ...result,
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(jwtPayload),
+    };
+  }
+
+  async handleServerGoogleLogin(
+    name: string,
+    picture: string,
+    email: string,
+    provider: string,
+    sub: string,
+  ): Promise<any> {
+    let existingUser = await this.userModel.findOne({ sub, email });
+
+    if (!existingUser) {
+      existingUser = await this.userModel.create({
+        name,
+        nickname: name,
+        avatar: picture,
+        email,
+        provider,
+        sub,
+      });
+    }
+
+    const { password, __v, otp, otpExpiration, ...result } =
+      existingUser.toJSON();
+
+    const jwtPayload = { email: existingUser.email, id: existingUser._id };
+
+    return {
+      ...result,
+      token: this.jwtService.sign(jwtPayload),
     };
   }
 

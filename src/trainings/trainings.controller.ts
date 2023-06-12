@@ -11,19 +11,18 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiConsumes,
   ApiExtraModels,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuardIsCoach } from 'src/coachs/jwt-auth.guard';
 import { PaginatedDto } from 'src/sports/dto/paginates.dto';
-import { CreateTrainingDto, Step } from './dto/create-training.dto';
+import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { TrainingsService } from './trainings.service';
-import { JwtAuthGuardIsCoach } from 'src/coachs/jwt-auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { log } from 'console';
 
 @ApiExtraModels(PaginatedDto)
 @ApiTags('Trainings')
@@ -31,8 +30,8 @@ import { log } from 'console';
 export class TrainingsController {
   constructor(private readonly trainingsService: TrainingsService) {}
 
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuardIsCoach)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuardIsCoach)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   @Post()
@@ -53,7 +52,7 @@ export class TrainingsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.trainingsService.findOne(+id);
+    return this.trainingsService.findOne(id);
   }
 
   @ApiBearerAuth()
@@ -69,13 +68,13 @@ export class TrainingsController {
     @Req() { user },
   ) {
     updateTrainingDto.file = file;
-    return this.trainingsService.update(+id, updateTrainingDto, user.id);
+    return this.trainingsService.update(id, updateTrainingDto, user.id);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuardIsCoach)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.trainingsService.remove(+id);
+    return this.trainingsService.remove(id);
   }
 }
