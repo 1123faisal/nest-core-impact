@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
+import { Coach } from 'src/coachs/entities/coach.entity';
 import { Training } from 'src/trainings/entities/training.entity';
 import { User } from 'src/users/entities/user.entity';
 
@@ -30,6 +31,13 @@ export class TrainingSession extends Document {
     default: null,
   })
   athletes: User[];
+
+  @ApiProperty({ example: new Types.ObjectId() })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Coach' }],
+    default: null,
+  })
+  coach: Coach;
 }
 
 const TrainingSessionSchema = SchemaFactory.createForClass(TrainingSession);

@@ -14,7 +14,7 @@ export class ProfileInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data: User) => {
         const { password, __v, otp, ...result } = data.toJSON();
-        return result;
+        return { ...result, isSportAvailable: result?.sport ? true : false };
       }),
     );
   }

@@ -43,11 +43,11 @@ export class Training extends Document {
 
   @ApiProperty({ example: 'Strength & Power' })
   @Prop({ default: '' })
-  trainingMode: string;
+  exCategory: string;
 
   @ApiProperty({ example: 'Chest' })
   @Prop({ default: '' })
-  trainingTo: string;
+  exSubCategory: string;
 
   @ApiProperty({ example: [new Types.ObjectId()] })
   @Prop({

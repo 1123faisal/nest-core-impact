@@ -54,6 +54,7 @@ export class AuthService {
 
     return {
       ...result,
+      isSportAvailable: result?.sport ? true : false,
       token: this.getJwtToken(user.id),
     };
   }
@@ -95,6 +96,7 @@ export class AuthService {
 
     return {
       ...result,
+      isSportAvailable: result?.sport ? true : false,
       token: this.jwtService.sign(payload),
     };
   }

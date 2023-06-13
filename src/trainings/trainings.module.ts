@@ -15,5 +15,6 @@ import { S3Provider } from 'src/providers/s3.provider';
   ],
   controllers: [TrainingsController],
   providers: [TrainingsService, S3Provider],
+  exports: [TrainingsService],
 })
 export class TrainingsModule {}

@@ -8,6 +8,8 @@ import {
   TrainingSessionSchema,
 } from './entities/training-session.entity';
 import { CoachsModule } from 'src/coachs/coachs.module';
+import { UsersModule } from 'src/users/users.module';
+import { TrainingsModule } from 'src/trainings/trainings.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { CoachsModule } from 'src/coachs/coachs.module';
       { name: TrainingSession.name, schema: TrainingSessionSchema },
     ]),
     CoachsModule,
+    UsersModule,
+    TrainingsModule,
   ],
   controllers: [TrainingSessionsController],
   providers: [TrainingSessionsService],

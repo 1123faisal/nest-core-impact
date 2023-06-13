@@ -41,9 +41,9 @@ export class CreateTrainingDto {
 
   @ApiProperty({ example: 'Strength and power' })
   @IsString()
-  trainingMode: string;
+  exCategory: string;
 
   @ApiProperty({ example: 'Chest' })
   @IsString()
-  trainingTo: string;
+  exSubCategory: string;
 }

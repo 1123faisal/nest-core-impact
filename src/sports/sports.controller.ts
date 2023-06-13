@@ -18,6 +18,7 @@ import { UpdateSportDto } from './dto/update-sport.dto';
 import { Sport } from './entities/sport.entity';
 import { SportsService } from './sports.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 
 // @ApiBearerAuth()
 @ApiExtraModels(PaginatedDto)
@@ -45,20 +46,20 @@ export class SportsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Sport> {
+  findOne(@Param('id', isMongoIdPipe) id: string): Promise<Sport> {
     return this.sportsService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', isMongoIdPipe) id: string,
     @Body() updateSportDto: UpdateSportDto,
   ): Promise<Sport> {
     return this.sportsService.update(id, updateSportDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', isMongoIdPipe) id: string) {
     return this.sportsService.remove(id);
   }
 

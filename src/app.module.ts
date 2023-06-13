@@ -39,6 +39,10 @@ import { TrainingSessionsModule } from './training-sessions/training-sessions.mo
       serveRoot: '/coach-panel',
       rootPath: join(__dirname, '..', 'coach_panel'),
     }),
+    ServeStaticModule.forRoot({
+      serveRoot: '/admin-panel',
+      rootPath: join(__dirname, '..', 'admin_panel'),
+    }),
     TerminusModule,
     HttpModule,
     AuthModule,

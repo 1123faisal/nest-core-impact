@@ -19,6 +19,10 @@ export class UsersService {
     private readonly s3Provider: S3Provider,
   ) {}
 
+  findUser(conditions: Record<string, any>) {
+    return this.userModel.find(conditions);
+  }
+
   async updateProfile(updateProfileDto: UpdateUserProfileDto, userId: string) {
     const existingUser = await this.userModel.findOne({ _id: userId }).exec();
 

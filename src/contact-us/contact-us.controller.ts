@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ContactUsService } from './contact-us.service';
 import { CreateContactUsDto } from './dto/create-contact-us.dto';
 import { UpdateContactUsDto } from './dto/update-contact-us.dto';
+import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -33,20 +34,20 @@ export class ContactUsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', isMongoIdPipe) id: string) {
     return this.contactUsService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', isMongoIdPipe) id: string,
     @Body() updateContactUsDto: UpdateContactUsDto,
   ) {
     return this.contactUsService.update(id, updateContactUsDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', isMongoIdPipe) id: string) {
     return this.contactUsService.remove(id);
   }
 }

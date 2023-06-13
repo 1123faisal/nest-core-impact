@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -23,6 +24,7 @@ import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { TrainingsService } from './trainings.service';
+import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 
 @ApiExtraModels(PaginatedDto)
 @ApiTags('Trainings')
@@ -46,12 +48,15 @@ export class TrainingsController {
   }
 
   @Get()
-  findAll() {
-    return this.trainingsService.findAll();
+  findAll(
+    @Query('exCategory') exCategory?: string,
+    @Query('exSubCategory') exSubCategory?: string,
+  ) {
+    return this.trainingsService.findAll(exCategory, exSubCategory);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', isMongoIdPipe) id: string) {
     return this.trainingsService.findOne(id);
   }
 
@@ -61,7 +66,7 @@ export class TrainingsController {
   @UseInterceptors(FileInterceptor('file'))
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', isMongoIdPipe) id: string,
     @UploadedFile()
     file: Express.Multer.File,
     @Body() updateTrainingDto: UpdateTrainingDto,
@@ -74,7 +79,7 @@ export class TrainingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuardIsCoach)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', isMongoIdPipe) id: string) {
     return this.trainingsService.remove(id);
   }
 }

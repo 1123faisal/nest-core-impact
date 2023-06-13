@@ -35,8 +35,20 @@ export class TrainingsService {
     });
   }
 
-  async findAll(): Promise<Training[]> {
-    return await this.TrainingModel.find();
+  async findAll(
+    exCategory?: string,
+    exSubCategory?: string,
+  ): Promise<Training[]> {
+    const conditions: Record<string, any> = {};
+
+    if (exCategory) {
+      conditions.exCategory = exCategory;
+      if (exSubCategory) {
+        conditions.exSubCategory = exSubCategory;
+      }
+    }
+
+    return await this.TrainingModel.find(conditions);
   }
 
   async findOne(id: string): Promise<Training> {

@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
 import { Role } from 'src/users/entities/types';
 
 export class AuthResponse {
@@ -10,4 +10,7 @@ export class AuthResponse {
 
   @IsString()
   token: string;
+
+  @IsBoolean()
+  isSportAvailable: boolean;
 }
