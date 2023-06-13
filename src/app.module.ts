@@ -20,6 +20,7 @@ import { OrgUsersModule } from './org-users/org-users.module';
 import { CoachsModule } from './coachs/coachs.module';
 import { AthletesModule } from './athlets/athletes.module';
 import { TrainingsModule } from './trainings/trainings.module';
+import { TrainingSessionsModule } from './training-sessions/training-sessions.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TrainingsModule } from './trainings/trainings.module';
     CoachsModule,
     AthletesModule,
     TrainingsModule,
+    TrainingSessionsModule,
   ],
   controllers: [AppController],
   providers: [

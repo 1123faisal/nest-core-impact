@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   async getProfile(userId: string): Promise<User> {
-    const user = await this.userModel.findById(userId);
+    const user = await this.userModel.findById(userId).populate('sport');
 
     if (!user) {
       throw new NotFoundException('no user found');
