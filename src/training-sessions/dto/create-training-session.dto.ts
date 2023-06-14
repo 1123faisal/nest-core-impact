@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 export class CreateTrainingSessionDto {
   @ApiProperty({ example: 'Strength & Power' })
@@ -17,5 +17,5 @@ export class CreateTrainingSessionDto {
 
   @ApiProperty({ type: Array, example: [new Types.ObjectId()] })
   @IsArray()
-  athletes;
+  athletes: mongoose.ObjectId[];
 }

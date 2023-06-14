@@ -106,7 +106,7 @@ export class CoachsAuthService {
       .exec();
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     // Generate OTP
@@ -173,7 +173,7 @@ export class CoachsAuthService {
       .exec();
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     if (
@@ -200,7 +200,7 @@ export class CoachsAuthService {
       .exec();
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
 
     if (

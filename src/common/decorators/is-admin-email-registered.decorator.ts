@@ -5,23 +5,23 @@ import {
   ValidatorConstraintInterface,
   registerDecorator,
 } from 'class-validator';
-import { CoachsAuthService } from 'src/coachs/coachs-auth.service';
+import { AdminsAuthService } from 'src/admin/admin-auth.service';
 
-@ValidatorConstraint({ name: 'IsCoachEmailAlreadyExist', async: true })
+@ValidatorConstraint({ name: 'IsAdminEmailAlreadyExist', async: true })
 @Injectable()
-export class IsCoachEmailAlreadyExistConstraint
+export class IsAdminEmailAlreadyExistConstraint
   implements ValidatorConstraintInterface
 {
-  constructor(protected readonly coachService: CoachsAuthService) {}
+  constructor(protected readonly adminService: AdminsAuthService) {}
 
   async validate(text: string) {
-    return !(await this.coachService.findUser({
+    return !(await this.adminService.findUser({
       email: text,
     }));
   }
 }
 
-export function IsCoachEmailAlreadyExist(
+export function IsAdminEmailAlreadyExist(
   validationOptions?: ValidationOptions,
 ) {
   return function (object: any, propertyName: string) {
@@ -30,7 +30,7 @@ export function IsCoachEmailAlreadyExist(
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsCoachEmailAlreadyExistConstraint,
+      validator: IsAdminEmailAlreadyExistConstraint,
     });
   };
 }

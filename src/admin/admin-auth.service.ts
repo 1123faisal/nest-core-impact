@@ -9,39 +9,31 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Model, ObjectId } from 'mongoose';
 import * as otpGenerator from 'otp-generator';
-import { AthletesService } from 'src/athlets/athletes.service';
-import { CoachsService } from 'src/coachs/coachs.service';
-import { MimeType, S3Provider } from 'src/providers/s3.provider';
-import { Password } from '../common/password';
+import { Password } from 'src/common/password';
+import { S3Provider } from 'src/providers/s3.provider';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { OrgSettingDto } from './dto/org-db-setting.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { UploadAthletesDto } from './dto/upload-athletes.dto';
-import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
-import { OrgUser } from './entities/org-user.entity';
-import { OrgSetting } from './entities/settings.entity';
+import { Admin } from './entities/admin.entity';
+import { AdminSignUpDto } from './dto/user-signup.dto';
 
 @Injectable()
-export class OrgUsersService {
+export class AdminsAuthService {
   constructor(
-    @InjectModel(OrgUser.name) private readonly orgUserModel: Model<OrgUser>,
-    @InjectModel(OrgSetting.name) private readonly Setting: Model<OrgSetting>,
+    @InjectModel(Admin.name) private readonly adminModel: Model<Admin>,
     private jwtService: JwtService,
-    private readonly s3Provider: S3Provider,
-    private athleteService: AthletesService,
-    private coachService: CoachsService,
+    private s3Provider: S3Provider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
     return this.jwtService.sign({ id: userId });
   }
 
-  async getProfile(userId: string): Promise<OrgUser> {
-    const user = await this.orgUserModel.findById(userId).exec();
+  async getProfile(userId: string): Promise<Admin> {
+    const user = await this.adminModel.findById(userId).exec();
 
     if (!user) {
       throw new NotFoundException('no user found');
@@ -50,8 +42,8 @@ export class OrgUsersService {
     return user;
   }
 
-  async userSignUp(userSignUpDto: OrgUserSignUpDto): Promise<AuthResponse> {
-    const createdUser = new this.orgUserModel({
+  async userSignUp(userSignUpDto: AdminSignUpDto): Promise<AuthResponse> {
+    const createdUser = new this.adminModel({
       name: userSignUpDto.name,
       email: userSignUpDto.email,
       password: userSignUpDto.password,
@@ -68,7 +60,7 @@ export class OrgUsersService {
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.orgUserModel.findOne({ email });
+    const user = await this.adminModel.findOne({ email });
 
     if (!user) {
       return null;
@@ -83,8 +75,8 @@ export class OrgUsersService {
     return null;
   }
 
-  async findUser(condition: Record<string, any>): Promise<OrgUser> {
-    const user = await this.orgUserModel.findOne(condition);
+  async findUser(condition: Record<string, any>): Promise<Admin> {
+    const user = await this.adminModel.findOne(condition);
     if (user) return user;
     return null;
   }
@@ -92,7 +84,7 @@ export class OrgUsersService {
   async login(user: any): Promise<AuthResponse> {
     const payload = { email: user.email, id: user.id };
 
-    const existingUser = await this.orgUserModel.findById(user.id);
+    const existingUser = await this.adminModel.findById(user.id);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =
@@ -107,7 +99,7 @@ export class OrgUsersService {
   async sendOtp(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
   ): Promise<string> {
-    const user = await this.orgUserModel
+    const user = await this.adminModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
 
@@ -137,7 +129,7 @@ export class OrgUsersService {
   async resendOTP(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
   ): Promise<string> {
-    const user = await this.orgUserModel
+    const user = await this.adminModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
 
@@ -174,7 +166,7 @@ export class OrgUsersService {
   async verifyOtp(
     verifyForgotPasswordOTPDto: VerifyForgotPasswordOTPDto,
   ): Promise<boolean> {
-    const user = await this.orgUserModel
+    const user = await this.adminModel
       .findOne({ email: verifyForgotPasswordOTPDto.email })
       .exec();
 
@@ -201,7 +193,7 @@ export class OrgUsersService {
   async updatePassword(
     updateForgotPasswordDto: UpdateForgotPasswordDto,
   ): Promise<void> {
-    const user = await this.orgUserModel
+    const user = await this.adminModel
       .findOne({ email: updateForgotPasswordDto.email })
       .exec();
 
@@ -225,7 +217,7 @@ export class OrgUsersService {
     changePasswordDto: ChangePasswordDto,
     userId: string,
   ): Promise<void> {
-    const user = await this.orgUserModel.findById(userId).exec();
+    const user = await this.adminModel.findById(userId).exec();
 
     if (!user) {
       throw new BadRequestException('User not found');
@@ -248,19 +240,10 @@ export class OrgUsersService {
     updateProfileDto: UpdateProfileDto,
     userId: string,
   ): Promise<void> {
-    const user = await this.orgUserModel.findOne({ _id: userId }).exec();
+    const user = await this.adminModel.findOne({ _id: userId }).exec();
 
     if (!user) {
       throw new NotFoundException('no user found');
-    }
-
-    const isDuplicateEmail = await this.orgUserModel.findOne({
-      email: updateProfileDto.email,
-      _id: { $ne: user.id },
-    });
-
-    if (isDuplicateEmail) {
-      throw new BadRequestException('This email already in use.');
     }
 
     if (!updateProfileDto.avatar) {
@@ -271,96 +254,8 @@ export class OrgUsersService {
       updateProfileDto.avatar,
     );
 
-    return await this.orgUserModel.findByIdAndUpdate(
-      user.id,
-      updateProfileDto,
-      {
-        new: true,
-      },
-    );
-  }
-
-  async getDashboardSetting(): Promise<OrgSetting> {
-    let setting = await this.Setting.findOne();
-
-    if (!setting) {
-      setting = await this.Setting.create({});
-    }
-
-    return setting;
-  }
-
-  async updateDashboardSetting(
-    orgSettingDto: OrgSettingDto,
-  ): Promise<OrgSetting> {
-    let setting = await this.Setting.findOne();
-
-    if (!setting) {
-      setting = await this.Setting.create({});
-    }
-
-    orgSettingDto.banner = await this.s3Provider.uploadFileToS3(
-      orgSettingDto.banner,
-    );
-    orgSettingDto.logo = await this.s3Provider.uploadFileToS3(
-      orgSettingDto.logo,
-    );
-
-    return await this.Setting.findOneAndUpdate({}, orgSettingDto, {
+    return await this.adminModel.findByIdAndUpdate(user.id, updateProfileDto, {
       new: true,
     });
-  }
-
-  async assignCoach(
-    athleteId: string,
-    physician_coach,
-    batting_coach,
-    trainer_coach,
-    pitching_coach,
-  ) {
-    await this.athleteService.assignCoach(
-      athleteId,
-      physician_coach,
-      batting_coach,
-      trainer_coach,
-      pitching_coach,
-    );
-    await this.coachService.assignAthletes(
-      athleteId,
-      physician_coach,
-      batting_coach,
-      trainer_coach,
-      pitching_coach,
-    );
-  }
-
-  async addBulkAthletes(
-    uploadAthletesDto: UploadAthletesDto,
-  ): Promise<boolean> {
-    if (!uploadAthletesDto.file) {
-      throw new BadRequestException('file is required.');
-    }
-
-    let data: { status: boolean; data?: Record<string, any>[] };
-
-    const { mimetype } = uploadAthletesDto.file;
-
-    if (mimetype === MimeType.CSV) {
-      data = await this.s3Provider.parseCsv(uploadAthletesDto.file);
-    } else if (mimetype === MimeType.XLSX) {
-      data = await this.s3Provider.parseXls(
-        uploadAthletesDto.file,
-        'SalesOrders',
-      );
-    } else {
-      throw new BadRequestException('only csv/xlsx file are allowed.');
-    }
-
-    const header = data.data[0];
-    const rows = data.data.slice(1);
-
-    // console.log(header, rows[0]);
-
-    return data.status;
   }
 }

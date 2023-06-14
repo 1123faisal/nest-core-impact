@@ -1,9 +1,19 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import * as csvParse from 'csv-parse';
 import { v4 as uuidv4 } from 'uuid';
+import * as xlsx from 'xlsx';
+
+export enum MimeType {
+  CSV = 'text/csv',
+  XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  PNG = 'image/png',
+  JPG = 'image/jpg',
+  JPEG = 'image/jpeg',
+}
 
 @Injectable()
 export class S3Provider {
@@ -118,5 +128,66 @@ export class S3Provider {
     }
 
     return urls;
+  }
+
+  async parseCsv(file: Express.Multer.File) {
+    return new Promise<{
+      status: boolean;
+      data?: Record<string, any>[];
+    }>((resolve, reject) => {
+      const results = [];
+
+      // Parse the uploaded file buffer
+      csvParse
+        .parse(file.buffer)
+        .on('readable', function () {
+          let record;
+          while ((record = this.read())) {
+            results.push(record);
+          }
+        })
+        .on('error', (error) => {
+          // If any error occurs during parsing, reject the promise
+          reject(error);
+        })
+        .on('end', () => {
+          // Process the data and update the table accordingly
+          // You can perform your database update operations here using an ORM or query builder
+
+          // Once the update is completed, resolve the promise
+          resolve({ status: true, data: results });
+        });
+    });
+  }
+
+  async parseXls(file: Express.Multer.File, sheetName: string) {
+    return new Promise<{
+      status: boolean;
+      data?: Record<string, any>[];
+    }>((resolve, reject) => {
+      try {
+        const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+
+        // Specify the sheet name or index to read
+        const worksheet = workbook.Sheets[sheetName];
+        // Or if you want to read by index: const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        if (!worksheet) {
+          reject('Sheet not found');
+          return;
+        }
+
+        // Convert the worksheet to JSON
+        const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+
+        // Process the JSON data and update the table accordingly
+        // You can perform your database update operations here using an ORM or query builder
+
+        // Once the update is completed, resolve the promise
+        resolve({ status: true, data: jsonData });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 }

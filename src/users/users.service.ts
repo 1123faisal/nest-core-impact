@@ -30,7 +30,9 @@ export class UsersService {
       throw new NotFoundException('no user found');
     }
 
-    updateProfileDto.profileCompleted = true;
+    if (Object.keys(updateProfileDto).length > 1) {
+      updateProfileDto.profileCompleted = true;
+    }
 
     return await this.userModel.findByIdAndUpdate(
       existingUser.id,

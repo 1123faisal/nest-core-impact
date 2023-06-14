@@ -18,6 +18,7 @@ import {
 } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
+import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pipe';
 import { ProfileInterceptor } from 'src/interceptors/profile-interceptor';
 import { AuthResponse } from './dto/auth-response.dto';
@@ -26,6 +27,7 @@ import { OrgSettingDto } from './dto/org-db-setting.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UploadAthletesDto } from './dto/upload-athletes.dto';
 import { UserSignInDto } from './dto/user-signin.dto';
 import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
@@ -33,7 +35,6 @@ import { OrgSetting } from './entities/settings.entity';
 import { JwtAuthGuardIsOrg } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { OrgUsersService } from './org-users.service';
-import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 
 @ApiTags('Org Users')
 @Controller('org-users')
@@ -202,5 +203,20 @@ export class OrgUsersController {
       trainer_coach,
       pitching_coach,
     );
+  }
+
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuardIsOrg) // Protect the route with JWT authentication
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  @Patch('upload-athletes')
+  @HttpCode(HttpStatus.OK)
+  async addBulkAthletes(
+    @UploadedFile()
+    file: Express.Multer.File,
+    @Body() uploadAthletesDto: UploadAthletesDto,
+  ): Promise<boolean> {
+    uploadAthletesDto.file = file;
+    return this.orgUsersService.addBulkAthletes(uploadAthletesDto);
   }
 }

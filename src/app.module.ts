@@ -21,6 +21,8 @@ import { CoachsModule } from './coachs/coachs.module';
 import { AthletesModule } from './athlets/athletes.module';
 import { TrainingsModule } from './trainings/trainings.module';
 import { TrainingSessionsModule } from './training-sessions/training-sessions.module';
+import { AdminsModule } from './admin/admin.module';
+import { ExerciseCategoriesModule } from './exercise_categories/exercise_categories.module';
 
 @Module({
   imports: [
@@ -31,6 +33,10 @@ import { TrainingSessionsModule } from './training-sessions/training-sessions.mo
     }),
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DB_URI),
+    ServeStaticModule.forRoot({
+      serveRoot: '/public',
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     ServeStaticModule.forRoot({
       serveRoot: '/org-panel',
       rootPath: join(__dirname, '..', 'org_panel'),
@@ -55,6 +61,8 @@ import { TrainingSessionsModule } from './training-sessions/training-sessions.mo
     AthletesModule,
     TrainingsModule,
     TrainingSessionsModule,
+    AdminsModule,
+    ExerciseCategoriesModule,
   ],
   controllers: [AppController],
   providers: [

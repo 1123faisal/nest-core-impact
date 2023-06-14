@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
-function FileApiProperty(): PropertyDecorator {
+export function FileApiProperty(): PropertyDecorator {
   return ApiProperty({ type: 'string', format: 'binary' });
 }
 
