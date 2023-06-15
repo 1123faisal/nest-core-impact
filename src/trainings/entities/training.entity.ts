@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Coach } from 'src/coachs/entities/coach.entity';
+import { ExerciseCategory } from 'src/exercise_categories/entities/exercise_category.entity';
 
 export type TrainingDocument = HydratedDocument<Training>;
 
@@ -41,13 +42,21 @@ export class Training extends Document {
     content: string;
   }[];
 
-  @ApiProperty({ example: 'Strength & Power' })
-  @Prop({ default: '' })
-  exCategory: string;
+  @ApiProperty({ example: new Types.ObjectId() })
+  @Prop({
+    default: null,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ExerciseCategory',
+  })
+  exCategory: ExerciseCategory;
 
-  @ApiProperty({ example: 'Chest' })
-  @Prop({ default: '' })
-  exSubCategory: string;
+  @ApiProperty({ example: new Types.ObjectId() })
+  @Prop({
+    default: null,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ExerciseCategory',
+  })
+  exSubCategory: ExerciseCategory;
 
   @ApiProperty({ example: [new Types.ObjectId()] })
   @Prop({

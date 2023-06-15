@@ -8,6 +8,7 @@ import {
   IsString,
   Validate,
 } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class Step {
   @IsNotEmpty()
@@ -39,11 +40,11 @@ export class CreateTrainingDto {
   @IsString()
   description: string;
 
-  @ApiProperty({ example: 'Strength and power' })
+  @ApiProperty({ example: new Types.ObjectId() })
   @IsString()
   exCategory: string;
 
-  @ApiProperty({ example: 'Chest' })
+  @ApiProperty({ example: new Types.ObjectId() })
   @IsString()
   exSubCategory: string;
 }

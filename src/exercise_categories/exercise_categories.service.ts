@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { CreateExerciseCategoryDto } from './dto/create-exercise_category.dto';
 import { CreateSubExerciseCategoryDto } from './dto/create-sub-exercise_category.dto';
 import { UpdateExerciseCategoryDto } from './dto/update-exercise_category.dto';
-import { ExerciseCategory } from './entities/exercise_category.entity';
+import {
+  ExerciseCategory,
+  ExerciseCategoryDocument,
+} from './entities/exercise_category.entity';
 
 @Injectable()
 export class ExerciseCategoriesService {
@@ -94,5 +97,12 @@ export class ExerciseCategoriesService {
     }
 
     return category;
+  }
+
+  find(filter: FilterQuery<ExerciseCategory>) {
+    return this.ExCategory.find(filter).populate({
+      path: 'subCategories',
+      select: 'name status',
+    });
   }
 }

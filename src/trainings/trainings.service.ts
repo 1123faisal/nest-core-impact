@@ -5,12 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Training } from './entities/training.entity';
 import { Model } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
+import { ExerciseCategoriesService } from 'src/exercise_categories/exercise_categories.service';
 
 @Injectable()
 export class TrainingsService {
   constructor(
     @InjectModel(Training.name) private readonly TrainingModel: Model<Training>,
     private readonly s3Provider: S3Provider,
+    private readonly exCategoryService: ExerciseCategoriesService,
   ) {}
 
   async create(
@@ -24,6 +26,22 @@ export class TrainingsService {
     if (createTrainingDto.file) {
       mimetype = createTrainingDto.file.mimetype;
       file = await this.s3Provider.uploadFileToS3(createTrainingDto.file);
+    }
+
+    const [category] = await this.exCategoryService.find({
+      _id: createTrainingDto.exCategory,
+    });
+
+    if (category.id != createTrainingDto.exCategory) {
+      throw new NotFoundException('no exCategory found');
+    }
+
+    const subCategory = category.subCategories.find(
+      (v) => v.id == createTrainingDto.exSubCategory,
+    );
+
+    if (!subCategory) {
+      throw new NotFoundException('no exSubCategory found');
     }
 
     return await this.TrainingModel.create({
@@ -48,11 +66,17 @@ export class TrainingsService {
       }
     }
 
-    return await this.TrainingModel.find(conditions);
+    return await this.TrainingModel.find(conditions)
+      .populate({ path: 'coach', select: 'name' })
+      .populate({ path: 'exCategory', select: 'name' })
+      .populate({ path: 'exSubCategory', select: 'name' });
   }
 
   async findOne(id: string): Promise<Training> {
-    const training = await this.TrainingModel.findById(id);
+    const training = await this.TrainingModel.findById(id)
+      .populate({ path: 'coach', select: 'name' })
+      .populate({ path: 'exCategory', select: 'name' })
+      .populate({ path: 'exSubCategory', select: 'name' });
 
     if (!training) {
       throw new NotFoundException('no training found.');
@@ -73,6 +97,22 @@ export class TrainingsService {
     if (updateTrainingDto.file) {
       mimetype = updateTrainingDto.file.mimetype;
       file = await this.s3Provider.uploadFileToS3(updateTrainingDto.file);
+    }
+
+    const [category] = await this.exCategoryService.find({
+      _id: updateTrainingDto.exCategory,
+    });
+
+    if (category.id != updateTrainingDto.exCategory) {
+      throw new NotFoundException('no exCategory found');
+    }
+
+    const subCategory = category.subCategories.find(
+      (v) => v.id == updateTrainingDto.exSubCategory,
+    );
+
+    if (!subCategory) {
+      throw new NotFoundException('no exSubCategory found');
     }
 
     const training = await this.TrainingModel.findOneAndUpdate(

@@ -56,7 +56,7 @@ export class TrainingsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', isMongoIdPipe)  id: string) {
+  findOne(@Param('id', isMongoIdPipe) id: string) {
     return this.trainingsService.findOne(id);
   }
 
@@ -66,7 +66,7 @@ export class TrainingsController {
   @UseInterceptors(FileInterceptor('file'))
   @Patch(':id')
   update(
-    @Param('id', isMongoIdPipe)  id: string,
+    @Param('id', isMongoIdPipe) id: string,
     @UploadedFile()
     file: Express.Multer.File,
     @Body() updateTrainingDto: UpdateTrainingDto,
@@ -79,7 +79,7 @@ export class TrainingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuardIsCoach)
   @Delete(':id')
-  remove(@Param('id', isMongoIdPipe)  id: string) {
+  remove(@Param('id', isMongoIdPipe) id: string) {
     return this.trainingsService.remove(id);
   }
 }
