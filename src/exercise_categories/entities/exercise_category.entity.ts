@@ -15,6 +15,10 @@ export class ExerciseCategory extends Document {
   @Prop({ default: '' })
   name: string;
 
+  @ApiProperty({ example: true })
+  @Prop({ default: true })
+  status: boolean;
+
   @ApiProperty({
     example: [new Types.ObjectId()],
     isArray: true,

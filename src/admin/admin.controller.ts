@@ -80,7 +80,7 @@ export class AdminsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', isMongoIdPipe) id: string): Promise<Admin> {
+  findOne(@Param('id', isMongoIdPipe)  id: string): Promise<Admin> {
     return this.adminService.findOne(id);
   }
 
@@ -90,7 +90,7 @@ export class AdminsController {
   update(
     @UploadedFile(isValidAvatar)
     file: Express.Multer.File,
-    @Param('id', isMongoIdPipe) id: string,
+    @Param('id', isMongoIdPipe)  id: string,
     @Body() updateAthleteDto: UpdateAdminDto,
   ): Promise<Admin> {
     updateAthleteDto.avatar = file;
@@ -98,7 +98,7 @@ export class AdminsController {
   }
 
   @Delete(':id')
-  remove(@Param('id', isMongoIdPipe) id: string) {
+  remove(@Param('id', isMongoIdPipe)  id: string) {
     return this.adminService.remove(id);
   }
 

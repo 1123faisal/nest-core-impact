@@ -43,7 +43,7 @@ export class TrainingSessionsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', isMongoIdPipe) id: string): Promise<TrainingSession> {
+  findOne(@Param('id', isMongoIdPipe)  id: string): Promise<TrainingSession> {
     return this.trainingSessionsService.findOne(id);
   }
 
@@ -51,14 +51,14 @@ export class TrainingSessionsController {
   @UseGuards(JwtAuthGuardIsCoach)
   @Patch(':id')
   update(
-    @Param('id', isMongoIdPipe) id: string,
+    @Param('id', isMongoIdPipe)  id: string,
     @Body() updateTrainingSessionDto: UpdateTrainingSessionDto,
   ): Promise<TrainingSession> {
     return this.trainingSessionsService.update(id, updateTrainingSessionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', isMongoIdPipe) id: string) {
+  remove(@Param('id', isMongoIdPipe)  id: string) {
     this.trainingSessionsService.remove(id);
   }
 }

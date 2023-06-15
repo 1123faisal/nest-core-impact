@@ -190,11 +190,11 @@ export class OrgUsersController {
     description: 'ID of the pitching_coach',
   })
   async assignCoach(
-    @Body('athleteId', isMongoIdPipe) athleteId: string,
-    @Body('physician_coach', isMongoIdPipe) physician_coach: string,
-    @Body('batting_coach', isMongoIdPipe) batting_coach: string,
-    @Body('trainer_coach', isMongoIdPipe) trainer_coach: string,
-    @Body('pitching_coach', isMongoIdPipe) pitching_coach: string,
+    @Body('athleteId', isMongoIdPipe)  athleteId: string,
+    @Body('physician_coach', isMongoIdPipe)  physician_coach: string,
+    @Body('batting_coach', isMongoIdPipe)  batting_coach: string,
+    @Body('trainer_coach', isMongoIdPipe)  trainer_coach: string,
+    @Body('pitching_coach', isMongoIdPipe)  pitching_coach: string,
   ) {
     await this.orgUsersService.assignCoach(
       athleteId,

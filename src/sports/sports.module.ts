@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { SportsService } from './sports.service';
-import { SportsController } from './sports.controller';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Sport, SportSchema } from './entities/sport.entity';
 import { User, UserSchema } from 'src/users/entities/user.entity';
+import { Sport, SportSchema } from './entities/sport.entity';
+import { SportsController } from './sports.controller';
+import { SportsService } from './sports.service';
 
 @Module({
   imports: [

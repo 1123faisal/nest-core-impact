@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateExerciseCategoryDto } from './dto/create-exercise_category.dto';
+import { CreateSubExerciseCategoryDto } from './dto/create-sub-exercise_category.dto';
 import { UpdateExerciseCategoryDto } from './dto/update-exercise_category.dto';
 import { ExerciseCategory } from './entities/exercise_category.entity';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ExerciseCategoriesService {
@@ -13,20 +14,29 @@ export class ExerciseCategoriesService {
   ) {}
 
   async create(createExerciseCategoryDto: CreateExerciseCategoryDto) {
-    return await this.ExCategory.create(createExerciseCategoryDto);
+    return await this.ExCategory.create({
+      ...createExerciseCategoryDto,
+      isParent: true,
+    });
   }
 
-  async findAll() {
-    return await this.ExCategory.find({ isParent: true }).populate({
+  async findAll(isParent = true, parentId?: string) {
+    let params: Record<string, any> = { isParent };
+
+    if (parentId) {
+      params = { _id: parentId };
+    }
+
+    return await this.ExCategory.find(params).populate({
       path: 'subCategories',
-      select: 'name',
+      select: 'name status',
     });
   }
 
   async findOne(id: string) {
     const category = await this.ExCategory.findById(id).populate({
       path: 'subCategories',
-      select: 'name',
+      select: 'name status',
     });
 
     if (!category) {
@@ -51,6 +61,29 @@ export class ExerciseCategoriesService {
     }
 
     return category;
+  }
+
+  async createSubCategory(
+    createSubExerciseCategoryDto: CreateSubExerciseCategoryDto,
+  ) {
+    const parentCategory = await this.ExCategory.findById(
+      createSubExerciseCategoryDto.categoryId,
+    );
+
+    if (!parentCategory) {
+      throw new NotFoundException('parent category not found.');
+    }
+
+    const newSubCat = await this.ExCategory.create({
+      ...createSubExerciseCategoryDto,
+      isParent: false,
+    });
+
+    await parentCategory.updateOne({
+      $addToSet: { subCategories: newSubCat._id },
+    });
+
+    return newSubCat;
   }
 
   async remove(id: string) {
