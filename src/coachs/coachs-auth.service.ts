@@ -248,13 +248,11 @@ export class CoachsAuthService {
       throw new NotFoundException('no user found');
     }
 
-    if (!updateProfileDto.avatar) {
-      throw new BadRequestException('avatar is required.');
+    if (updateProfileDto.avatar) {
+      updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(
+        updateProfileDto.avatar,
+      );
     }
-
-    updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(
-      updateProfileDto.avatar,
-    );
 
     return await this.coachModel.findByIdAndUpdate(user.id, updateProfileDto, {
       new: true,

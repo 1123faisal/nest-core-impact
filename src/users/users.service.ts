@@ -50,13 +50,11 @@ export class UsersService {
       throw new NotFoundException('no user found');
     }
 
-    if (!updateProfilePic.avatar) {
-      throw new BadRequestException('avatar is required.');
+    if (updateProfilePic.avatar) {
+      updateProfilePic.avatar = await this.s3Provider.uploadFileToS3(
+        updateProfilePic.avatar,
+      );
     }
-
-    updateProfilePic.avatar = await this.s3Provider.uploadFileToS3(
-      updateProfilePic.avatar,
-    );
 
     return await this.userModel.findByIdAndUpdate(user.id, updateProfilePic, {
       new: true,

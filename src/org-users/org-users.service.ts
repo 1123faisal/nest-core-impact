@@ -263,13 +263,11 @@ export class OrgUsersService {
       throw new BadRequestException('This email already in use.');
     }
 
-    if (!updateProfileDto.avatar) {
-      throw new BadRequestException('avatar is required.');
+    if (updateProfileDto.avatar) {
+      updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(
+        updateProfileDto.avatar,
+      );
     }
-
-    updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(
-      updateProfileDto.avatar,
-    );
 
     return await this.orgUserModel.findByIdAndUpdate(
       user.id,
