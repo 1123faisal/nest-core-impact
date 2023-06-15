@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Request,
+  Res,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -35,6 +36,7 @@ import { OrgSetting } from './entities/settings.entity';
 import { JwtAuthGuardIsOrg } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { OrgUsersService } from './org-users.service';
+import { Response } from 'express';
 
 @ApiTags('Org Users')
 @Controller('org-users')
@@ -190,11 +192,11 @@ export class OrgUsersController {
     description: 'ID of the pitching_coach',
   })
   async assignCoach(
-    @Body('athleteId', isMongoIdPipe)  athleteId: string,
-    @Body('physician_coach', isMongoIdPipe)  physician_coach: string,
-    @Body('batting_coach', isMongoIdPipe)  batting_coach: string,
-    @Body('trainer_coach', isMongoIdPipe)  trainer_coach: string,
-    @Body('pitching_coach', isMongoIdPipe)  pitching_coach: string,
+    @Body('athleteId', isMongoIdPipe) athleteId: string,
+    @Body('physician_coach', isMongoIdPipe) physician_coach: string,
+    @Body('batting_coach', isMongoIdPipe) batting_coach: string,
+    @Body('trainer_coach', isMongoIdPipe) trainer_coach: string,
+    @Body('pitching_coach', isMongoIdPipe) pitching_coach: string,
   ) {
     await this.orgUsersService.assignCoach(
       athleteId,
@@ -218,5 +220,13 @@ export class OrgUsersController {
   ): Promise<boolean> {
     uploadAthletesDto.file = file;
     return this.orgUsersService.addBulkAthletes(uploadAthletesDto);
+  }
+
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuardIsOrg) // Protect the route with JWT authentication
+
+  @Get('athletes-download')
+  async downloadAthletesAsPDF(@Res() res: Response): Promise<Buffer> {
+    return await this.orgUsersService.downloadAthletesAsPDF(res);
   }
 }

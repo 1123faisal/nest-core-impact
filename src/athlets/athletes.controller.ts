@@ -51,7 +51,7 @@ export class AthletesController {
   }
 
   @Get(':id')
-  findOne(@Param('id', isMongoIdPipe)  id: string): Promise<User> {
+  findOne(@Param('id', isMongoIdPipe) id: string): Promise<User> {
     return this.athletesService.findOne(id);
   }
 
@@ -61,7 +61,7 @@ export class AthletesController {
   update(
     @UploadedFile(isValidAvatar)
     file: Express.Multer.File,
-    @Param('id', isMongoIdPipe)  id: string,
+    @Param('id', isMongoIdPipe) id: string,
     @Body() updateAthleteDto: UpdateAthleteDto,
   ): Promise<User> {
     updateAthleteDto.avatar = file;
@@ -71,7 +71,7 @@ export class AthletesController {
   }
 
   @Delete(':id')
-  remove(@Param('id', isMongoIdPipe)  id: string) {
+  remove(@Param('id', isMongoIdPipe) id: string) {
     return this.athletesService.remove(id);
   }
 }

@@ -24,6 +24,7 @@ import { OrgUserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { OrgUser } from './entities/org-user.entity';
 import { OrgSetting } from './entities/settings.entity';
+import { Response } from 'express';
 
 @Injectable()
 export class OrgUsersService {
@@ -360,5 +361,12 @@ export class OrgUsersService {
     // console.log(header, rows[0]);
 
     return data.status;
+  }
+
+  async downloadAthletesAsPDF(res: Response) {
+    const athletes = await this.athleteService.findAll();
+    res.set('Content-Type', 'application/pdf');
+    res.set('Content-Disposition', 'attachment; filename="table.pdf"');
+    return this.s3Provider.generatePDF(athletes.results, res);
   }
 }

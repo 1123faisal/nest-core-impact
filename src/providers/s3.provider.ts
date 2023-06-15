@@ -4,8 +4,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as csvParse from 'csv-parse';
+import { createWriteStream } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import * as xlsx from 'xlsx';
+import * as PDFDocument from 'pdfkit';
+import { Response } from 'express';
 
 export enum MimeType {
   CSV = 'text/csv',
@@ -34,27 +37,7 @@ export class S3Provider {
   }
 
   async retrieveImageFromS3(s3FileUri: string): Promise<Buffer> {
-    // const imageName = s3FileUri.replace(
-    //   'https://fetch-delivery.s3.amazonaws.com/',
-    //   '',
-    // ); // Replace with the actual image name or identifier
-    // ('https://fetch-delivery.s3.amazonaws.com/a572c4c7-bc61-489d-93a4-df74efacd1e8.jpg');
-
-    // Create a command to get the object from S3
-    // const getObjectCommand = new GetObjectCommand({
-    //   Bucket: process.env.AWS_BUCKET_NAME,
-    //   Key: imageName,
-    // });
-
     try {
-      // Use the S3 client to send the getObject command and retrieve the image
-      // const response = await this.s3.send(getObjectCommand);
-
-      // // Read the response body as a Buffer
-      // const imageBuffer = await new Response(
-      //   await response.Body.transformToByteArray(),
-      // ).arrayBuffer();
-
       const response = await axios.get(s3FileUri, {
         responseType: 'arraybuffer',
       });
@@ -188,6 +171,23 @@ export class S3Provider {
       } catch (error) {
         reject(error);
       }
+    });
+  }
+
+  generatePDF(tableData: any[], res: Response): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+      const doc = new PDFDocument();
+
+      doc.pipe(res);
+
+      // Add table data to the PDF
+      // Customize this section to format your table data appropriately
+      doc.fontSize(12);
+      tableData.forEach((row, index) => {
+        doc.text(row.toString(), 50, 50 + index * 20);
+      });
+
+      doc.end();
     });
   }
 }
