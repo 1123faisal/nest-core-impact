@@ -47,7 +47,8 @@ export class SportsService {
     const results = await this.sportModel
       .find()
       .skip((getAllSportQueryParamDto.page - 1) * 10)
-      .limit(getAllSportQueryParamDto.limit);
+      .limit(getAllSportQueryParamDto.limit)
+      .sort({ _id: -1 });
 
     const total = await this.sportModel.countDocuments();
 

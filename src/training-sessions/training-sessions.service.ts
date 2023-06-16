@@ -41,7 +41,7 @@ export class TrainingSessionsService {
   }
 
   async findAll() {
-    return await this.TSModel.find();
+    return await this.TSModel.find().sort({ _id: -1 });
   }
 
   async findOne(id: string) {

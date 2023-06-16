@@ -16,7 +16,7 @@ export class CmsPagesService {
   }
 
   async findAll(): Promise<CmsPage[]> {
-    return await this.cmsPage.find();
+    return await this.cmsPage.find().sort({ _id: -1 });
   }
 
   async findOne(key: string): Promise<CmsPage> {

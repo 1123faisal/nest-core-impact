@@ -30,10 +30,12 @@ export class ExerciseCategoriesService {
       params = { _id: parentId };
     }
 
-    return await this.ExCategory.find(params).populate({
-      path: 'subCategories',
-      select: 'name status',
-    });
+    return await this.ExCategory.find(params)
+      .populate({
+        path: 'subCategories',
+        select: 'name status',
+      })
+      .sort({ _id: -1 });
   }
 
   async findOne(id: string) {

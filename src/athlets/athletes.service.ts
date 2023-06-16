@@ -6,19 +6,17 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { S3Provider } from 'src/providers/s3.provider';
+import { PaginatedDto } from 'src/sports/dto/paginates.dto';
+import { SportsService } from 'src/sports/sports.service';
 import { User } from 'src/users/entities/user.entity';
 import { CreateAthleteDto } from './dto/create-athlete.dto';
 import { UpdateAthleteDto } from './dto/update-athlete.dto';
-import { CoachsService } from 'src/coachs/coachs.service';
-import { SportsService } from 'src/sports/sports.service';
-import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 
 @Injectable()
 export class AthletesService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly s3Provider: S3Provider,
-    private readonly coachService: CoachsService,
     private readonly sportService: SportsService,
   ) {}
 

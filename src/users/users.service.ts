@@ -20,7 +20,7 @@ export class UsersService {
   ) {}
 
   findUser(conditions: Record<string, any>) {
-    return this.userModel.find(conditions);
+    return this.userModel.find(conditions).sort({ _id: -1 });
   }
 
   async updateProfile(updateProfileDto: UpdateUserProfileDto, userId: string) {

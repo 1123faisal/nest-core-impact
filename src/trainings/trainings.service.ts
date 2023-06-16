@@ -69,7 +69,8 @@ export class TrainingsService {
     return await this.TrainingModel.find(conditions)
       .populate({ path: 'coach', select: 'name' })
       .populate({ path: 'exCategory', select: 'name' })
-      .populate({ path: 'exSubCategory', select: 'name' });
+      .populate({ path: 'exSubCategory', select: 'name' })
+      .sort({ _id: -1 });
   }
 
   async findOne(id: string): Promise<Training> {
