@@ -220,7 +220,7 @@ export class S3Provider {
 
     csvStream.pipe(res);
 
-    tableData.forEach((row) => csvStream.write(row));
+    tableData.forEach((row) => csvStream.write(row.toString()));
 
     csvStream.end();
   }
