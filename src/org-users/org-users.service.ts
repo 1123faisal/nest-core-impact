@@ -363,10 +363,17 @@ export class OrgUsersService {
     return data.status;
   }
 
-  async downloadAthletesAsPDF(res: Response) {
-    const athletes = await this.athleteService.findAll();
-    res.set('Content-Type', 'application/pdf');
-    res.set('Content-Disposition', 'attachment; filename="table.pdf"');
-    return this.s3Provider.generatePDF(athletes.results, res);
+  async downloadAthletes(format: string, res: Response) {
+    const { results } = await this.athleteService.findAll();
+
+    if (format === 'csv') {
+      this.s3Provider.downloadCsv(results, res);
+    } else if (format === 'xlsx') {
+      this.s3Provider.downloadXlsx(results, res);
+    } else if (format === 'pdf') {
+      this.s3Provider.downloadPDF(results, res);
+    } else {
+      throw new BadRequestException('invalid formate');
+    }
   }
 }

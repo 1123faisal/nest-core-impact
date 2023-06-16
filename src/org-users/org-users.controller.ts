@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Patch,
   Post,
+  Query,
   Request,
   Res,
   UploadedFile,
@@ -226,7 +227,10 @@ export class OrgUsersController {
   // @UseGuards(JwtAuthGuardIsOrg) // Protect the route with JWT authentication
 
   @Get('athletes-download')
-  async downloadAthletesAsPDF(@Res() res: Response): Promise<Buffer> {
-    return await this.orgUsersService.downloadAthletesAsPDF(res);
+  async downloadAthletesAsPDF(
+    @Query('format') format: string,
+    @Res() res: Response,
+  ) {
+    return await this.orgUsersService.downloadAthletes(format, res);
   }
 }

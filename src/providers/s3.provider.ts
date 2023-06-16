@@ -4,11 +4,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as csvParse from 'csv-parse';
+import { Response } from 'express';
+import * as csv from 'fast-csv';
 import { createWriteStream } from 'fs';
+import * as PDFDocument from 'pdfkit';
 import { v4 as uuidv4 } from 'uuid';
 import * as xlsx from 'xlsx';
-import * as PDFDocument from 'pdfkit';
-import { Response } from 'express';
 
 export enum MimeType {
   CSV = 'text/csv',
@@ -174,9 +175,12 @@ export class S3Provider {
     });
   }
 
-  generatePDF(tableData: any[], res: Response): Promise<Buffer> {
-    return new Promise<Buffer>((resolve, reject) => {
+  downloadPDF(tableData: any[], res: Response): void {
+    new Promise<Buffer>((resolve, reject) => {
       const doc = new PDFDocument();
+
+      res.set('Content-Type', 'application/pdf');
+      res.set('Content-Disposition', 'attachment; filename="table.pdf"');
 
       doc.pipe(res);
 
@@ -189,5 +193,35 @@ export class S3Provider {
 
       doc.end();
     });
+  }
+
+  downloadXlsx(tableData: any[], res: Response): void {
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(tableData);
+
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Table');
+
+    const fileStream = xlsx.stream.to_csv(workbook);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=table.xlsx');
+
+    fileStream.pipe(res);
+  }
+
+  downloadCsv(tableData: any[], res: Response): void {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=table.csv');
+
+    const csvStream = csv.format({ headers: true });
+
+    csvStream.pipe(res);
+
+    tableData.forEach((row) => csvStream.write(row));
+
+    csvStream.end();
   }
 }
