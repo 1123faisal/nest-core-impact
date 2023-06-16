@@ -182,11 +182,11 @@ export class CoachsAuthService {
         user.otp,
       ))
     ) {
-      throw new Error('Invalid OTP');
+      throw new BadRequestException('Invalid OTP');
     }
 
     if (user.otpExpiration < new Date()) {
-      throw new Error('OTP expired');
+      throw new BadRequestException('OTP expired');
     }
 
     return true;
@@ -206,7 +206,7 @@ export class CoachsAuthService {
     if (
       !(await Password.comparePassword(updateForgotPasswordDto.otp, user.otp))
     ) {
-      throw new Error('Invalid OTP');
+      throw new BadRequestException('Invalid OTP');
     }
 
     user.password = updateForgotPasswordDto.confirmPassword;

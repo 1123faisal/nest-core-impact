@@ -1,6 +1,6 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as csvParse from 'csv-parse';
@@ -79,14 +79,14 @@ export class S3Provider {
 
   async uploadFilesToS3(files: Express.Multer.File[] | string[] | string) {
     if (typeof files === 'string') {
-      throw new Error('only list of files accepted.');
+      throw new BadRequestException('only list of files accepted.');
     }
 
     if (
       Array.isArray(files) &&
       files.findIndex((v) => typeof v === 'string') >= 0
     ) {
-      throw new Error('only list of files accepted.');
+      throw new BadRequestException('only list of files accepted.');
     }
 
     const urls: string[] = [];
