@@ -15,11 +15,13 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('Core Impact')
-    .setDescription('Core Impact API description')
+    .setDescription('Core Impact Api Document')
     .setVersion('1.0')
+    .setExternalDoc('Admin Panel', '/admin-panel')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('docs', app, document, {
     explorer: true,
     useGlobalPrefix: true,

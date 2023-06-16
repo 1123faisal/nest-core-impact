@@ -34,10 +34,6 @@ import { ExerciseCategoriesModule } from './exercise_categories/exercise_categor
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.DB_URI),
     ServeStaticModule.forRoot({
-      serveRoot: '/public',
-      rootPath: join(__dirname, '..', 'public'),
-    }),
-    ServeStaticModule.forRoot({
       serveRoot: '/org-panel',
       rootPath: join(__dirname, '..', 'org_panel'),
     }),
@@ -48,6 +44,10 @@ import { ExerciseCategoriesModule } from './exercise_categories/exercise_categor
     ServeStaticModule.forRoot({
       serveRoot: '/admin-panel',
       rootPath: join(__dirname, '..', 'admin_panel'),
+    }),
+    ServeStaticModule.forRoot({
+      serveRoot: '/',
+      rootPath: join(__dirname, '..', 'public'),
     }),
     TerminusModule,
     HttpModule,
