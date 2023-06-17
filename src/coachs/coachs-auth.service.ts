@@ -154,7 +154,7 @@ export class CoachsAuthService {
     const otpExpiration = moment().add(1, 'minute').toDate();
 
     // Update the user document with the new OTP and expiration time
-    user.otp = otp;
+    user.otp = await Password.hashPassword(otp);
     user.otpExpiration = otpExpiration;
     await user.save();
 
