@@ -7,22 +7,13 @@ import { User, UserSchema } from 'src/users/entities/user.entity';
 import { UsersModule } from 'src/users/users.module';
 import { AthletesController } from './athletes.controller';
 import { AthletesService } from './athletes.service';
-import { ExerciseCategoriesModule } from 'src/exercise_categories/exercise_categories.module';
-import {
-  ExerciseCategory,
-  ExerciseCategorySchema,
-} from 'src/exercise_categories/entities/exercise_category.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([
-      { name: ExerciseCategory.name, schema: ExerciseCategorySchema },
-    ]),
     UsersModule,
     CoachsModule,
     SportsModule,
-    ExerciseCategoriesModule,
   ],
   controllers: [AthletesController],
   providers: [AthletesService, S3Provider],

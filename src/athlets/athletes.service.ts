@@ -21,7 +21,6 @@ export class AthletesService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(ExerciseCategory.name)
-    private readonly ExCategoryModel: Model<ExerciseCategory>,
     private readonly s3Provider: S3Provider,
     private readonly sportService: SportsService,
   ) {}
