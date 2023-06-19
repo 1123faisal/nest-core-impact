@@ -2,17 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
-  IsBooleanString,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
-  isBooleanString,
 } from 'class-validator';
 import { IsEmailUserAlreadyExist } from 'src/common/decorators/is-email-registered.decorator';
 import { Gender } from 'src/users/entities/types';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
 
 export class CreateAthleteDto {
   @ApiProperty({ example: 'John Doe', required: false })
@@ -21,7 +19,7 @@ export class CreateAthleteDto {
   name: string;
 
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   @IsEmailUserAlreadyExist({
     message: 'Email Already Registered.',
   })

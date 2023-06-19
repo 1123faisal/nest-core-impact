@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
+import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/ErrorExceptions/http-exception';
 
@@ -9,6 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({ origin: '*' });
+  app.use(compression());
 
   app.setGlobalPrefix('api/v1');
 

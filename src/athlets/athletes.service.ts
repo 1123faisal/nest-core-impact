@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Password } from 'src/common/password';
+import { ExerciseCategory } from 'src/exercise_categories/entities/exercise_category.entity';
 import { S3Provider } from 'src/providers/s3.provider';
 import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 import { SportsService } from 'src/sports/sports.service';
+import { Gender, Role } from 'src/users/entities/types';
 import { User } from 'src/users/entities/user.entity';
+import validator from 'validator';
 import { CreateAthleteDto } from './dto/create-athlete.dto';
 import { UpdateAthleteDto } from './dto/update-athlete.dto';
 
@@ -16,6 +20,8 @@ import { UpdateAthleteDto } from './dto/update-athlete.dto';
 export class AthletesService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(ExerciseCategory.name)
+    private readonly ExCategoryModel: Model<ExerciseCategory>,
     private readonly s3Provider: S3Provider,
     private readonly sportService: SportsService,
   ) {}
@@ -112,5 +118,112 @@ export class AthletesService {
       { physician_coach, batting_coach, trainer_coach, pitching_coach },
       { new: true },
     );
+  }
+
+  async addAthletesByFile(
+    athletes: {
+      category: string;
+      name: string;
+      email: string;
+      phone: string;
+      gender: string;
+      avatar: string;
+    }[],
+  ) {
+    const athletesWithHashedPasswords = await Promise.all(
+      athletes.map(async (v) => {
+        const normalPassword = Password.generateRandomPassword(8);
+        return {
+          ...v,
+          password: await Password.hashPassword(normalPassword),
+          normalPassword,
+        };
+      }),
+    );
+
+    let row = 1;
+
+    let saveableAthletes: {
+      role: string;
+      name: string;
+      email: string;
+      mobile: string;
+      gender: string;
+      avatar: string;
+      password: string;
+    }[];
+
+    for await (const athlete of athletesWithHashedPasswords) {
+      if (athlete?.email) {
+        if (!validator.isEmail(athlete.email)) {
+          throw new BadRequestException(`invalid email ${athlete.email}`);
+        }
+
+        const user = await this.userModel.findOne({
+          email: validator.normalizeEmail(athlete.email),
+        });
+
+        if (user) {
+          throw new BadRequestException(
+            `email already in use ${athlete.email}`,
+          );
+        }
+      }
+
+      if (athlete?.phone && !validator.isMobilePhone(athlete.phone)) {
+        throw new BadRequestException(`invalid phone ${athlete.phone}`);
+      }
+
+      if (athlete?.avatar && !validator.isURL(athlete.avatar)) {
+        throw new BadRequestException(`invalid avatar ${athlete.avatar}`);
+      }
+
+      if (athlete?.name && !validator.isLength(athlete.name, { min: 1 })) {
+        throw new BadRequestException(`invalid name ${athlete.name}`);
+      }
+
+      if (
+        athlete?.gender &&
+        !validator.isIn(athlete.gender, [Gender.Female, Gender.Male])
+      ) {
+        throw new BadRequestException(
+          `invalid gender ${athlete.gender} must be ${[
+            Gender.Female,
+            Gender.Male,
+          ].join(',')}`,
+        );
+      }
+
+      if (
+        athlete?.category &&
+        !validator.isIn(athlete?.category, [
+          Role.College,
+          Role.Elite,
+          Role.Professional,
+        ])
+      ) {
+        throw new BadRequestException(
+          `invalid gender ${athlete.gender} must be ${[
+            Role.Elite,
+            Role.Professional,
+          ].join(',')}`,
+        );
+      }
+      row++;
+
+      saveableAthletes.push({
+        role: athlete.category,
+        name: athlete.name,
+        email: athlete.email,
+        mobile: athlete.phone,
+        gender: athlete.gender,
+        avatar: athlete.avatar,
+        password: athlete.password,
+      });
+    }
+
+    await this.userModel.insertMany(saveableAthletes);
+
+    return { inserted: row };
   }
 }

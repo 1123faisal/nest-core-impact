@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
 
 export class UpdateProfileDto {
   @IsNotEmpty()
   name: string;
 
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   email: string;
 
   @IsNotEmpty()

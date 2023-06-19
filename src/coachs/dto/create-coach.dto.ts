@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { IsCoachEmailAlreadyExist } from 'src/common/decorators/is-coach-email-registered.decorator';
 import { Gender } from 'src/users/entities/types';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
 
 export class CreateCoachDto {
   @ApiProperty({ example: 'John Doe', required: false })
@@ -19,7 +19,7 @@ export class CreateCoachDto {
   name: string;
 
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   @IsCoachEmailAlreadyExist({
     message: 'Email Already Registered.',
   })

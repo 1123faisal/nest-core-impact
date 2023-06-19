@@ -349,14 +349,14 @@ export class OrgUsersService {
       throw new BadRequestException('file is required.');
     }
 
-    let data: { status: boolean; data?: Record<string, any>[] };
+    let parseData: { status: boolean; data?: Record<string, any>[] };
 
     const { mimetype } = uploadAthletesDto.file;
 
     if (mimetype === MimeType.CSV) {
-      data = await this.s3Provider.parseCsv(uploadAthletesDto.file);
+      parseData = await this.s3Provider.parseCsv(uploadAthletesDto.file);
     } else if (mimetype === MimeType.XLSX) {
-      data = await this.s3Provider.parseXls(
+      parseData = await this.s3Provider.parseXls(
         uploadAthletesDto.file,
         'SalesOrders',
       );
@@ -364,12 +364,9 @@ export class OrgUsersService {
       throw new BadRequestException('only csv/xlsx file are allowed.');
     }
 
-    const header = data.data[0];
-    const rows = data.data.slice(1);
+    await this.athleteService.addAthletesByFile(parseData.data as any[]);
 
-    // console.log(header, rows[0]);
-
-    return data.status;
+    return parseData.status;
   }
 
   async downloadAthletes(format: string, res: Response) {

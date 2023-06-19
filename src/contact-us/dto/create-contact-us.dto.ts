@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsString } from 'class-validator';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
 
 export class CreateContactUsDto {
   @ApiProperty({ example: 'test@test.com' })
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   // @IsEmailUserAlreadyExist({
   //   message: 'Email Already Registered.',
   // })

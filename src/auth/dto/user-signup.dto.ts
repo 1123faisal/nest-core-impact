@@ -3,12 +3,13 @@ import { Transform } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
 import { IsEmailUserAlreadyExist } from 'src/common/decorators/is-email-registered.decorator';
 import { IsPasswordSameAsConfirm } from 'src/common/decorators/match-password.decorator';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
+
 import { Role } from '../../users/entities/types';
 
 export class UserSignUpDto {
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   @IsEmailUserAlreadyExist({
     message: 'Email Already Registered.',
   })

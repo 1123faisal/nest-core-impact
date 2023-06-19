@@ -122,7 +122,10 @@ export class S3Provider {
 
       // Parse the uploaded file buffer
       csvParse
-        .parse(file.buffer)
+        .parse(file.buffer, {
+          columns: true, // Treat the first row as headers
+          skip_empty_lines: true, // Skip empty lines
+        })
         .on('readable', function () {
           let record;
           while ((record = this.read())) {
@@ -161,13 +164,29 @@ export class S3Provider {
         }
 
         // Convert the worksheet to JSON
-        const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1 });
+        const jsonData: any[] = xlsx.utils.sheet_to_json(worksheet, {
+          header: 1,
+          blankrows: false,
+        });
+
+        // Process the JSON data and convert it to key-value pairs
+        const results = jsonData.slice(1).map((row: any, idx: number) => {
+          const obj = {};
+
+          let i = 0;
+          for (const key of jsonData[0]) {
+            obj[key] = row[i];
+            i++;
+          }
+
+          return obj;
+        });
 
         // Process the JSON data and update the table accordingly
         // You can perform your database update operations here using an ORM or query builder
 
         // Once the update is completed, resolve the promise
-        resolve({ status: true, data: jsonData });
+        resolve({ status: true, data: results });
       } catch (error) {
         reject(error);
       }

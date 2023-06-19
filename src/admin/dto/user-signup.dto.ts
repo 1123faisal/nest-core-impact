@@ -2,14 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 import { IsAdminEmailAlreadyExist } from 'src/common/decorators/is-admin-email-registered.decorator';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
 
 export class AdminSignUpDto {
   @IsNotEmpty()
   name: string;
 
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   @IsAdminEmailAlreadyExist({
     message: 'Email Already Registered.',
   })

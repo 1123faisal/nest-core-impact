@@ -2,14 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 import { IsOrgUserEmailAlreadyExist } from 'src/common/decorators/is-org-user-email-registered.decorator';
-import { normalizeEmail } from 'validator';
+import validator from 'validator';
 
 export class OrgUserSignUpDto {
   @IsNotEmpty()
   name: string;
 
   @IsEmail()
-  @Transform(({ value }) => normalizeEmail(value))
+  @Transform(({ value }) => validator.normalizeEmail(value))
   @IsOrgUserEmailAlreadyExist({
     message: 'Email Already Registered.',
   })
