@@ -6,7 +6,6 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Password } from 'src/common/password';
-import { ExerciseCategory } from 'src/exercise_categories/entities/exercise_category.entity';
 import { S3Provider } from 'src/providers/s3.provider';
 import { PaginatedDto } from 'src/sports/dto/paginates.dto';
 import { SportsService } from 'src/sports/sports.service';
@@ -20,7 +19,6 @@ import { UpdateAthleteDto } from './dto/update-athlete.dto';
 export class AthletesService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
-    @InjectModel(ExerciseCategory.name)
     private readonly s3Provider: S3Provider,
     private readonly sportService: SportsService,
   ) {}
