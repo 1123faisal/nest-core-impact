@@ -83,4 +83,8 @@ import { UsersModule } from './users/users.module';
     // },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    console.log({ NODE_ENV: process.env.NODE_ENV });
+  }
+}
