@@ -65,8 +65,6 @@ export class AthletesController {
     @Body() updateAthleteDto: UpdateAthleteDto,
   ): Promise<User> {
     updateAthleteDto.avatar = file;
-    console.log(updateAthleteDto);
-
     return this.athletesService.update(id, updateAthleteDto);
   }
 

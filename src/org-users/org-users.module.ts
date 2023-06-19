@@ -13,6 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { OrgUsersController } from './org-users.controller';
 import { OrgUsersService } from './org-users.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -25,9 +26,12 @@ import { OrgUsersService } from './org-users.service';
       property: 'user',
       session: false,
     }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
     }),
     AthletesModule,
     CoachsModule,

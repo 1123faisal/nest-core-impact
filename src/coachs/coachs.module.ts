@@ -13,6 +13,7 @@ import { Coach, CoachSchema } from './entities/coach.entity';
 import { CoachSetting, CoachSettingSchema } from './entities/settings.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { CoachLocalStrategy } from './local.strategy';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -25,9 +26,12 @@ import { CoachLocalStrategy } from './local.strategy';
       property: 'user',
       session: false,
     }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [CoachsAuthController, CoachsController],

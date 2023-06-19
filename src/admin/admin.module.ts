@@ -13,6 +13,7 @@ import { Admin, AdminSchema } from './entities/admin.entity';
 import { AdminSetting, AdminSettingSchema } from './entities/settings.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { AdminLocalStrategy } from './local.strategy';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -25,9 +26,12 @@ import { AdminLocalStrategy } from './local.strategy';
       property: 'user',
       session: false,
     }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AdminsAuthController, AdminsController],
@@ -42,4 +46,8 @@ import { AdminLocalStrategy } from './local.strategy';
   ],
   exports: [AdminsAuthService, AdminsService],
 })
-export class AdminsModule {}
+export class AdminsModule {
+  constructor() {
+    console.log({ JWT_SECRET: process.env.JWT_SECRET });
+  }
+}
