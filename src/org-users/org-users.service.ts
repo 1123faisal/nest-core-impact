@@ -25,6 +25,7 @@ import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto
 import { OrgUser } from './entities/org-user.entity';
 import { OrgSetting } from './entities/settings.entity';
 import { Response } from 'express';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Injectable()
 export class OrgUsersService {
@@ -35,6 +36,7 @@ export class OrgUsersService {
     private readonly s3Provider: S3Provider,
     private athleteService: AthletesService,
     private coachService: CoachsService,
+    private emailProvider: EmailProvider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
@@ -127,10 +129,17 @@ export class OrgUsersService {
 
     user.otp = await Password.hashPassword(otp);
     user.otpExpiration = otpExpiration;
-    await user.save();
 
-    // TODO: Send the OTP to the user's email
-    // You can use an email service like Nodemailer or SendGrid to send the OTP
+    const isSent = await this.emailProvider.sentForgotPasswordEmail(
+      user.email,
+      otp,
+    );
+
+    if (!isSent) {
+      throw new BadRequestException('email service is temporary down');
+    }
+
+    await user.save();
 
     return otp;
   }

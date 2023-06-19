@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { GoogleStrategy } from './google.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { LocalStrategy } from './local.strategy';
     GoogleStrategy,
     LocalStrategy,
     JwtStrategy,
+    EmailProvider,
     IsEmailUserAlreadyExistConstraint,
   ],
   exports: [AuthService],

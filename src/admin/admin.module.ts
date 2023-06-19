@@ -13,6 +13,7 @@ import { AdminSetting, AdminSettingSchema } from './entities/settings.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { AdminLocalStrategy } from './local.strategy';
 import { IsAdminEmailAlreadyExistConstraint } from 'src/common/decorators/is-admin-email-registered.decorator';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { IsAdminEmailAlreadyExistConstraint } from 'src/common/decorators/is-adm
     AdminLocalStrategy,
     JwtStrategy,
     S3Provider,
+    EmailProvider,
     IsAdminEmailAlreadyExistConstraint,
   ],
   exports: [AdminsAuthService, AdminsService],

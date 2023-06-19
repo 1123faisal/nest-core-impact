@@ -7,22 +7,21 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TerminusModule } from '@nestjs/terminus';
 import { join } from 'path';
+import { AdminsModule } from './admin/admin.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AthletesModule } from './athlets/athletes.module';
 import { AuthModule } from './auth/auth.module';
 import { CmsPagesModule } from './cms-pages/cms-pages.module';
-import { ContactUsModule } from './contact-us/contact-us.module';
-import { SportsModule } from './sports/sports.module';
-import { UsersModule } from './users/users.module';
-import { S3Provider } from './providers/s3.provider';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
-import { OrgUsersModule } from './org-users/org-users.module';
 import { CoachsModule } from './coachs/coachs.module';
-import { AthletesModule } from './athlets/athletes.module';
-import { TrainingsModule } from './trainings/trainings.module';
-import { TrainingSessionsModule } from './training-sessions/training-sessions.module';
-import { AdminsModule } from './admin/admin.module';
+import { ContactUsModule } from './contact-us/contact-us.module';
 import { ExerciseCategoriesModule } from './exercise_categories/exercise_categories.module';
+import { OrgUsersModule } from './org-users/org-users.module';
+import { S3Provider } from './providers/s3.provider';
+import { SportsModule } from './sports/sports.module';
+import { TrainingSessionsModule } from './training-sessions/training-sessions.module';
+import { TrainingsModule } from './trainings/trainings.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [

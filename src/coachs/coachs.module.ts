@@ -13,6 +13,7 @@ import { Coach, CoachSchema } from './entities/coach.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { CoachLocalStrategy } from './local.strategy';
 import { CoachSetting, CoachSettingSchema } from './entities/settings.entity';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CoachSetting, CoachSettingSchema } from './entities/settings.entity';
     CoachLocalStrategy,
     JwtStrategy,
     S3Provider,
+    EmailProvider,
     IsCoachEmailAlreadyExistConstraint,
   ],
   exports: [CoachsAuthService, CoachsService],

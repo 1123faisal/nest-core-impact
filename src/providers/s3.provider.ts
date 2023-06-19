@@ -6,7 +6,6 @@ import axios from 'axios';
 import * as csvParse from 'csv-parse';
 import { Response } from 'express';
 import * as csv from 'fast-csv';
-import { createWriteStream } from 'fs';
 import * as PDFDocument from 'pdfkit';
 import { v4 as uuidv4 } from 'uuid';
 import * as xlsx from 'xlsx';

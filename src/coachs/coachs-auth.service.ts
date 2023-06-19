@@ -1,4 +1,3 @@
-import { Upload } from '@aws-sdk/lib-storage';
 import {
   BadRequestException,
   ConflictException,
@@ -12,7 +11,6 @@ import { Model, ObjectId } from 'mongoose';
 import * as otpGenerator from 'otp-generator';
 import { Password } from 'src/common/password';
 import { S3Provider } from 'src/providers/s3.provider';
-import { v4 as uuidv4 } from 'uuid';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
@@ -21,6 +19,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CoachSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { Coach } from './entities/coach.entity';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Injectable()
 export class CoachsAuthService {
@@ -28,6 +27,7 @@ export class CoachsAuthService {
     @InjectModel(Coach.name) private readonly coachModel: Model<Coach>,
     private jwtService: JwtService,
     private s3Provider: S3Provider,
+    private emailProvider: EmailProvider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
@@ -120,11 +120,17 @@ export class CoachsAuthService {
 
     user.otp = await Password.hashPassword(otp);
     user.otpExpiration = otpExpiration;
+
+    const isSent = await this.emailProvider.sentForgotPasswordEmail(
+      user.email,
+      otp,
+    );
+
+    if (!isSent) {
+      throw new BadRequestException('email service is temporary down');
+    }
+
     await user.save();
-
-    // TODO: Send the OTP to the user's email
-    // You can use an email service like Nodemailer or SendGrid to send the OTP
-
     return otp;
   }
 

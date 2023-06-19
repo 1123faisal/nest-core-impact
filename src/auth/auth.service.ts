@@ -19,12 +19,14 @@ import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private jwtService: JwtService,
+    private emailProvider: EmailProvider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
@@ -123,10 +125,17 @@ export class AuthService {
 
     user.otp = await Password.hashPassword(otp);
     user.otpExpiration = otpExpiration;
-    await user.save();
 
-    // TODO: Send the OTP to the user's email
-    // You can use an email service like Nodemailer or SendGrid to send the OTP
+    const isSent = await this.emailProvider.sentForgotPasswordEmail(
+      user.email,
+      otp,
+    );
+
+    if (!isSent) {
+      throw new BadRequestException('email service is temporary down');
+    }
+
+    await user.save();
 
     return otp;
   }

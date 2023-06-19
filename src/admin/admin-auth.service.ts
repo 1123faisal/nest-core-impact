@@ -19,6 +19,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { Admin } from './entities/admin.entity';
 import { AdminSignUpDto } from './dto/user-signup.dto';
+import { EmailProvider } from 'src/providers/email.provider';
 
 @Injectable()
 export class AdminsAuthService {
@@ -26,6 +27,7 @@ export class AdminsAuthService {
     @InjectModel(Admin.name) private readonly adminModel: Model<Admin>,
     private jwtService: JwtService,
     private s3Provider: S3Provider,
+    private emailProvider: EmailProvider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
@@ -118,10 +120,17 @@ export class AdminsAuthService {
 
     user.otp = await Password.hashPassword(otp);
     user.otpExpiration = otpExpiration;
-    await user.save();
 
-    // TODO: Send the OTP to the user's email
-    // You can use an email service like Nodemailer or SendGrid to send the OTP
+    const isSent = await this.emailProvider.sentForgotPasswordEmail(
+      user.email,
+      otp,
+    );
+
+    if (!isSent) {
+      throw new BadRequestException('email service is temporary down');
+    }
+
+    await user.save();
 
     return otp;
   }
