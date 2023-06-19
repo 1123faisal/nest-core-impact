@@ -14,6 +14,7 @@ import { AthletesModule } from './athlets/athletes.module';
 import { AuthModule } from './auth/auth.module';
 import { CmsPagesModule } from './cms-pages/cms-pages.module';
 import { CoachsModule } from './coachs/coachs.module';
+import { validateEnvs } from './common/env.validation';
 import { ContactUsModule } from './contact-us/contact-us.module';
 import { ExerciseCategoriesModule } from './exercise_categories/exercise_categories.module';
 import { OrgUsersModule } from './org-users/org-users.module';
@@ -30,7 +31,12 @@ import { UsersModule } from './users/users.module';
       // max: 10, // Maximum number of items to cache
       isGlobal: true,
     }),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+      isGlobal: true,
+      cache: true,
+      validate: validateEnvs,
+    }),
     MongooseModule.forRoot(process.env.DB_URI),
     ServeStaticModule.forRoot({
       serveRoot: '/org-panel',

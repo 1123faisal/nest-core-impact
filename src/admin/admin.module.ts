@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
+import { IsAdminEmailAlreadyExistConstraint } from 'src/common/decorators/is-admin-email-registered.decorator';
+import { EmailProvider } from 'src/providers/email.provider';
 import { S3Provider } from 'src/providers/s3.provider';
 import { AdminsAuthController } from './admin-auth.controller';
 import { AdminsAuthService } from './admin-auth.service';
@@ -12,15 +13,9 @@ import { Admin, AdminSchema } from './entities/admin.entity';
 import { AdminSetting, AdminSettingSchema } from './entities/settings.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { AdminLocalStrategy } from './local.strategy';
-import { IsAdminEmailAlreadyExistConstraint } from 'src/common/decorators/is-admin-email-registered.decorator';
-import { EmailProvider } from 'src/providers/email.provider';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
     MongooseModule.forFeature([
       { name: AdminSetting.name, schema: AdminSettingSchema },

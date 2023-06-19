@@ -1,20 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ExerciseCategoriesService } from './exercise_categories.service';
-import { ExerciseCategoriesController } from './exercise_categories.controller';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AdminsModule } from 'src/admin/admin.module';
 import {
   ExerciseCategory,
   ExerciseCategorySchema,
 } from './entities/exercise_category.entity';
-import { AdminsModule } from 'src/admin/admin.module';
+import { ExerciseCategoriesController } from './exercise_categories.controller';
+import { ExerciseCategoriesService } from './exercise_categories.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
     MongooseModule.forFeature([
       { name: ExerciseCategory.name, schema: ExerciseCategorySchema },
     ]),

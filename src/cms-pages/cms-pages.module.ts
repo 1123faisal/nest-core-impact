@@ -1,16 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CmsPagesService } from './cms-pages.service';
-import { CmsPagesController } from './cms-pages.controller';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CmsPagesController } from './cms-pages.controller';
+import { CmsPagesService } from './cms-pages.service';
 import { CmsPage, CmsPageSchema } from './entities/cms-page.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
     MongooseModule.forFeature([{ name: CmsPage.name, schema: CmsPageSchema }]),
   ],
   controllers: [CmsPagesController],

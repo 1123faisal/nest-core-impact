@@ -1,22 +1,17 @@
 import { Module } from '@nestjs/common';
-import { TrainingSessionsService } from './training-sessions.service';
-import { TrainingSessionsController } from './training-sessions.controller';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CoachsModule } from 'src/coachs/coachs.module';
+import { TrainingsModule } from 'src/trainings/trainings.module';
+import { UsersModule } from 'src/users/users.module';
 import {
   TrainingSession,
   TrainingSessionSchema,
 } from './entities/training-session.entity';
-import { CoachsModule } from 'src/coachs/coachs.module';
-import { UsersModule } from 'src/users/users.module';
-import { TrainingsModule } from 'src/trainings/trainings.module';
+import { TrainingSessionsController } from './training-sessions.controller';
+import { TrainingSessionsService } from './training-sessions.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
     MongooseModule.forFeature([
       { name: TrainingSession.name, schema: TrainingSessionSchema },
     ]),
