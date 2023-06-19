@@ -32,11 +32,7 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
     }),
     ConfigModule.forRoot({
-      envFilePath: `.env.${
-        process.env.NODE_ENV === Environment.Development
-          ? Environment.Development
-          : Environment.Production
-      }`,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
       cache: true,
       validate: validateEnvs,
