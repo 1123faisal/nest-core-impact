@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -127,7 +128,7 @@ export class AdminsAuthService {
     );
 
     if (!isSent) {
-      throw new BadRequestException('email service is temporary down');
+      throw new ServiceUnavailableException('email service is temporary down');
     }
 
     await user.save();

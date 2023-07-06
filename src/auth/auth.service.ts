@@ -3,14 +3,17 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
-import verifyAppleToken from 'verify-apple-id-token';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import { OAuth2Client } from 'google-auth-library';
 import * as moment from 'moment';
 import { Model, ObjectId } from 'mongoose';
 import * as otpGenerator from 'otp-generator';
+import { EmailProvider } from 'src/providers/email.provider';
+import verifyAppleToken from 'verify-apple-id-token';
 import { Password } from '../common/password';
 import { User } from '../users/entities/user.entity';
 import { AuthResponse } from './dto/auth-response.dto';
@@ -18,8 +21,6 @@ import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
-import { OAuth2Client, TokenPayload } from 'google-auth-library';
-import { EmailProvider } from 'src/providers/email.provider';
 
 @Injectable()
 export class AuthService {
@@ -132,7 +133,7 @@ export class AuthService {
     );
 
     if (!isSent) {
-      throw new BadRequestException('email service is temporary down');
+      throw new ServiceUnavailableException('email service is temporary down');
     }
 
     await user.save();
@@ -230,18 +231,18 @@ export class AuthService {
   // google auth
   async handleGoogleLogin(idToken: string): Promise<any> {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    let ticket;
+    const ticket = await (async () => {
+      try {
+        return await client.verifyIdToken({
+          idToken,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+      } catch (error) {
+        throw new UnauthorizedException('invalid token');
+      }
+    })();
 
-    try {
-      ticket = await client.verifyIdToken({
-        idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-    } catch (error) {
-      throw new UnauthorizedException('invalid token');
-    }
-
-    const payload: TokenPayload = ticket.getPayload();
+    const payload = ticket.getPayload();
 
     const { name, picture, email, sub } = payload;
 
@@ -258,6 +259,7 @@ export class AuthService {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =
       existingUser.toJSON();
 
@@ -273,31 +275,20 @@ export class AuthService {
     // Handle the Google login logic, including user creation or authentication using the Google profile
     // You can generate and return JWT tokens or any other necessary response
     // For simplicity, we'll just return the user object
-    let payload;
+    const payload = await (async () => {
+      try {
+        return await verifyAppleToken({
+          idToken: idToken,
+          clientId: process.env.APP_BUNDLE_ID,
+          // nonce: 'nonce', // optional
+        });
+      } catch (error) {
+        console.error('Error validating Apple Sign-In:', error);
+        throw new BadRequestException('Error validating Apple Sign-In.');
+      }
+    })();
 
-    try {
-      payload = await verifyAppleToken({
-        idToken: idToken,
-        clientId: process.env.APP_BUNDLE_ID,
-        // nonce: 'nonce', // optional
-      });
-    } catch (error) {
-      console.error('Error validating Apple Sign-In:', error);
-      throw new BadRequestException('Error validating Apple Sign-In.');
-    }
-
-    const {
-      iss,
-      aud,
-      exp,
-      iat,
-      sub,
-      c_hash,
-      email,
-      email_verified,
-      auth_time,
-      nonce_supported,
-    } = payload;
+    const { sub, email } = payload;
 
     let existingUser = await this.userModel.findOne({ sub, email });
 
@@ -309,6 +300,7 @@ export class AuthService {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =
       existingUser.toJSON();
 
@@ -340,6 +332,7 @@ export class AuthService {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =
       existingUser.toJSON();
 
