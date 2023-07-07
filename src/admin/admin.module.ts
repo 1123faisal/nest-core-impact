@@ -14,10 +14,12 @@ import { AdminSetting, AdminSettingSchema } from './entities/settings.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { AdminLocalStrategy } from './local.strategy';
 import { ConfigService } from '@nestjs/config';
+import { User, UserSchema } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: AdminSetting.name, schema: AdminSettingSchema },
     ]),

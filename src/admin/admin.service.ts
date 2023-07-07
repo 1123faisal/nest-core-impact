@@ -19,6 +19,7 @@ import { CoachSetting } from 'src/coachs/entities/settings.entity';
 export class AdminsService {
   constructor(
     @InjectModel(Admin.name) private readonly adminModel: Model<Admin>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(AdminSetting.name)
     private readonly Setting: Model<AdminSetting>,
     private readonly s3Provider: S3Provider,
@@ -48,6 +49,30 @@ export class AdminsService {
         .skip(skip)
         .limit(limit),
       total: await this.adminModel.countDocuments(),
+    };
+  }
+
+  //remove choachs
+  async unassignCoaches(id: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(id, {
+      $set: {
+        physician_coach: null,
+        batting_coach: null,
+        trainer_coach: null,
+        pitching_coach: null,
+      },
+    });
+  }
+
+  //find all user
+  async findUser(skip?: number, limit?: number): Promise<PaginatedDto<User>> {
+    return {
+      results: await this.userModel
+        .find()
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(limit),
+      total: await this.userModel.countDocuments(),
     };
   }
 
@@ -155,4 +180,5 @@ export class AdminsService {
       new: true,
     });
   }
+  // async playerCoachs()
 }

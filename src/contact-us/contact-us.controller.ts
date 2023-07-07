@@ -34,20 +34,20 @@ export class ContactUsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', isMongoIdPipe)  id: string) {
+  findOne(@Param('id', isMongoIdPipe) id: string) {
     return this.contactUsService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', isMongoIdPipe)  id: string,
+    @Param('id', isMongoIdPipe) id: string,
     @Body() updateContactUsDto: UpdateContactUsDto,
   ) {
     return this.contactUsService.update(id, updateContactUsDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', isMongoIdPipe)  id: string) {
+  remove(@Param('id', isMongoIdPipe) id: string) {
     return this.contactUsService.remove(id);
   }
 }

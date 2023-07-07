@@ -50,6 +50,42 @@ export class AthletesController {
     return this.athletesService.findAll(skip, limit);
   }
 
+  @Get('/coachassign')
+  find(
+    @Query('skip', ParseIntPipe) skip?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
+  ): Promise<PaginatedDto<User>> {
+    return this.athletesService.find(skip, limit);
+  }
+
+  //all user
+  @Get('/alluser')
+  findUser(
+    @Query('skip', ParseIntPipe) skip?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
+  ): Promise<PaginatedDto<User>> {
+    return this.athletesService.findUser(skip, limit);
+  }
+
+  // @Delete('/coachassign/:id')
+  // removechoachs(@Param('id', isMongoIdPipe) id: string) {
+  //   return this.athletesService.removechoachs(id);
+  // }
+
+  //
+  @Patch(':id/unassign-coaches')
+  async unassignCoaches(@Param('id') id: string) {
+    await this.athletesService.unassignCoaches(id);
+    return { message: 'Coaches Unassigned' };
+  }
+  //un
+  // @Patch(':id/unassign-coaches')
+  // async unassignCoaches(
+  //   @Param('id') id: string,
+  //   @Body('coachIds') coachIds: string[]) {
+  //   return this.athletesService.unassignCoaches(id, coachIds);
+  // }
+
   @Get(':id')
   findOne(@Param('id', isMongoIdPipe) id: string): Promise<User> {
     return this.athletesService.findOne(id);
