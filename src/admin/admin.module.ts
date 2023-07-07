@@ -46,8 +46,4 @@ import { ConfigService } from '@nestjs/config';
   ],
   exports: [AdminsAuthService, AdminsService],
 })
-export class AdminsModule {
-  constructor() {
-    console.log({ JWT_SECRET: process.env.JWT_SECRET });
-  }
-}
+export class AdminsModule {}
