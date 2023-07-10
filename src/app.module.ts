@@ -1,9 +1,11 @@
 import { HttpModule } from '@nestjs/axios';
+import { BullModule } from '@nestjs/bull';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TerminusModule } from '@nestjs/terminus';
 import { join } from 'path';
@@ -14,7 +16,7 @@ import { AthletesModule } from './athlets/athletes.module';
 import { AuthModule } from './auth/auth.module';
 import { CmsPagesModule } from './cms-pages/cms-pages.module';
 import { CoachsModule } from './coachs/coachs.module';
-import { Environment, validateEnvs } from './common/env.validation';
+import { validateEnvs } from './common/env.validation';
 import { ContactUsModule } from './contact-us/contact-us.module';
 import { ExerciseCategoriesModule } from './exercise_categories/exercise_categories.module';
 import { OrgUsersModule } from './org-users/org-users.module';
@@ -23,9 +25,23 @@ import { SportsModule } from './sports/sports.module';
 import { TrainingSessionsModule } from './training-sessions/training-sessions.module';
 import { TrainingsModule } from './trainings/trainings.module';
 import { UsersModule } from './users/users.module';
+import { AppConsumer } from './app.consumer';
+
+console.log(join(__dirname, '..', 'src', 'app.consumer.ts'));
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'audio',
+      processors: [join(__dirname, '..', 'src', 'app.consumer.ts')],
+    }),
     CacheModule.register({
       // ttl: 60 * 10, // Cache duration in seconds
       // max: 10, // Maximum number of items to cache
@@ -81,6 +97,7 @@ import { UsersModule } from './users/users.module';
     //   provide: APP_INTERCEPTOR,
     //   useClass: ResponseInterceptor,
     // },
+    AppConsumer,
   ],
 })
 export class AppModule {
