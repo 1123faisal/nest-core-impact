@@ -32,16 +32,16 @@ console.log(join(__dirname, '..', 'src', 'app.consumer.ts'));
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
-    BullModule.registerQueue({
-      name: 'audio',
-      processors: [join(__dirname, '..', 'src', 'app.consumer.ts')],
-    }),
+    // BullModule.forRoot({
+    //   redis: {
+    //     host: 'localhost',
+    //     port: 6379,
+    //   },
+    // }),
+    // BullModule.registerQueue({
+    //   name: 'audio',
+    //   processors: [join(__dirname, '..', 'src', 'app.consumer.ts')],
+    // }),
     CacheModule.register({
       // ttl: 60 * 10, // Cache duration in seconds
       // max: 10, // Maximum number of items to cache
