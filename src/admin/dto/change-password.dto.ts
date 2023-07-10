@@ -21,6 +21,6 @@ export class ChangePasswordDto {
   newPassword: string;
 
   // @Match('password')
-  @IsPasswordSameAsConfirm('password')
+  @IsPasswordSameAsConfirm('newPassword')
   confirmPassword: string;
 }

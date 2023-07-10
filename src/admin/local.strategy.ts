@@ -16,7 +16,7 @@ export class AdminLocalStrategy extends PassportStrategy(
     const user = await this.adminService.validateUser(email, password);
 
     if (!user) {
-      throw new BadRequestException('Invalid Email or Password.');
+      throw new BadRequestException('Invalid Credentails');
     }
     return user;
   }
