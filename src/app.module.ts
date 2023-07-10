@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { BullModule } from '@nestjs/bull';
+// import { BullModule } from '@nestjs/bull';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -25,7 +25,7 @@ import { SportsModule } from './sports/sports.module';
 import { TrainingSessionsModule } from './training-sessions/training-sessions.module';
 import { TrainingsModule } from './trainings/trainings.module';
 import { UsersModule } from './users/users.module';
-import { AppConsumer } from './app.consumer';
+// import { AppConsumer } from './app.consumer';
 
 console.log(join(__dirname, '..', 'src', 'app.consumer.ts'));
 
@@ -97,7 +97,7 @@ console.log(join(__dirname, '..', 'src', 'app.consumer.ts'));
     //   provide: APP_INTERCEPTOR,
     //   useClass: ResponseInterceptor,
     // },
-    AppConsumer,
+    // AppConsumer,
   ],
 })
 export class AppModule {
