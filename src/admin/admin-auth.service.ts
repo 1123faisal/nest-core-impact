@@ -107,7 +107,7 @@ export class AdminsAuthService {
       .exec();
 
     if (!user) {
-      throw new NotFoundException('Email Id does not exist in our records');
+      throw new NotFoundException('Email Id does not exist in our records.');
     }
 
     // Generate OTP

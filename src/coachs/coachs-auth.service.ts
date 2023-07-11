@@ -107,7 +107,7 @@ export class CoachsAuthService {
       .exec();
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Email Id does not exist in our records');
     }
 
     // Generate OTP
