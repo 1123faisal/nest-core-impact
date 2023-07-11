@@ -1,6 +1,6 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+// import { Cron } from '@nestjs/schedule';
 // import { Queue } from 'bull';
 
 @Injectable()
@@ -11,22 +11,28 @@ export class AppService {
     return 'OK';
   }
 
+  // @Cron('* * * * * *')
+  // everySec() {
+  //   console.count();
+  // }
+
   // @Cron('0 * * * * *')
   // async handleCron() {
-  //   // const job = await this.audioQueue.add(
-  //   //   'transcode',
-  //   //   {
-  //   //     foo: 'bar',
-  //   //   },
-  //   //   {
-  //   //     repeat: {
-  //   //       every: 10000,
-  //   //       limit: 2,
-  //   //     },
-  //   //   },
+  //   // console.log(
+  //   //   await this.audioQueue.removeJobs('*'),
+  //   //   await this.audioQueue.empty(),
   //   // );
-  //   // console.log('Called every one minute');
-  //   // console.log({ job });
+
+  //   const job = await this.audioQueue.add(
+  //     'transcode',
+  //     {
+  //       foo: 'bar',
+  //     },
+  //     {
+  //       delay: 1000 * 10,
+  //     },
+  //   );
+  //   console.log({ jid: job.id });
   //   console.log('Called every one minute');
   // }
 }

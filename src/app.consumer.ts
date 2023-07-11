@@ -7,8 +7,7 @@
 
 //   @Process('transcode')
 //   async transcode(job: Job<unknown>) {
-//     console.log('transcode');
-//     console.log(job.data);
-//     console.log('transcode');
+//     console.log('transcode called', job.id);
+//     return await job.finished();
 //   }
 // }
