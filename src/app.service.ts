@@ -11,22 +11,22 @@ export class AppService {
     return 'OK';
   }
 
-  @Cron('0 * * * * *')
-  async handleCron() {
-    // const job = await this.audioQueue.add(
-    //   'transcode',
-    //   {
-    //     foo: 'bar',
-    //   },
-    //   {
-    //     repeat: {
-    //       every: 10000,
-    //       limit: 2,
-    //     },
-    //   },
-    // );
-    // console.log('Called every one minute');
-    // console.log({ job });
-    console.log('Called every one minute');
-  }
+  // @Cron('0 * * * * *')
+  // async handleCron() {
+  //   // const job = await this.audioQueue.add(
+  //   //   'transcode',
+  //   //   {
+  //   //     foo: 'bar',
+  //   //   },
+  //   //   {
+  //   //     repeat: {
+  //   //       every: 10000,
+  //   //       limit: 2,
+  //   //     },
+  //   //   },
+  //   // );
+  //   // console.log('Called every one minute');
+  //   // console.log({ job });
+  //   console.log('Called every one minute');
+  // }
 }
