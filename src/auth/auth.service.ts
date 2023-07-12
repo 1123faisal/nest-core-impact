@@ -62,20 +62,19 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<{ user?: User; passIsValid: boolean }> {
     const user = await this.userModel.findOne({ email });
 
     if (!user) {
-      return null;
+      return { user: undefined, passIsValid: false };
     }
 
     const isMatched = await Password.comparePassword(pass, user?.password);
 
-    if (isMatched) {
-      return user;
-    }
-
-    return null;
+    return { user, passIsValid: isMatched };
   }
 
   async findUser(condition: Record<string, any>): Promise<User> {

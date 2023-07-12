@@ -13,10 +13,13 @@ export class AdminLocalStrategy extends PassportStrategy(
   }
 
   async validate(email: string, password: string): Promise<any> {
-    const user = await this.adminService.validateUser(email, password);
+    const { passIsValid, user } = await this.adminService.validateUser(
+      email,
+      password,
+    );
 
     if (!user) {
-      throw new BadRequestException('Invalid Credentails');
+      throw new BadRequestException('Invalid Credentials');
     }
     return user;
   }

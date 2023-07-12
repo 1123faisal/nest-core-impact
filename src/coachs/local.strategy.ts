@@ -13,10 +13,13 @@ export class CoachLocalStrategy extends PassportStrategy(
   }
 
   async validate(email: string, password: string): Promise<any> {
-    const user = await this.coachService.validateUser(email, password);
+    const { passIsValid, user } = await this.coachService.validateUser(
+      email,
+      password,
+    );
 
     if (!user) {
-      throw new BadRequestException('Invalid Email or Password.');
+      throw new BadRequestException('Invalid Credentials');
     }
     return user;
   }

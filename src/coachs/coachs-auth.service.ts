@@ -62,20 +62,19 @@ export class CoachsAuthService {
     };
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<{ user?: Coach; passIsValid: boolean }> {
     const user = await this.coachModel.findOne({ email });
 
     if (!user) {
-      return null;
+      return { user: undefined, passIsValid: false };
     }
 
     const isMatched = await Password.comparePassword(pass, user?.password);
 
-    if (isMatched) {
-      return user;
-    }
-
-    return null;
+    return { user, passIsValid: isMatched };
   }
 
   async findUser(condition: Record<string, any>): Promise<Coach> {

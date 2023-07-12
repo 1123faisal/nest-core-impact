@@ -10,9 +10,12 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'org-local') {
   }
 
   async validate(email: string, password: string): Promise<any> {
-    const user = await this.orgUserService.validateUser(email, password);
+    const { passIsValid, user } = await this.orgUserService.validateUser(
+      email,
+      password,
+    );
     if (!user) {
-      throw new BadRequestException('Invalid Email or Password.');
+      throw new BadRequestException('Invalid Credentials');
     }
     return user;
   }

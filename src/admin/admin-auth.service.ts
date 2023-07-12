@@ -11,16 +11,16 @@ import * as moment from 'moment';
 import { Model, ObjectId } from 'mongoose';
 import * as otpGenerator from 'otp-generator';
 import { Password } from 'src/common/password';
+import { EmailProvider } from 'src/providers/email.provider';
 import { S3Provider } from 'src/providers/s3.provider';
 import { AuthResponse } from './dto/auth-response.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { AdminSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
 import { Admin } from './entities/admin.entity';
-import { AdminSignUpDto } from './dto/user-signup.dto';
-import { EmailProvider } from 'src/providers/email.provider';
 
 @Injectable()
 export class AdminsAuthService {
@@ -62,20 +62,19 @@ export class AdminsAuthService {
     };
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<{ user?: Admin; passIsValid: boolean }> {
     const user = await this.adminModel.findOne({ email });
 
     if (!user) {
-      return null;
+      return { user: undefined, passIsValid: false };
     }
 
     const isMatched = await Password.comparePassword(pass, user?.password);
 
-    if (isMatched) {
-      return user;
-    }
-
-    return null;
+    return { user, passIsValid: isMatched };
   }
 
   async findUser(condition: Record<string, any>): Promise<Admin> {
