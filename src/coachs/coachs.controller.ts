@@ -33,6 +33,7 @@ import { OrgSettingDto } from 'src/org-users/dto/org-db-setting.dto';
 import { OrgSetting } from 'src/org-users/entities/settings.entity';
 import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuardIsCoach } from './jwt-auth.guard';
+import { JwtAuthGuardIsOrg } from 'src/org-users/jwt-auth.guard';
 
 @ApiTags("Coach's")
 @Controller('coachs')
@@ -40,7 +41,7 @@ export class CoachsController {
   constructor(private readonly coachService: CoachsService) {}
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuardIsCoach)
+  @UseGuards(JwtAuthGuardIsOrg)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post()
