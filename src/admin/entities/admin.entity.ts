@@ -32,7 +32,7 @@ export class Admin extends Document {
   @Prop({ default: null })
   otp: string;
 
-  @ApiProperty({ example: new Date() })
+  @ApiProperty({ example: Date.now })
   @Prop({ default: null })
   otpExpiration: Date;
 

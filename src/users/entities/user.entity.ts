@@ -92,7 +92,7 @@ export class User extends Document {
   @Prop({ default: null })
   sub?: string;
 
-  @ApiProperty({ example: new Date() })
+  @ApiProperty({ example: Date.now })
   @Prop({ default: null })
   otpExpiration: Date;
 
