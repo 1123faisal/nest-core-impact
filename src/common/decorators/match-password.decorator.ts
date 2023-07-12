@@ -17,8 +17,9 @@ export class IsPasswordSameAsConfirmConstraint
   }
 
   defaultMessage(args: ValidationArguments) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [relatedPropertyName] = args.constraints;
-    return `${relatedPropertyName} and confirm password do not match`;
+    return `New Password & Confirm Password must be same`;
   }
 }
 
