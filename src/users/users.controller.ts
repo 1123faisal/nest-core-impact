@@ -32,7 +32,7 @@ export class UsersController {
   async updateProfile(
     @Body() updateProfileDto: UpdateUserProfileDto,
     @Request() request: any,
-  ): Promise<User> {
+  ): Promise<Record<string, any>> {
     return this.usersService.updateProfile(updateProfileDto, request.user.id);
   }
 

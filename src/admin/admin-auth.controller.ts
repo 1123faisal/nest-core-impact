@@ -112,9 +112,11 @@ export class AdminsAuthController {
     file: Express.Multer.File,
     @Body() updateProfileDto: UpdateProfileDto,
     @Request() req,
-  ): Promise<{ success: boolean }> {
+  ): Promise<Record<string, any>> {
     updateProfileDto.avatar = file;
-    await this.coachAuthService.updateProfile(updateProfileDto, req.user.id);
-    return { success: true };
+    return await this.coachAuthService.updateProfile(
+      updateProfileDto,
+      req.user.id,
+    );
   }
 }

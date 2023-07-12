@@ -23,7 +23,10 @@ export class UsersService {
     return this.userModel.find(conditions).sort({ _id: -1 });
   }
 
-  async updateProfile(updateProfileDto: UpdateUserProfileDto, userId: string) {
+  async updateProfile(
+    updateProfileDto: UpdateUserProfileDto,
+    userId: string,
+  ): Promise<Record<string, any>> {
     const existingUser = await this.userModel.findOne({ _id: userId }).exec();
 
     if (!existingUser) {
@@ -34,10 +37,16 @@ export class UsersService {
       updateProfileDto.profileCompleted = true;
     }
 
-    return await this.userModel.findByIdAndUpdate(
+    const updatedUser = await this.userModel.findByIdAndUpdate(
       existingUser.id,
       updateProfileDto,
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, otp, otpExpiration, ...result } =
+      updatedUser.toJSON();
+
+    return result;
   }
 
   async updateProfilePic(

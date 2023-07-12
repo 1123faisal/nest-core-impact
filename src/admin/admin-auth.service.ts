@@ -248,7 +248,7 @@ export class AdminsAuthService {
   async updateProfile(
     updateProfileDto: UpdateProfileDto,
     userId: string,
-  ): Promise<void> {
+  ): Promise<Record<string, any>> {
     const user = await this.adminModel.findOne({ _id: userId }).exec();
 
     if (!user) {
@@ -261,8 +261,16 @@ export class AdminsAuthService {
       );
     }
 
-    return await this.adminModel.findByIdAndUpdate(user.id, updateProfileDto, {
-      new: true,
-    });
+    const updatedUser = await this.adminModel.findByIdAndUpdate(
+      user.id,
+      updateProfileDto,
+      { new: true },
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, otp, otpExpiration, ...result } =
+      updatedUser.toJSON();
+
+    return result;
   }
 }

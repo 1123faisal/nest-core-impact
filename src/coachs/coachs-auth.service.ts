@@ -247,7 +247,7 @@ export class CoachsAuthService {
   async updateProfile(
     updateProfileDto: UpdateProfileDto,
     userId: string,
-  ): Promise<void> {
+  ): Promise<Record<string, any>> {
     const user = await this.coachModel.findOne({ _id: userId }).exec();
 
     if (!user) {
@@ -260,8 +260,18 @@ export class CoachsAuthService {
       );
     }
 
-    return await this.coachModel.findByIdAndUpdate(user.id, updateProfileDto, {
-      new: true,
-    });
+    const updatedUser = await this.coachModel.findByIdAndUpdate(
+      user.id,
+      updateProfileDto,
+      {
+        new: true,
+      },
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, otp, otpExpiration, ...result } =
+      updatedUser.toJSON();
+
+    return result;
   }
 }

@@ -257,7 +257,7 @@ export class OrgUsersService {
   async updateProfile(
     updateProfileDto: UpdateProfileDto,
     userId: string,
-  ): Promise<void> {
+  ): Promise<Record<string, any>> {
     const user = await this.orgUserModel.findOne({ _id: userId }).exec();
 
     if (!user) {
@@ -279,13 +279,17 @@ export class OrgUsersService {
       );
     }
 
-    return await this.orgUserModel.findByIdAndUpdate(
+    const updatedUser = await this.orgUserModel.findByIdAndUpdate(
       user.id,
       updateProfileDto,
-      {
-        new: true,
-      },
+      { new: true },
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, otp, otpExpiration, ...result } =
+      updatedUser.toJSON();
+
+    return result;
   }
 
   async getDashboardSetting(): Promise<OrgSetting> {

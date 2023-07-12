@@ -19,6 +19,7 @@ import {
   FileInterceptor,
 } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pipe';
@@ -37,7 +38,6 @@ import { OrgSetting } from './entities/settings.entity';
 import { JwtAuthGuardIsOrg } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { OrgUsersService } from './org-users.service';
-import { Response } from 'express';
 
 @ApiTags('Org Users')
 @Controller('org-users')
@@ -125,10 +125,12 @@ export class OrgUsersController {
     file: Express.Multer.File,
     @Body() updateProfileDto: UpdateProfileDto,
     @Request() req,
-  ): Promise<{ success: boolean }> {
+  ): Promise<Record<string, any>> {
     updateProfileDto.avatar = file;
-    await this.orgUsersService.updateProfile(updateProfileDto, req.user.id);
-    return { success: true };
+    return await this.orgUsersService.updateProfile(
+      updateProfileDto,
+      req.user.id,
+    );
   }
 
   @ApiBearerAuth()
