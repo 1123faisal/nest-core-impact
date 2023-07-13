@@ -94,23 +94,24 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const utcDateTime = this.dateTimeService.getUtc(
-      '2023-07-12 15:00',
-      'Asia/Kolkata',
-      'YYYY-MM-DD HH:mm',
-    );
-    console.log(utcDateTime, utcDateTime.toDate());
+    // const utcDateTime = this.dateTimeService.getUtc(
+    //   '2023-07-12 15:00',
+    //   'Asia/Kolkata',
+    //   'YYYY-MM-DD HH:mm',
+    // );
+    // console.log(utcDateTime, utcDateTime.toDate());
 
-    const loginUser = await this.userModel.findByIdAndUpdate(
-      existingUser.id,
-      {
-        lastLogin: utcDateTime.toDate(),
-      },
-      { new: true },
-    );
+    // const loginUser = await this.userModel.findByIdAndUpdate(
+    //   existingUser.id,
+    //   {
+    //     lastLogin: utcDateTime.toDate(),
+    //   },
+    //   { new: true },
+    // );
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, __v, otp, otpExpiration, ...result } = loginUser.toJSON();
+    const { password, __v, otp, otpExpiration, ...result } =
+      existingUser.toJSON();
 
     return {
       ...result,
