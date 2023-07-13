@@ -21,6 +21,7 @@ import { SendForgotPasswordOTPDto } from './dto/send-forgot-password-otp.dto';
 import { UpdateForgotPasswordDto } from './dto/update-forget-password.dto';
 import { UserSignUpDto } from './dto/user-signup.dto';
 import { VerifyForgotPasswordOTPDto } from './dto/verify-forgot-password-otp.dto';
+import { DateTimeProvider } from 'src/providers/datetime.provider';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private jwtService: JwtService,
     private emailProvider: EmailProvider,
+    private dateTimeService: DateTimeProvider,
   ) {}
 
   private getJwtToken(userId: string | ObjectId) {
@@ -91,6 +93,15 @@ export class AuthService {
     if (!existingUser) {
       throw new UnauthorizedException();
     }
+
+    const utcDateTime = this.dateTimeService.getUtc(
+      '2023-07-13 14:00',
+      'Asia/Kolkata',
+      'YYYY-MM-DD HH:mm',
+    );
+    console.log(utcDateTime, utcDateTime.toDate());
+
+    await existingUser.set({ lastLogin: utcDateTime.toDate() });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =

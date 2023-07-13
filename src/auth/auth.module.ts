@@ -11,6 +11,7 @@ import { GoogleStrategy } from './google.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { ConfigService } from '@nestjs/config';
+import { DateTimeProvider } from 'src/providers/datetime.provider';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ConfigService } from '@nestjs/config';
     LocalStrategy,
     JwtStrategy,
     EmailProvider,
+    DateTimeProvider,
     IsEmailUserAlreadyExistConstraint,
   ],
   exports: [AuthService],

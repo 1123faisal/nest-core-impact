@@ -25,6 +25,7 @@ import { TrainingSessionsModule } from './training-sessions/training-sessions.mo
 import { TrainingsModule } from './trainings/trainings.module';
 import { UsersModule } from './users/users.module';
 import { BullModule } from '@nestjs/bull';
+import { DateTimeProvider } from './providers/datetime.provider';
 // import { AppConsumer } from './app.consumer';
 
 @Module({
@@ -87,6 +88,7 @@ import { BullModule } from '@nestjs/bull';
   providers: [
     AppService,
     S3Provider,
+    DateTimeProvider,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,

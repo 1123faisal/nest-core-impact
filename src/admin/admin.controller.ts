@@ -58,7 +58,7 @@ export class AdminsController {
     return { message: 'Coaches Unassigned' };
   }
 
-  //all user
+  // all user
   @Get('/alluser')
   findUser(
     @Query('skip', ParseIntPipe) skip?: number,

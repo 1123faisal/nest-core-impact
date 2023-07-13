@@ -1,13 +1,23 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
+import { DateTimeProvider } from './providers/datetime.provider';
 // import { Cron } from '@nestjs/schedule';
 // import { Queue } from 'bull';
 
 @Injectable()
 export class AppService {
-  // constructor(@InjectQueue('audio') private audioQueue: Queue) {}
+  constructor(
+    // @InjectQueue('audio') private audioQueue: Queue,
+    private dateTimeProvider: DateTimeProvider,
+  ) {}
 
   getHealth(): string {
+    const utcDateTime = this.dateTimeProvider.getUtc(
+      '2023-07-12 16:00',
+      'Asia/Kolkata',
+      'YYYY-MM-DD HH:mm',
+    );
+    console.log(utcDateTime, utcDateTime.toDate());
     return 'OK';
   }
 

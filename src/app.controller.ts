@@ -11,11 +11,13 @@ import { Request, Response } from 'express';
 import { Connection } from 'mongoose';
 import * as sharp from 'sharp';
 import { S3Provider } from './providers/s3.provider';
+import { AppService } from './app.service';
 
 @ApiTags('App')
 @Controller()
 export class AppController {
   constructor(
+    private appService: AppService,
     private health: HealthCheckService,
     private db: MongooseHealthIndicator,
     private s3Provider: S3Provider,
@@ -27,6 +29,7 @@ export class AppController {
   @Get('/health')
   @HealthCheck()
   async check() {
+    this.appService.getHealth();
     return this.health.check([
       // () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
       () =>

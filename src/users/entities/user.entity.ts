@@ -92,7 +92,7 @@ export class User extends Document {
   @Prop({ default: null })
   sub?: string;
 
-  @ApiProperty({ example: Date.now })
+  @ApiProperty({ example: new Date() })
   @Prop({ default: null })
   otpExpiration: Date;
 
@@ -138,6 +138,10 @@ export class User extends Document {
     ref: 'Coach',
   })
   pitching_coach: Coach;
+
+  @ApiProperty({ example: new Date() })
+  @Prop({ default: Date.now })
+  lastLogin: Date;
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
