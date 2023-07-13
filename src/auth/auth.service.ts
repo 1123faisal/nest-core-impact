@@ -95,7 +95,7 @@ export class AuthService {
     }
 
     const utcDateTime = this.dateTimeService.getUtc(
-      '2023-07-13 14:00',
+      '2023-07-12 14:00',
       'Asia/Kolkata',
       'YYYY-MM-DD HH:mm',
     );
