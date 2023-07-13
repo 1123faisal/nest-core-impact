@@ -101,7 +101,7 @@ export class AuthService {
     );
     console.log(utcDateTime, utcDateTime.toDate());
 
-    await existingUser.set({ lastLogin: utcDateTime.toDate() });
+    await existingUser.set({ lastLogin: utcDateTime.toDate() }).save();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, __v, otp, otpExpiration, ...result } =
