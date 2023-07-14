@@ -264,14 +264,14 @@ export class OrgUsersService {
       throw new NotFoundException('no user found');
     }
 
-    const isDuplicateEmail = await this.orgUserModel.findOne({
-      email: updateProfileDto.email,
-      _id: { $ne: user.id },
-    });
+    // const isDuplicateEmail = await this.orgUserModel.findOne({
+    //   email: updateProfileDto.email,
+    //   _id: { $ne: user.id },
+    // });
 
-    if (isDuplicateEmail) {
-      throw new BadRequestException('This email already in use.');
-    }
+    // if (isDuplicateEmail) {
+    //   throw new BadRequestException('This email already in use.');
+    // }
 
     if (updateProfileDto.avatar) {
       updateProfileDto.avatar = await this.s3Provider.uploadFileToS3(

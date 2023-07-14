@@ -7,9 +7,9 @@ export class UpdateProfileDto {
   @IsNotEmpty()
   name: string;
 
-  @IsEmail()
-  @Transform(({ value }) => validator.normalizeEmail(value))
-  email: string;
+  // @IsEmail()
+  // @Transform(({ value }) => validator.normalizeEmail(value))
+  // email: string;
 
   @IsNotEmpty()
   mobile: string;
