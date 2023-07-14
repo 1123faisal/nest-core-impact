@@ -5,6 +5,7 @@ import { useContainer } from 'class-validator';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/ErrorExceptions/http-exception';
+import { AppService } from './app.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -39,6 +40,9 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  const appService = app.get(AppService);
+  await appService.createDefaultAdmin();
 
   await app.listen(process.env.PORT || 3000);
 }

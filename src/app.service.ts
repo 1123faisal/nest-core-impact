@@ -11,6 +11,13 @@ export class AppService {
     private dateTimeProvider: DateTimeProvider,
   ) {}
 
+  /**
+   * this function run when app start, perform some operations like create default etc.
+   */
+  async createDefaultAdmin() {
+    console.log('called create admin', process.env.PORT);
+  }
+
   getHealth(): string {
     const utcDateTime = this.dateTimeProvider.getUtc(
       '2023-07-12 16:00',
