@@ -1,0 +1,63 @@
+<td>
+  <!-- <img
+    class="image-table-round"
+    [src]="item.avatar || 'assets/img/users/tuser-1.png'"
+    height="40"
+    width="40"
+  /> -->
+  <!-- [src]="item.avatar || 'assets/img/users/tuser-1.png'" -->
+  <span> {{ item.name }} </span>
+</td>
+<!-- <td>Athlete</td> -->
+
+<td>
+  <div class="form-group checkk_dash">
+    <label class="switch_dash">
+      <input
+        type="checkbox"
+        (click)="updateCategoryStatus(item._id, !item.status)"
+        [checked]="item.status"
+      />
+      <span class="slider_dash round"></span>
+    </label>
+  </div>
+</td>
+
+<td>
+  <div class="actions" style="display: flex">
+    <!-- <div
+        (click)="deleteAthleteOrCoach(item._id)"
+        class="trashRecord"
+      >
+        <i class="fas fa-trash"></i>
+      </div> -->
+    <!-- (click)="onStartEditAthleteOrCoach(item._id)" -->
+    <div
+      [routerLink]="[
+        isSubCat ? '/dashboard/categories/add/sub' : '/dashboard/categories/add'
+      ]"
+      [queryParams]="{ id: item._id }"
+      class="updateRecord"
+    >
+      <i style="cursor: pointer" class="fas fa-edit"></i>
+    </div>
+
+    <div
+      *ngIf="!isSubCat"
+      [routerLink]="['/dashboard/categories/sub']"
+      [queryParams]="{ parentId: item._id }"
+      class="updateRecord"
+    >
+      <i style="cursor: pointer" class="fas fa-list-alt"></i>
+    </div>
+
+    <div
+      *ngIf="!isSubCat"
+      [routerLink]="['/dashboard/categories/add/sub']"
+      [queryParams]="{ categoryId: item._id }"
+      class="updateRecord"
+    >
+      <i style="cursor: pointer" class="fas fa-add"></i>
+    </div>
+  </div>
+</td>

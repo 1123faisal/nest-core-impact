@@ -1,0 +1,178 @@
+<div class="navbar-bg"></div>
+
+<nav class="navbar navbar-expand-lg main-navbar">
+  <div class="form-inline mr-auto">
+    <ul class="navbar-nav mr-3">
+      <li>
+        <a
+          href="javascript:void(0)"
+          data-toggle="sidebar"
+          class="nav-link nav-link-lg collapse-btn"
+          ><i class="fas fa-bars"></i
+        ></a>
+      </li>
+      <li hidden>
+        <div class="search-group">
+          <span class="nav-link nav-link-lg" id="search">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </span>
+          <input
+            type="text"
+            class="search-control"
+            placeholder="search"
+            aria-label="search"
+            aria-describedby="search"
+          />
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <ul class="navbar-nav navbar-right">
+    <li class="dropdown dropdown-list-toggle" hidden>
+      <a
+        href="javascript:void(0)"
+        data-toggle="dropdown"
+        class="nav-link notification-toggle nav-link-lg beep"
+        ><i class="far fa-bell"></i
+      ></a>
+      <div class="dropdown-menu dropdown-list dropdown-menu-right">
+        <div class="dropdown-header">
+          Notifications
+          <div class="float-right">
+            <a href="javascript:void(0)">Mark All As Read</a>
+          </div>
+        </div>
+        <div class="dropdown-list-content dropdown-list-icons">
+          <a
+            href="javascript:void(0)"
+            class="dropdown-item dropdown-item-unread"
+          >
+            <span class="dropdown-item-icon bg-primary text-white">
+              <i class="fas fa-shopping-cart"></i>
+            </span>
+            <span class="dropdown-item-desc">
+              New Order
+              <span class="time">3 Hours Ago</span>
+            </span>
+          </a>
+          <a
+            href="javascript:void(0)"
+            class="dropdown-item dropdown-item-unread"
+          >
+            <span class="dropdown-item-icon bg-info text-white">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+            <span class="dropdown-item-desc">
+              Application Error
+              <span class="time">7 Hours Ago</span>
+            </span>
+          </a>
+        </div>
+        <div class="dropdown-footer text-center">
+          <a href="javascript:void(0)"
+            >View All <i class="fas fa-chevron-right"></i
+          ></a>
+        </div>
+      </div>
+    </li>
+
+    <li class="dropdown" *ngIf="user | async; let info">
+      <a
+        href="javascript:void(0)"
+        data-toggle="dropdown"
+        class="nav-link dropdown-toggle nav-link-lg nav-link-user"
+      >
+        <img
+          alt="image"
+          [src]="info.avatar || 'assets/img/user.png'"
+          height="40"
+          width="60"
+          class="user-img-radious-style" />
+        <span class="d-sm-none d-lg-inline-block"></span
+      ></a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-title">Hello {{ info.name }}</div>
+        <a
+          href="javascript:void(0)"
+          routerLink="/dashboard/profile"
+          class="dropdown-item has-icon"
+        >
+          <i class="far fa-user"></i> Profile
+        </a>
+        <a
+          href="javascript:void(0)"
+          routerLink="/dashboard/change_password"
+          class="dropdown-item has-icon"
+        >
+          <i class="fas fa-key"></i> Change Password
+        </a>
+        <div class="dropdown-divider"></div>
+        <a
+          href="javascript:void(0)"
+          (click)="logout()"
+          class="dropdown-item has-icon text-danger"
+        >
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<div class="main-sidebar sidebar-style-2">
+  <aside id="sidebar-wrapper">
+    <div class="sidebar-brand">
+      <a routerLink="/">
+        <img alt="image" src="assets/img/logo.svg" class="header-logo" />
+      </a>
+    </div>
+    <ul class="sidebar-menu">
+      <li>
+        <a class="nav-link" routerLink="/">
+          <img class="notActive" src="assets/img/s0_b.svg" />
+          <img class="active" src="assets/img/s0_c.svg" />
+          <span>Home</span>
+        </a>
+      </li>
+      <li class="dropdown">
+        <a class="nav-link has-dropdown" id="submenu" href="javascript:void(0)">
+          <img class="notActive" src="assets/img/osi4_w.svg" />
+          <img class="active" src="assets/img/osi4_g.svg" />
+          <span>Management</span>
+        </a>
+        <!-- style="display: block;" -->
+        <ul class="dropdown-menu gapFix" id="menu">
+          <li>
+            <a class="nav-link" routerLink="add-ath-coach"
+              >Add Athletes/Coach</a
+            >
+          </li>
+          <!-- <li><a class="nav-link"
+          href="javascript:void(0)"
+
+            routerLink="invite.php">Invite</a></li> -->
+          <li>
+            <a class="nav-link" routerLink="list-ath-coach"
+              >List Athletes/Coach</a
+            >
+          </li>
+        </ul>
+      </li>
+      <!-- <li>
+        <a class="nav-link" routerLink="trainings">
+          <img class="notActive" src="assets/img/s4_b.svg" />
+          <img class="active" src="assets/img/s4_c.svg" />
+          <span>Assign Training</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link" routerLink="heat-map">
+          <img class="notActive" src="assets/img/osi3_w.svg" />
+          <img class="active" src="assets/img/osi3_g.svg" />
+          <span>Heat Maps and Metrics</span>
+        </a>
+      </li> -->
+    </ul>
+  </aside>
+</div>

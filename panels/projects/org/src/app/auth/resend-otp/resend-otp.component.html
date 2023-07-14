@@ -1,0 +1,10 @@
+<div class="form-group">
+  <span>Time Left: {{ timeLeft }}</span> &nbsp;
+  <a
+    *ngIf="otpExpirationTime === 0"
+    href="javascript:void(0)"
+    class="link"
+    (click)="resendOtp()"
+    >Resend Otp</a
+  >
+</div>
