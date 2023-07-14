@@ -1,0 +1,89 @@
+<div class="main-content">
+  <div
+    class="page-title-box d-sm-flex align-items-center justify-content-between"
+  >
+    <h4 class="mb-sm-0">Dashboard</h4>
+
+    <div class="page-title-right">
+      <ol class="breadcrumb m-0">
+        <li class="breadcrumb-item">
+          <a href="javascript: void(0);">Core Impact</a>
+        </li>
+        <li class="breadcrumb-item active">Sub Category</li>
+      </ol>
+    </div>
+  </div>
+  <section class="ath-manage">
+    <div class="row">
+      <div class="col-12 col-md-12 col-lg-12">
+        <div class="card athlete_table_wrap pirmary_colorCode">
+          <div
+            class="card-header dFlexRow accordion"
+            data-toggle="collapse"
+            data-target="#panel-body-2"
+            aria-expanded="true"
+          >
+            <div class="d-flex jcsb">
+              <h4>Categories</h4>
+
+              <div class="modBtn-col-btn">
+                <!-- <a class="btn btn-outline-primary" (click)="onClickUploadCsv()">
+                    Add CSV
+                  </a> -->
+                <!-- <div class="headFilterWrap">
+                    <select
+                      #tMode
+                      (change)="onChangeTableMode(tMode.value)"
+                      class="form-control"
+                    >
+                      <option value="Athlete" selected>Athlete</option>
+                      <option value="Coach">Coach</option>
+                    </select>
+                  </div> -->
+                <!-- <div class="collapseIcon">
+                      <i class="far fa-plus"></i>
+                      <i class="fa fa-minus"></i>
+                    </div> -->
+              </div>
+            </div>
+          </div>
+          <div
+            class="card-body collapse show"
+            id="panel-body-2"
+            data-parent="#accordion"
+          >
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <!-- <th scope="col">Category</th> -->
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- athlete rows -->
+
+                  <ng-container
+                    *ngFor="let item of categories.at(0)?.subCategories"
+                  >
+                    <tr
+                      *ngIf="item"
+                      app-cat-item
+                      [item]="item"
+                      (getTableData)="getTableData()"
+                      [isSubCat]="true"
+                    ></tr>
+                  </ng-container>
+
+                  <!-- athlete rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

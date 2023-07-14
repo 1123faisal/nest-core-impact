@@ -1,0 +1,112 @@
+<div class="row">
+  <div class="col-12 col-md-12 col-lg-12">
+    <div class="card athlete_table_wrap pirmary_colorCode">
+      <div
+        class="card-header cardHeaderFlex accordion"
+        data-toggle="collapse"
+        data-target="#panel-body-2"
+        aria-expanded="true"
+      >
+        <div class="d-flex jcsb">
+          <h4>Add Training Session</h4>
+          <div class="modBtn-col-btn">
+            <!-- <a
+                  class="btn btn-outline-primary"
+                  data-toggle="modal"
+                  data-target="#centerModal"
+                >
+                  Add CSV
+                </a> -->
+            <div class="collapseIcon">
+              <i class="far fa-plus"></i>
+              <i class="fa fa-minus"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="card-body collapse show"
+        id="panel-body-2"
+        data-parent="#accordion"
+      >
+        <form [formGroup]="form" (submit)="submit()">
+          <div class="addTrnSession-wrap">
+            <!-- <div class="col-4"> -->
+            <div class="form-group">
+              <label>Category</label>
+              <select formControlName="exCategory" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  *ngFor="let item of categories | async"
+                  [value]="item._id"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('exCategory')!"
+                [fieldName]="'Exercise Category'"
+              ></app-input-error>
+            </div>
+            <!-- </div> -->
+            <div class="form-group">
+              <label>Sub Category</label>
+              <select formControlName="exSubCategory" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  *ngFor="let item of subCategories | async"
+                  [value]="item._id"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('exSubCategory')!"
+                [fieldName]="'Exercise Sub Category'"
+              ></app-input-error>
+            </div>
+
+            <div class="form-group">
+              <label>Training</label>
+              <select formControlName="exercise" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  *ngFor="let item of exercises | async"
+                  [value]="item._id"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('exercise')!"
+                [fieldName]="'Exercise'"
+              ></app-input-error>
+            </div>
+
+            <div class="form-group" *ngIf="athletes | async; let athletesList">
+              <label>Athletes</label>
+
+              <!-- [(ngModel)]="selectedItems" -->
+              <ng-multiselect-dropdown
+                formControlName="athletes"
+                [placeholder]="'---Select---'"
+                [settings]="dropdownSettings"
+                [data]="athletesList"
+                (onSelect)="onItemSelect($event)"
+                (onSelectAll)="onSelectAll($event)"
+              >
+              </ng-multiselect-dropdown>
+              <app-input-error
+                [control]="form.get('athletes')!"
+                [fieldName]="'Athletes'"
+              ></app-input-error>
+            </div>
+          </div>
+          <div class="traingSubmit">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

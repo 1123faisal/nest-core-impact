@@ -1,0 +1,113 @@
+<div
+  class="modal fade show"
+  id="assign-coach"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+  style="background-color: rgba(0, 0, 0, 0.5); display: block"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">
+          Assign Coach to {{ athlete?.name }}
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="onClose()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="form" (submit)="assignCoach()">
+        <div class="modal-body">
+          <div
+            class="ca-modal-tgrid"
+            *ngIf="coaches | async; let coachesList; else: loading"
+          >
+            <div class="form-group">
+              <label>Physician</label>
+              <select formControlName="physician_coach" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  [value]="item._id"
+                  *ngFor="let item of coachesList.results"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('physician_coach')!"
+                [fieldName]="'Physician Coach'"
+              ></app-input-error>
+            </div>
+            <div class="form-group">
+              <label>Batting Coach</label>
+              <select formControlName="batting_coach" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  [value]="item._id"
+                  *ngFor="let item of coachesList?.results"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('batting_coach')!"
+                [fieldName]="'Batting Coach'"
+              ></app-input-error>
+            </div>
+            <div class="form-group">
+              <label>Trainer</label>
+              <select formControlName="trainer_coach" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  [value]="item._id"
+                  *ngFor="let item of coachesList?.results"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('trainer_coach')!"
+                [fieldName]="'Trainer Coach'"
+              ></app-input-error>
+            </div>
+            <div class="form-group">
+              <label>Pitching Coach</label>
+              <select formControlName="pitching_coach" class="form-control">
+                <option [value]="null">---Select---</option>
+                <option
+                  [value]="item._id"
+                  *ngFor="let item of coachesList?.results"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+              <app-input-error
+                [control]="form.get('pitching_coach')!"
+                [fieldName]="'Pitching Coach'"
+              ></app-input-error>
+            </div>
+          </div>
+          <ng-template #loading>Loading...</ng-template>
+        </div>
+        <div class="modal-footer bg-whitesmoke br">
+          <button class="btn btn-primary">Submit</button>
+          <button
+            (click)="onClose()"
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
