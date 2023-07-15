@@ -1,12 +1,19 @@
-import { Location } from '@angular/common';
+import { AsyncPipe, Location, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DashboardService } from '../../dashboard.service';
 import { Observable } from 'rxjs';
 import { Category } from '../../../models/category.model';
 import { REGX } from 'regex';
+import { InputErrorComponent } from '../../../components/input-error/input-error.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 declare var $: any;
 
@@ -14,6 +21,14 @@ declare var $: any;
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    InputErrorComponent,
+    NgIf,
+    AsyncPipe,
+    NgMultiSelectDropDownModule,
+  ],
 })
 export class AddComponent {
   form?: FormGroup;

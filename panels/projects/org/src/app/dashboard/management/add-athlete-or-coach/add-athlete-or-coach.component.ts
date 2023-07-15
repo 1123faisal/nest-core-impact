@@ -1,12 +1,18 @@
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DashboardService } from '../../dashboard.service';
 import { Observable } from 'rxjs';
 import { Coach } from '../../../models/coach.model';
 import { Athlete, Gender } from '../../../models/athlete.model';
+import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 declare var $: any;
 
 enum FormMode {
@@ -20,6 +26,8 @@ type AthleteOrCoach = Coach | Athlete;
   selector: 'app-add-athlete-or-coach',
   templateUrl: './add-athlete-or-coach.component.html',
   styleUrls: ['./add-athlete-or-coach.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, InputErrorComponent],
 })
 export class AddAthletesOrCoachComponent implements OnInit {
   form?: FormGroup;

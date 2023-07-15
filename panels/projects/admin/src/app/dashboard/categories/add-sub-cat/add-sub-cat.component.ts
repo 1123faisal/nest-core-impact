@@ -1,11 +1,17 @@
-import { Location } from '@angular/common';
+import { Location, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { REGX } from 'regex';
+import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 
 declare var $: any;
 
@@ -13,6 +19,8 @@ declare var $: any;
   selector: 'app-add-sub-cat',
   templateUrl: './add-sub-cat.component.html',
   styleUrls: ['./add-sub-cat.component.css'],
+  standalone: true,
+  imports: [NgIf, ReactiveFormsModule, InputErrorComponent],
 })
 export class AddSubCatComponent {
   form?: FormGroup;

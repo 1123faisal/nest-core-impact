@@ -1,18 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { UiService } from '../../services/ui.service';
+import { InputErrorComponent } from '../../components/input-error/input-error.component';
+import { ResendOtpComponent } from '../resend-otp/resend-otp.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',
   styleUrls: ['./otp.component.css'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    InputErrorComponent,
+    ResendOtpComponent,
+    AsyncPipe,
+  ],
 })
 export class OtpComponent implements OnInit {
   form!: FormGroup;
-  email?: string;
+  email!: string;
 
   constructor(
     private fb: FormBuilder,

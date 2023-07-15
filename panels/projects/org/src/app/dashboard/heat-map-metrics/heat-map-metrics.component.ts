@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 declare var $: any;
 
@@ -5,6 +6,8 @@ declare var $: any;
   selector: 'app-heat-map-metrics',
   templateUrl: './heat-map-metrics.component.html',
   styleUrls: ['./heat-map-metrics.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class HeatMapMetricsComponent implements OnInit {
   ngOnInit(): void {
@@ -13,9 +16,7 @@ export class HeatMapMetricsComponent implements OnInit {
         {
           opens: 'left',
         },
-        function (start: any, end: any, label: any) {
-
-        }
+        function (start: any, end: any, label: any) {}
       );
     });
   }

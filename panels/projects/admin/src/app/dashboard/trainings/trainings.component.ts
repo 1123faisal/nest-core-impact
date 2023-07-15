@@ -6,6 +6,7 @@ declare var $: any;
   selector: 'app-trainings',
   templateUrl: './trainings.component.html',
   styleUrls: ['./trainings.component.css'],
+  standalone: true,
 })
 export class TrainingsComponent implements OnInit {
   ngOnInit(): void {

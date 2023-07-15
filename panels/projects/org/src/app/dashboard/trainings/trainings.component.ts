@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 
 declare var $: any;
@@ -6,6 +7,8 @@ declare var $: any;
   selector: 'app-trainings',
   templateUrl: './trainings.component.html',
   styleUrls: ['./trainings.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class TrainingsComponent implements OnInit {
   ngOnInit(): void {

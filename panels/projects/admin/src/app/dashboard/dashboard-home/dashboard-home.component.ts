@@ -5,12 +5,15 @@ import { AuthData } from '../../models/auth.model';
 import { Setting } from '../../models/setting.model';
 import { Athlete } from '../../models/athlete.model';
 import { AuthService } from '../../auth/auth.service';
+import { CommonModule } from '@angular/common';
 declare var $: any;
 
 @Component({
   selector: 'app-dashboard-home',
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class DashboardHomeComponent implements OnInit {
   user!: Observable<AuthData | null>;

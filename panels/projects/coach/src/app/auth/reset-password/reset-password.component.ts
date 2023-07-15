@@ -1,15 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { REGX } from 'regex';
+import { InputErrorComponent } from '../../components/input-error/input-error.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, InputErrorComponent],
 })
 export class ResetPasswordComponent implements OnInit {
   form!: FormGroup;

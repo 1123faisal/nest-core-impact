@@ -5,11 +5,15 @@ import { DashboardService } from '../dashboard.service';
 import { Location } from '@angular/common';
 import { Observable, shareReplay } from 'rxjs';
 import { Category } from '../../models/category.model';
+import { AddExerciseComponent } from './add-exercise/add-exercise.component';
+import { AddSessionComponent } from './add-session/add-session.component';
 
 @Component({
   selector: 'app-trainings',
   templateUrl: './trainings.component.html',
   styleUrls: ['./trainings.component.css'],
+  standalone: true,
+  imports: [AddExerciseComponent, AddSessionComponent],
 })
 export class TrainingsComponent implements OnInit {
   form!: FormGroup;

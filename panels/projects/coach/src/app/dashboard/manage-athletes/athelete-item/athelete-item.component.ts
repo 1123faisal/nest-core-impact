@@ -5,6 +5,7 @@ import { Athlete } from '../../../models/athlete.model';
   selector: '[app-athelete-item]',
   templateUrl: './athelete-item.component.html',
   styleUrls: ['./athelete-item.component.css'],
+  standalone: true,
 })
 export class AtheleteItemComponent {
   @Input() item!: Athlete;

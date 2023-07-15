@@ -1,12 +1,19 @@
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, map } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
 import { Athlete } from '../../../models/athlete.model';
 import { Exercise } from '../../../models/excercise.model';
 import { Category } from '../../../models/category.model';
+import { InputErrorComponent } from '../../../components/input-error/input-error.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 interface Item {
   _id: string;
@@ -17,6 +24,13 @@ interface Item {
   selector: '[app-add-session]',
   templateUrl: './add-session.component.html',
   styleUrls: ['./add-session.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputErrorComponent,
+    NgMultiSelectDropDownModule,
+  ],
 })
 export class AddSessionComponent {
   form!: FormGroup;

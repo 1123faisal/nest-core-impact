@@ -1,8 +1,10 @@
+import { NgFor, NgIf } from '@angular/common';
 import { Component, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
-import { ActivatedRoute } from '@angular/router';
+import { CatItemComponent } from '../cat-item/cat-item.component';
 
 declare var $: any;
 
@@ -10,6 +12,8 @@ declare var $: any;
   selector: 'app-sub-cat-list',
   templateUrl: './sub-cat-list.component.html',
   styleUrls: ['./sub-cat-list.component.css'],
+  standalone: true,
+  imports: [NgFor, CatItemComponent, NgIf],
 })
 export class SubCatListComponent {
   categories: Category[] = [];

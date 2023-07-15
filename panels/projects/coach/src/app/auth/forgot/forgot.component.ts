@@ -1,14 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
+import { CommonModule } from '@angular/common';
+import { InputErrorComponent } from '../../components/input-error/input-error.component';
 
 @Component({
   selector: 'app-forgot',
   templateUrl: './forgot.component.html',
   styleUrls: ['./forgot.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, InputErrorComponent],
 })
 export class ForgotComponent implements OnInit {
   form!: FormGroup;

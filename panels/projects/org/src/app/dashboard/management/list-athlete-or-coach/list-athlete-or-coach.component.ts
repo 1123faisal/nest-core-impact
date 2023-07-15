@@ -4,6 +4,9 @@ import { Athlete } from '../../../models/athlete.model';
 import { Coach } from '../../../models/coach.model';
 import { DashboardService } from '../../dashboard.service';
 import { UploadCoachAthletesComponent } from '../../../components/upload-coach-athletes/upload-coach-athletes.component';
+import { CommonModule } from '@angular/common';
+import { AtheleteItemComponent } from '../athelete-item/athelete-item.component';
+import { CoachItemComponent } from '../coach-item/coach-item.component';
 declare var $: any;
 
 enum FormMode {
@@ -15,6 +18,8 @@ enum FormMode {
   selector: 'app-list-athlete-or-coach',
   templateUrl: './list-athlete-or-coach.component.html',
   styleUrls: ['./list-athlete-or-coach.component.css'],
+  standalone: true,
+  imports: [CommonModule, AtheleteItemComponent, CoachItemComponent],
 })
 export class ListAthleteOrCoachComponent implements OnInit, OnDestroy {
   tableMode = FormMode.Athlete;

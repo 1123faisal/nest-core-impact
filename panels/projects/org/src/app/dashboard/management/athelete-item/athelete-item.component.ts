@@ -9,11 +9,14 @@ import {
 import { DashboardService } from '../../dashboard.service';
 import { Athlete } from '../../../models/athlete.model';
 import { AssignCoachComponent } from '../../../components/assign-coach/assign-coach.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: '[app-athelete-item]',
   templateUrl: './athelete-item.component.html',
   styleUrls: ['./athelete-item.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class AtheleteItemComponent implements OnDestroy {
   @Input() item!: Athlete;

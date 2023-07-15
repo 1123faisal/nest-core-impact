@@ -1,15 +1,24 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DashboardService } from '../../dashboard.service';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Observable, map, shareReplay } from 'rxjs';
 import { Category } from '../../../models/category.model';
+import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 
 @Component({
   selector: '[app-add-exercise]',
   templateUrl: './add-exercise.component.html',
   styleUrls: ['./add-exercise.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, InputErrorComponent],
 })
 export class AddExerciseComponent {
   form!: FormGroup;
