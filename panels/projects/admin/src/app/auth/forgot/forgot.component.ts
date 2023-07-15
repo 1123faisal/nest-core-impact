@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { REGX } from 'regex';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,12 @@ import { InputErrorComponent } from '../../components/input-error/input-error.co
   templateUrl: './forgot.component.html',
   styleUrls: ['./forgot.component.css'],
   standalone: true,
-  imports: [CommonModule, InputErrorComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    InputErrorComponent,
+    ReactiveFormsModule,
+    RouterModule,
+  ],
 })
 export class ForgotComponent implements OnInit {
   form!: FormGroup;

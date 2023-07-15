@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { REGX } from 'regex';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,12 @@ import { InputErrorComponent } from '../../components/input-error/input-error.co
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputErrorComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    InputErrorComponent,
+    RouterModule,
+  ],
 })
 export class RegisterComponent implements OnInit {
   form!: FormGroup;

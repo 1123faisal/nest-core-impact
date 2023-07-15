@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ResponseInterceptor } from './services/response.interceptor';
 import { RequestInterceptor } from './services/request.interceptor';
-import { TermConditionComponent } from './components/term-condition/term-condition.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,7 +17,6 @@ import { TermConditionComponent } from './components/term-condition/term-conditi
     HttpClientModule,
     BrowserAnimationsModule,
     MatSnackBarModule,
-    TermConditionComponent,
   ],
   providers: [
     {
