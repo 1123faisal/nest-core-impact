@@ -5,7 +5,7 @@ import { Athlete } from '../../models/athlete.model';
 import { PaginatedResponse } from '../../models/paginated.model';
 import { Coach } from '../../models/coach.model';
 import { DashboardService } from '../../dashboard/dashboard.service';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
 import { InputErrorComponent } from '../input-error/input-error.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { InputErrorComponent } from '../input-error/input-error.component';
   templateUrl: './assign-coach.component.html',
   styleUrls: ['./assign-coach.component.css'],
   standalone: true,
-  imports: [InputErrorComponent, ReactiveFormsModule, NgIf, AsyncPipe],
+  imports: [InputErrorComponent, ReactiveFormsModule, CommonModule, AsyncPipe],
 })
 export class AssignCoachComponent implements OnInit {
   @Input() athlete?: Athlete;

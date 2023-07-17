@@ -1,4 +1,4 @@
-import { Location, NgIf } from '@angular/common';
+import { CommonModule, Location, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -20,7 +20,7 @@ declare var $: any;
   templateUrl: './add-sub-cat.component.html',
   styleUrls: ['./add-sub-cat.component.css'],
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, InputErrorComponent],
+  imports: [CommonModule, ReactiveFormsModule, InputErrorComponent],
 })
 export class AddSubCatComponent {
   form?: FormGroup;

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthData } from '../../models/auth.model';
 import { AuthService } from '../../auth/auth.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
 declare var $: any;
 
 @Component({
@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './top-sidebar.component.html',
   styleUrls: ['./top-sidebar.component.css'],
   standalone: true,
-  imports: [NgIf, AsyncPipe, RouterModule],
+  imports: [CommonModule, AsyncPipe, RouterModule],
 })
 export class TopSidebarComponent implements OnInit {
   user!: Observable<AuthData | null>;

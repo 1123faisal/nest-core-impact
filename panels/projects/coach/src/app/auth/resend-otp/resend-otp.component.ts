@@ -2,14 +2,14 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UiService } from '../../services/ui.service';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-resend-otp',
   templateUrl: './resend-otp.component.html',
   styleUrls: ['./resend-otp.component.css'],
   standalone: true,
-  imports: [NgIf],
+  imports: [CommonModule],
 })
 export class ResendOtpComponent implements OnInit, OnDestroy {
   otpExpirationTime: number = 60; // OTP expiration time in seconds

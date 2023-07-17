@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
@@ -7,7 +7,7 @@ import { AbstractControl } from '@angular/forms';
   templateUrl: './input-error.component.html',
   styleUrls: ['./input-error.component.css'],
   standalone: true,
-  imports: [NgIf],
+  imports: [CommonModule],
 })
 export class InputErrorComponent {
   @Input() minMsg?: string;

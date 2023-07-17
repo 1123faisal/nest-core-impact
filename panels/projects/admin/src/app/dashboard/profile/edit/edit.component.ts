@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
 import { DashboardService } from '../../dashboard.service';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { User } from '../../../models/user.model';
 import { REGX } from 'regex';
 import { AuthService } from '../../../auth/auth.service';
@@ -20,7 +20,7 @@ import { InputErrorComponent } from '../../../components/input-error/input-error
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css'],
   standalone: true,
-  imports: [InputErrorComponent, ReactiveFormsModule],
+  imports: [CommonModule, InputErrorComponent, ReactiveFormsModule],
 })
 export class EditComponent implements OnInit {
   user?: User | null;

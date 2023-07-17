@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,7 @@ declare var $: any;
   templateUrl: './sub-cat-list.component.html',
   styleUrls: ['./sub-cat-list.component.css'],
   standalone: true,
-  imports: [NgFor, CatItemComponent, NgIf],
+  imports: [CatItemComponent, CommonModule],
 })
 export class SubCatListComponent {
   categories: Category[] = [];

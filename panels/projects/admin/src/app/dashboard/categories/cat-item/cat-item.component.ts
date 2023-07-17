@@ -9,14 +9,14 @@ import {
 import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { RouterModule } from '@angular/router';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
   selector: '[app-cat-item]',
   templateUrl: './cat-item.component.html',
   styleUrls: ['./cat-item.component.css'],
   standalone: true,
-  imports: [RouterModule, NgIf],
+  imports: [RouterModule, CommonModule],
 })
 export class CatItemComponent implements OnDestroy {
   @Input() item!: Category;

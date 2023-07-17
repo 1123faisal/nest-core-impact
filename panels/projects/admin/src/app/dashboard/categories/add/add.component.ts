@@ -1,4 +1,4 @@
-import { AsyncPipe, Location, NgIf } from '@angular/common';
+import { AsyncPipe, CommonModule, Location, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -25,7 +25,7 @@ declare var $: any;
   imports: [
     ReactiveFormsModule,
     InputErrorComponent,
-    NgIf,
+    CommonModule,
     AsyncPipe,
     NgMultiSelectDropDownModule,
   ],

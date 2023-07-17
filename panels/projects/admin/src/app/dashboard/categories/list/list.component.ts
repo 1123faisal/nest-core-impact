@@ -1,9 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { CatItemComponent } from '../cat-item/cat-item.component';
-import { NgFor } from '@angular/common';
 
 declare var $: any;
 
@@ -12,7 +12,7 @@ declare var $: any;
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css'],
   standalone: true,
-  imports: [CatItemComponent, NgFor],
+  imports: [CommonModule, CatItemComponent],
 })
 export class ListComponent {
   categories: Category[] = [];

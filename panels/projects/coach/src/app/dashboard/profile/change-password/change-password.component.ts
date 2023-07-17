@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DashboardService } from '../../dashboard.service';
-import { Location } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { REGX } from 'regex';
 import { UiService } from '../../../services/ui.service';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
@@ -17,7 +17,7 @@ import { InputErrorComponent } from '../../../components/input-error/input-error
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule, InputErrorComponent],
+  imports: [ReactiveFormsModule, InputErrorComponent, CommonModule],
 })
 export class ChangePasswordComponent {
   form!: FormGroup;

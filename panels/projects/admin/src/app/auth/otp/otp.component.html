@@ -36,7 +36,9 @@
                 ></app-input-error>
               </div>
 
-              <app-resend-otp *ngIf="email" [email]="email"></app-resend-otp>
+              <ng-container *ngIf="email">
+                <app-resend-otp [email]="email!"></app-resend-otp>
+              </ng-container>
 
               <div class="form-group">
                 <button
