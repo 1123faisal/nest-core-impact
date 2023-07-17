@@ -7,7 +7,7 @@ import { Queue } from 'bull';
 @Injectable()
 export class AppService {
   constructor(
-    @InjectQueue('audio') private audioQueue: Queue,
+    // @InjectQueue('audio') private audioQueue: Queue,
     private dateTimeProvider: DateTimeProvider,
   ) {}
 
@@ -15,16 +15,16 @@ export class AppService {
    * this function run when app start, perform some operations like create default etc.
    */
   async createDefaultAdmin() {
-    const job = await this.audioQueue.add(
-      'transcode',
-      {
-        foo: 'bar',
-      },
-      {
-        delay: 1000 * 10,
-      },
-    );
-    console.log('called create admin', process.env.PORT, job.id);
+    // const job = await this.audioQueue.add(
+    //   'transcode',
+    //   {
+    //     foo: 'bar',
+    //   },
+    //   {
+    //     delay: 1000 * 10,
+    //   },
+    // );
+    console.log('called create admin', process.env.PORT);
   }
 
   getHealth(): string {
