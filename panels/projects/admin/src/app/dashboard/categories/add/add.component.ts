@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../dashboard.service';
 import { Observable } from 'rxjs';
 import { Category } from '../../../models/category.model';
@@ -41,6 +41,7 @@ export class AddComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
@@ -132,7 +133,7 @@ export class AddComponent {
     this.dbService.createCategory(name, subCategories).subscribe({
       next: (rs) => {
         this.formReset();
-        this.location.back();
+        this.router.navigate(['/dashboard/categories']);
       },
     });
   }
@@ -141,7 +142,7 @@ export class AddComponent {
     this.dbService.updateCategory(id, name, subCategories).subscribe({
       next: (rs) => {
         this.formReset();
-        this.location.back();
+        this.router.navigate(['/dashboard/categories']);
       },
     });
   }
