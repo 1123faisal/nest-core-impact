@@ -26,6 +26,7 @@ import { TrainingsModule } from './trainings/trainings.module';
 import { UsersModule } from './users/users.module';
 import { BullModule } from '@nestjs/bull';
 import { DateTimeProvider } from './providers/datetime.provider';
+import { AppConsumer } from './app.consumer';
 // import { AppConsumer } from './app.consumer';
 
 @Module({

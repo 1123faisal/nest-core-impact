@@ -2,12 +2,12 @@ import { InjectQueue } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { DateTimeProvider } from './providers/datetime.provider';
 // import { Cron } from '@nestjs/schedule';
-// import { Queue } from 'bull';
+import { Queue } from 'bull';
 
 @Injectable()
 export class AppService {
   constructor(
-    // @InjectQueue('audio') private audioQueue: Queue,
+    @InjectQueue('audio') private audioQueue: Queue,
     private dateTimeProvider: DateTimeProvider,
   ) {}
 
@@ -15,7 +15,16 @@ export class AppService {
    * this function run when app start, perform some operations like create default etc.
    */
   async createDefaultAdmin() {
-    console.log('called create admin', process.env.PORT);
+    const job = await this.audioQueue.add(
+      'transcode',
+      {
+        foo: 'bar',
+      },
+      {
+        delay: 1000 * 10,
+      },
+    );
+    console.log('called create admin', process.env.PORT, job.id);
   }
 
   getHealth(): string {
