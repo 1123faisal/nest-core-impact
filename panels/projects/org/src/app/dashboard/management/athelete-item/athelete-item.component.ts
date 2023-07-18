@@ -10,6 +10,7 @@ import { DashboardService } from '../../dashboard.service';
 import { Athlete } from '../../../models/athlete.model';
 import { AssignCoachComponent } from '../../../components/assign-coach/assign-coach.component';
 import { CommonModule } from '@angular/common';
+import { UiService } from '../../../services/ui.service';
 
 @Component({
   selector: '[app-athelete-item]',
@@ -25,7 +26,8 @@ export class AtheleteItemComponent implements OnDestroy {
 
   constructor(
     private viewContainerRef: ViewContainerRef,
-    private dbService: DashboardService
+    private dbService: DashboardService,
+    private uiService: UiService
   ) {}
 
   openAssignCoachPopup() {
@@ -47,8 +49,15 @@ export class AtheleteItemComponent implements OnDestroy {
   }
 
   updateAthletesStatus(id: string, status: boolean) {
-    this.dbService.updateAthletesStatus(id, status).subscribe((rs) => {
-      this.getTableData.next();
+    this.item.status = status;
+    this.dbService.updateAthletesStatus(id, status).subscribe({
+      next: (value) => {
+        this.uiService.openSnackbar('Status Updated.');
+      },
+      error: (err) => {
+        this.item.status = !status;
+        this.uiService.openSnackbar('Status Update Failed.');
+      },
     });
   }
 

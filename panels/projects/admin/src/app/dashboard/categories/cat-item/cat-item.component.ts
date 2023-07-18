@@ -10,6 +10,7 @@ import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule, NgIf } from '@angular/common';
+import { UiService } from '../../../services/ui.service';
 
 @Component({
   selector: '[app-cat-item]',
@@ -25,13 +26,19 @@ export class CatItemComponent implements OnDestroy {
 
   constructor(
     private viewContainerRef: ViewContainerRef,
-    private dbService: DashboardService
+    private dbService: DashboardService,
+    private uiService: UiService
   ) {}
 
   updateCategoryStatus(id: string, status: boolean) {
-    this.dbService
-      .updateCategoryStatus(id, status)
-      .subscribe((rs) => this.getTableData.next());
+    this.item.status = status;
+    this.dbService.updateCategoryStatus(id, status).subscribe({
+      next: (value) => this.uiService.openSnackbar('Status updated.'),
+      error: (err) => {
+        this.item.status = !status;
+        this.uiService.openSnackbar('Status update Failed.');
+      },
+    });
   }
 
   ngOnDestroy(): void {
