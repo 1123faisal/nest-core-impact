@@ -31,7 +31,6 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
 import { JwtAuthGuardIsAdmin } from './jwt-auth.guard';
-import { User } from 'src/users/entities/user.entity';
 
 @ApiTags("Admin's")
 @Controller('admins')
@@ -56,15 +55,6 @@ export class AdminsController {
   async unassignCoaches(@Param('id') id: string) {
     await this.adminService.unassignCoaches(id);
     return { message: 'Coaches Unassigned' };
-  }
-
-  // all user
-  @Get('/alluser')
-  findUser(
-    @Query('skip', ParseIntPipe) skip?: number,
-    @Query('limit', ParseIntPipe) limit?: number,
-  ): Promise<PaginatedDto<User>> {
-    return this.adminService.findUser(skip, limit);
   }
 
   @Get()

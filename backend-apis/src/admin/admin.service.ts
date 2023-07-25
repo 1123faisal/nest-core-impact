@@ -52,7 +52,6 @@ export class AdminsService {
     };
   }
 
-  //remove choachs
   async unassignCoaches(id: string): Promise<void> {
     await this.userModel.findByIdAndUpdate(id, {
       $set: {
@@ -62,18 +61,6 @@ export class AdminsService {
         pitching_coach: null,
       },
     });
-  }
-
-  //find all user
-  async findUser(skip?: number, limit?: number): Promise<PaginatedDto<User>> {
-    return {
-      results: await this.userModel
-        .find()
-        .sort({ _id: -1 })
-        .skip(skip)
-        .limit(limit),
-      total: await this.userModel.countDocuments(),
-    };
   }
 
   async findOne(id: string) {
@@ -123,33 +110,6 @@ export class AdminsService {
     );
   }
 
-  async assignAthletes(athleteId: string, ...coaches: string[]) {
-    const [physician_coach, batting_coach, trainer_coach, pitching_coach] =
-      coaches;
-
-    const uniqueCoaches = new Set(coaches);
-
-    const count = await this.adminModel.countDocuments({
-      _id: { $in: uniqueCoaches },
-    });
-
-    if (count == uniqueCoaches.size) {
-      throw new BadRequestException('invalid coach ids detected');
-    }
-
-    return await this.adminModel.updateMany(
-      {
-        _id: {
-          $in: coaches,
-        },
-      },
-      {
-        $addToSet: { athletes: athleteId },
-      },
-      { new: true },
-    );
-  }
-
   async getDashboardSetting(): Promise<AdminSetting> {
     let setting = await this.Setting.findOne();
 
@@ -180,5 +140,4 @@ export class AdminsService {
       new: true,
     });
   }
-  // async playerCoachs()
 }
