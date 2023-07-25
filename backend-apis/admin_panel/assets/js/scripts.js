@@ -27,11 +27,11 @@ $(function () {
   var update_sidebar_nicescroll = function () {
     let a = setInterval(function () {
       if (sidebar_nicescroll != null) sidebar_nicescroll.resize();
-    }, 10);
+    }, 1);
 
     setTimeout(function () {
       clearInterval(a);
-    }, 600);
+    }, 10);
   };
 
   var sidebar_dropdown = function () {
@@ -97,7 +97,7 @@ $(function () {
       setTimeout(function () {
         $(".main-sidebar").niceScroll(sidebar_nicescroll_opts);
         sidebar_nicescroll = $(".main-sidebar").getNiceScroll();
-      }, 500);
+      }, 100);
       $(".main-sidebar .sidebar-menu > li > ul .dropdown-title").remove();
       $(".main-sidebar .sidebar-menu > li > a").removeAttr("data-toggle");
       $(".main-sidebar .sidebar-menu > li > a").removeAttr(
@@ -226,7 +226,7 @@ $(function () {
         setTimeout(function () {
           sidebar_nicescroll = main_sidebar.niceScroll(sidebar_nicescroll_opts);
           sidebar_nicescroll = main_sidebar.getNiceScroll();
-        }, 700);
+        }, 100);
 
         sidebar_dropdown();
         $(".main-wrapper").removeClass("container");
