@@ -6,6 +6,7 @@ import { Setting } from '../../models/setting.model';
 import { Athlete } from '../../models/athlete.model';
 import { AuthService } from '../../auth/auth.service';
 import { CommonModule } from '@angular/common';
+import { UiService } from '../../services/ui.service';
 declare var $: any;
 
 @Component({
@@ -22,7 +23,8 @@ export class DashboardHomeComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    public dbService: DashboardService
+    public dbService: DashboardService,
+    public uiService: UiService
   ) {
     this.user = this.authService.getUser();
   }
@@ -77,6 +79,13 @@ export class DashboardHomeComponent implements OnInit {
       return;
     }
 
+    if (
+      !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
+    ) {
+      this.uiService.openSnackbar('Please select jpg,png file');
+      return;
+    }
+
     this.dbService
       .updateDashboardSetting(undefined, el.files.item(0)!)
       .pipe(
@@ -100,6 +109,13 @@ export class DashboardHomeComponent implements OnInit {
 
     if (!el.files?.length) {
       console.log('no image');
+      return;
+    }
+
+    if (
+      !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
+    ) {
+      this.uiService.openSnackbar('Please select jpg,png file');
       return;
     }
 

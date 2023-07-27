@@ -7,6 +7,7 @@ import { Observable, shareReplay } from 'rxjs';
 import { Category } from '../../models/category.model';
 import { AddExerciseComponent } from './add-exercise/add-exercise.component';
 import { AddSessionComponent } from './add-session/add-session.component';
+import { UiService } from '../../services/ui.service';
 
 @Component({
   selector: 'app-trainings',
@@ -23,7 +24,8 @@ export class TrainingsComponent implements OnInit {
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
-    private location: Location
+    private location: Location,
+    private uiService: UiService
   ) {}
 
   ngOnInit(): void {
@@ -95,6 +97,14 @@ export class TrainingsComponent implements OnInit {
       this.snackbar.open('Please select file', undefined, {
         duration: 2 * 1000,
       });
+      return;
+    }
+
+    if (
+      !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
+    ) {
+      this.uiService.openSnackbar('Please select jpg,png file');
+      return;
     }
 
     this.form.get('file')?.patchValue(el.files?.item(0));

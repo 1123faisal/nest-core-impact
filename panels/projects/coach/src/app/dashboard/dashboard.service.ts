@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../models/user.model';
-import { Athlete } from '../models/athlete.model';
-import { Coach } from '../models/coach.model';
-import { Setting } from '../models/setting.model';
-import { PaginatedResponse } from '../models/paginated.model';
-import { Exercise } from '../models/excercise.model';
 import { environment } from '../../environments/environment';
+import { Athlete } from '../models/athlete.model';
 import { Category } from '../models/category.model';
+import { Coach } from '../models/coach.model';
+import { Exercise } from '../models/excercise.model';
+import { PaginatedResponse } from '../models/paginated.model';
+import { Setting } from '../models/setting.model';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',

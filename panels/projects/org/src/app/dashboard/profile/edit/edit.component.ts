@@ -14,6 +14,7 @@ import { User } from '../../../models/user.model';
 import { AuthService } from '../../../auth/auth.service';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 import { REGX } from 'regex';
+import { UiService } from '../../../services/ui.service';
 
 @Component({
   selector: 'app-edit',
@@ -32,7 +33,8 @@ export class EditComponent implements OnInit {
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
     private location: Location,
-    private authService: AuthService
+    private authService: AuthService,
+    private uiService: UiService
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +95,14 @@ export class EditComponent implements OnInit {
       this.snackbar.open('Please select file', undefined, {
         duration: 2 * 1000,
       });
+      return;
+    }
+
+    if (
+      !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
+    ) {
+      this.uiService.openSnackbar('Please select jpg,png file');
+      return;
     }
 
     this.form.get('avatar')?.patchValue(el.files?.item(0));

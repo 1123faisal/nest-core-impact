@@ -14,6 +14,7 @@ import { Coach } from '../../../models/coach.model';
 import { Athlete, Gender } from '../../../models/athlete.model';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 import { REGX } from 'regex';
+import { UiService } from '../../../services/ui.service';
 declare var $: any;
 
 enum FormMode {
@@ -43,7 +44,8 @@ export class AddAthletesOrCoachComponent implements OnInit {
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private uiService: UiService
   ) {}
 
   ngOnInit(): void {
@@ -248,6 +250,13 @@ export class AddAthletesOrCoachComponent implements OnInit {
       this.snackbar.open('Please select file', undefined, {
         duration: 2 * 1000,
       });
+      return;
+    }
+
+    if (
+      !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
+    ) {
+      this.uiService.openSnackbar('Please select jpg,png file');
       return;
     }
 

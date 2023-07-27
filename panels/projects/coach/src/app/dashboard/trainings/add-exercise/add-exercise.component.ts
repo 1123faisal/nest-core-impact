@@ -1,3 +1,4 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import {
   FormArray,
@@ -7,11 +8,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DashboardService } from '../../dashboard.service';
-import { CommonModule, Location } from '@angular/common';
-import { Observable, map, shareReplay } from 'rxjs';
-import { Category } from '../../../models/category.model';
+import { Observable, map } from 'rxjs';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
+import { Category } from '../../../models/category.model';
+import { DashboardService } from '../../dashboard.service';
+import { UiService } from '../../../services/ui.service';
 
 @Component({
   selector: '[app-add-exercise]',
@@ -29,7 +30,8 @@ export class AddExerciseComponent {
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
-    private location: Location
+    private location: Location,
+    private uiService: UiService
   ) {}
 
   ngOnInit(): void {
@@ -92,8 +94,9 @@ export class AddExerciseComponent {
         this.snackbar.open('Exercise Added.', undefined, {
           duration: 2 * 1000,
         });
+        this.form.reset();
         (document.getElementById('file') as HTMLInputElement).value = '';
-        this.location.back();
+        // this.location.back();
       });
   }
 
@@ -105,7 +108,17 @@ export class AddExerciseComponent {
       this.snackbar.open('Please select file', undefined, {
         duration: 2 * 1000,
       });
+      return;
     }
+
+    if (
+      !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
+    ) {
+      this.uiService.openSnackbar('Please select jpg,png file');
+      return;
+    }
+
+    console.log(el.files?.item(0));
 
     this.form.get('file')?.patchValue(el.files?.item(0));
   }

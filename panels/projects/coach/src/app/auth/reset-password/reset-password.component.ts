@@ -23,6 +23,7 @@ import { CommonModule } from '@angular/common';
 export class ResetPasswordComponent implements OnInit {
   form!: FormGroup;
   passShow: boolean = false;
+  passShow1: boolean = false;
 
   constructor(
     private fb: FormBuilder,

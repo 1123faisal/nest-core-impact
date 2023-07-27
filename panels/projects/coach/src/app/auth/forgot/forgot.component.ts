@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { CommonModule } from '@angular/common';
 import { InputErrorComponent } from '../../components/input-error/input-error.component';
+import { REGX } from 'regex';
 
 @Component({
   selector: 'app-forgot',
@@ -41,7 +42,7 @@ export class ForgotComponent implements OnInit {
 
   formInit() {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.pattern(REGX.Email)]],
     });
   }
 

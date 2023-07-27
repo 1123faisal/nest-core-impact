@@ -93,6 +93,17 @@ export class EditComponent implements OnInit {
       this.snackbar.open('Please select file', undefined, {
         duration: 2 * 1000,
       });
+      return;
+    }
+
+    let file = el.files?.item(0);
+
+    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file!.type)) {
+      this.snackbar.dismiss();
+      this.snackbar.open('Please select jpg,png file', undefined, {
+        duration: 2 * 1000,
+      });
+      return;
     }
 
     this.form.get('avatar')?.patchValue(el.files?.item(0));

@@ -78,14 +78,18 @@
     </div>
   </section>
 
-  <section class="particularAthWrap">
-    <div class="particularHeader">
-      <h1>Leading Athlete</h1>
-    </div>
-  </section>
-
   <ng-container *ngIf="athletes | async; let athletesList; else: loading">
-    <div class="owl-carousel owl-theme" data-slider-id="1">
+    <section class="particularAthWrap" *ngIf="athletesList.length !== 0">
+      <div class="particularHeader">
+        <h1>Leading Athlete</h1>
+      </div>
+    </section>
+
+    <div
+      class="owl-carousel owl-theme"
+      data-slider-id="1"
+      *ngIf="athletesList.length !== 0"
+    >
       <div *ngFor="let item of athletesList" class="item">
         <section class="palyerProfileWrap grdColor">
           <div class="playerBLeft">

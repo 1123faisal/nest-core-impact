@@ -53,6 +53,9 @@
                         [idx]="i"
                       ></tr>
                     </ng-container>
+                    <ng-container *ngIf="items.length === 0">
+                      <span style="color: white">No items found.</span>
+                    </ng-container>
                   </ng-container>
 
                   <ng-template #loading>

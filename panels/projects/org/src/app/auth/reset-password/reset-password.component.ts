@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { CommonModule } from '@angular/common';
 import { InputErrorComponent } from '../../components/input-error/input-error.component';
+import { REGX } from 'regex';
 
 @Component({
   selector: 'app-reset-password',
@@ -41,7 +42,7 @@ export class ResetPasswordComponent implements OnInit {
 
   formInit(email: string, otp: string) {
     this.form = this.fb.group({
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.pattern(REGX.Password)]],
       email: [email, [Validators.required]],
       otp: [otp, [Validators.required]],
       confirmPassword: ['', [Validators.required]],

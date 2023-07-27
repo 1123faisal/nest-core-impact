@@ -119,7 +119,8 @@ export class AddSessionComponent {
           duration: 2 * 1000,
         });
         (document.getElementById('file') as HTMLInputElement).value = '';
-        this.location.back();
+        // this.location.back();
+        this.form.reset();
       });
   }
 
