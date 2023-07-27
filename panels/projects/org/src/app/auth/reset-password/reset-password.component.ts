@@ -21,6 +21,8 @@ import { InputErrorComponent } from '../../components/input-error/input-error.co
 })
 export class ResetPasswordComponent implements OnInit {
   form!: FormGroup;
+  passShow: boolean = false;
+  passShow1: boolean = false;
 
   constructor(
     private fb: FormBuilder,

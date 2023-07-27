@@ -7,12 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../dashboard.service';
 import { Observable } from 'rxjs';
 import { Coach } from '../../../models/coach.model';
 import { Athlete, Gender } from '../../../models/athlete.model';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
+import { REGX } from 'regex';
 declare var $: any;
 
 enum FormMode {
@@ -41,7 +42,8 @@ export class AddAthletesOrCoachComponent implements OnInit {
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -91,21 +93,27 @@ export class AddAthletesOrCoachComponent implements OnInit {
 
   formInit(rs?: AthleteOrCoach) {
     this.form = this.fb.group({
-      name: [rs?.name || '', [Validators.required]],
-      avatar: [''],
+      name: [
+        rs?.name || '',
+        [Validators.required, Validators.pattern(REGX.Name)],
+      ],
+      avatar: ['', [Validators.required]],
       gender: [rs?.gender || 'Male', [Validators.required]],
-      email: [rs?.email || '', [Validators.required]],
-      mobile: [rs?.mobile || '', [Validators.required]],
+      email: [
+        rs?.email || '',
+        [Validators.required, Validators.pattern(REGX.Email)],
+      ],
+      mobile: [
+        rs?.mobile || '',
+        [Validators.required, Validators.pattern(REGX.Mobile)],
+      ],
     });
   }
 
   submit() {
     if (this.form?.invalid) {
       this.form.markAllAsTouched();
-      this.snackbar.dismiss();
-      this.snackbar.open('invalid form', undefined, {
-        duration: 2 * 1000,
-      });
+
       return;
     }
 
@@ -176,7 +184,7 @@ export class AddAthletesOrCoachComponent implements OnInit {
     this.dbService.addAthletes(name, gender, email, mobile, avatar).subscribe({
       next: (rs) => {
         this.formReset();
-        this.location.back();
+        this.router.navigate(['/dashboard/list-ath-coach']);
       },
     });
   }
@@ -194,7 +202,7 @@ export class AddAthletesOrCoachComponent implements OnInit {
       .subscribe({
         next: (rs) => {
           this.formReset();
-          this.location.back();
+          this.router.navigate(['/dashboard/list-ath-coach']);
         },
       });
   }

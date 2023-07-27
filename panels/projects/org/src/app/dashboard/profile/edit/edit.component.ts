@@ -13,6 +13,7 @@ import { CommonModule, Location } from '@angular/common';
 import { User } from '../../../models/user.model';
 import { AuthService } from '../../../auth/auth.service';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
+import { REGX } from 'regex';
 
 @Component({
   selector: 'app-edit',
@@ -52,9 +53,18 @@ export class EditComponent implements OnInit {
 
   initForm() {
     this.form = this.fb.group({
-      name: [this.user?.name, [Validators.required]],
-      email: [this.user?.email, [Validators.required]],
-      mobile: [this.user?.mobile, [Validators.required]],
+      name: [
+        this.user?.name,
+        [Validators.required, Validators.pattern(REGX.Name)],
+      ],
+      email: [
+        { value: this.user?.email, disabled: true },
+        [Validators.required, Validators.pattern(REGX.Email)],
+      ],
+      mobile: [
+        this.user?.mobile,
+        [Validators.required, Validators.pattern(REGX.Mobile)],
+      ],
       avatar: [null],
     });
   }

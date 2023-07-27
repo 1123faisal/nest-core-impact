@@ -100,11 +100,6 @@ export class AddComponent {
   submit() {
     if (this.form?.invalid) {
       this.form.markAllAsTouched();
-      this.snackbar.dismiss();
-      this.snackbar.open('invalid form', undefined, {
-        duration: 2 * 1000,
-      });
-      return;
     }
 
     const { name, subCategories } = this.form?.value;
