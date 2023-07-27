@@ -12,6 +12,7 @@ import { UiService } from '../../services/ui.service';
 import { CommonModule } from '@angular/common';
 import { InputErrorComponent } from '../../components/input-error/input-error.component';
 import { ResendOtpComponent } from '../resend-otp/resend-otp.component';
+import { REGX } from 'regex';
 
 @Component({
   selector: 'app-otp',
@@ -51,7 +52,7 @@ export class OtpComponent implements OnInit {
   formInit(email: string) {
     this.form = this.fb.group({
       otp: ['', [Validators.required]],
-      email: [email, [Validators.required]],
+      email: [email, [Validators.required, Validators.pattern(REGX.Email)]],
     });
   }
 

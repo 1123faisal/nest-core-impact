@@ -35,6 +35,7 @@
                 <app-input-error
                   [control]="form.get('name')!"
                   [fieldName]="'Name'"
+                  [patternMsg]="'Name should accept alphabet only.'"
                 ></app-input-error>
               </div>
               <div class="form-group form-box">
@@ -49,6 +50,7 @@
                 <app-input-error
                   [control]="form.get('email')!"
                   [fieldName]="'Email'"
+                  [patternMsg]="'Please enter valid email id.'"
                 ></app-input-error>
               </div>
               <div class="form-group form-box">
