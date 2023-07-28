@@ -56,7 +56,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async sendOtp(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.authService.sendOtp(sendForgotPasswordOTPDto);
   }
 
@@ -64,7 +64,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async resendOTP(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.authService.resendOTP(sendForgotPasswordOTPDto);
   }
 

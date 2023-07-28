@@ -122,7 +122,7 @@ export class AuthService {
 
   async sendOtp(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     const user = await this.userModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
@@ -153,13 +153,11 @@ export class AuthService {
     }
 
     await user.save();
-
-    return otp;
   }
 
   async resendOTP(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     const user = await this.userModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
@@ -185,13 +183,17 @@ export class AuthService {
     // Update the user document with the new OTP and expiration time
     user.otp = await Password.hashPassword(otp);
     user.otpExpiration = otpExpiration;
+
+    const isSent = await this.emailProvider.sentForgotPasswordEmail(
+      user.email,
+      otp,
+    );
+
+    if (!isSent) {
+      throw new ServiceUnavailableException('email service is temporary down');
+    }
+
     await user.save();
-
-    // Send the OTP to the user (implement your own logic here)
-    // e.g., Send an email or SMS with the OTP code
-
-    // You can also return the generated OTP if needed
-    return otp;
   }
 
   async verifyOtp(

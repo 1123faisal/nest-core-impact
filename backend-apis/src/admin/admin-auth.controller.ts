@@ -59,7 +59,7 @@ export class AdminsAuthController {
   @HttpCode(HttpStatus.OK)
   async sendOtp(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.coachAuthService.sendOtp(sendForgotPasswordOTPDto);
   }
 
@@ -67,7 +67,7 @@ export class AdminsAuthController {
   @HttpCode(HttpStatus.OK)
   async resendOTP(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.coachAuthService.resendOTP(sendForgotPasswordOTPDto);
   }
 

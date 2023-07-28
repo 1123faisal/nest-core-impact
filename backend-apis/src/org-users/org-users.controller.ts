@@ -72,7 +72,7 @@ export class OrgUsersController {
   @HttpCode(HttpStatus.OK)
   async sendOtp(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.orgUsersService.sendOtp(sendForgotPasswordOTPDto);
   }
 
@@ -80,7 +80,7 @@ export class OrgUsersController {
   @HttpCode(HttpStatus.OK)
   async resendOTP(
     @Body() sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     return await this.orgUsersService.resendOTP(sendForgotPasswordOTPDto);
   }
 

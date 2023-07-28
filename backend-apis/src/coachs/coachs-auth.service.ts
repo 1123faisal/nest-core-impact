@@ -100,7 +100,7 @@ export class CoachsAuthService {
 
   async sendOtp(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     const user = await this.coachModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
@@ -131,12 +131,11 @@ export class CoachsAuthService {
     }
 
     await user.save();
-    return otp;
   }
 
   async resendOTP(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     const user = await this.coachModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
@@ -173,12 +172,6 @@ export class CoachsAuthService {
     }
 
     await user.save();
-
-    // Send the OTP to the user (implement your own logic here)
-    // e.g., Send an email or SMS with the OTP code
-
-    // You can also return the generated OTP if needed
-    return otp;
   }
 
   async verifyOtp(

@@ -109,7 +109,7 @@ export class OrgUsersService {
 
   async sendOtp(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     const user = await this.orgUserModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
@@ -140,13 +140,11 @@ export class OrgUsersService {
     }
 
     await user.save();
-
-    return otp;
   }
 
   async resendOTP(
     sendForgotPasswordOTPDto: SendForgotPasswordOTPDto,
-  ): Promise<string> {
+  ): Promise<void> {
     const user = await this.orgUserModel
       .findOne({ email: sendForgotPasswordOTPDto.email })
       .exec();
@@ -183,8 +181,6 @@ export class OrgUsersService {
     }
 
     await user.save();
-
-    return otp;
   }
 
   async verifyOtp(
