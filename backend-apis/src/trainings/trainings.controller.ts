@@ -20,7 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuardIsCoach } from 'src/coachs/jwt-auth.guard';
-import { PaginatedDto } from 'src/sports/dto/paginates.dto';
+import { PaginatedDto } from 'src/common/dtos/paginates.dto';
 import { CreateTrainingDto } from './dto/create-training.dto';
 import { UpdateTrainingDto } from './dto/update-training.dto';
 import { TrainingsService } from './trainings.service';

@@ -23,7 +23,7 @@ import {
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
-import { PaginatedDto } from 'src/sports/dto/paginates.dto';
+import { PaginatedDto } from 'src/common/dtos/paginates.dto';
 import { CoachsService } from './coachs.service';
 import { CreateCoachDto } from './dto/create-coach.dto';
 import { UpdateCoachDto } from './dto/update-coach.dto';

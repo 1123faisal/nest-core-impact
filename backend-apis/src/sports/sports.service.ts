@@ -6,7 +6,7 @@ import { CreateSportDto } from './dto/create-sport.dto';
 import { GetAllSportQueryParamDto } from './dto/get-all-sport-query.dto';
 import { UpdateSportDto } from './dto/update-sport.dto';
 import { Sport } from './entities/sport.entity';
-import { PaginatedDto } from './dto/paginates.dto';
+import { PaginatedDto } from '../common/dtos/paginates.dto';
 
 @Injectable()
 export class SportsService {

@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { isValidAvatar } from 'src/common/pipes/is-avatar.pipe';
 import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 import { JwtAuthGuardIsOrg } from 'src/org-users/jwt-auth.guard';
-import { PaginatedDto } from 'src/sports/dto/paginates.dto';
+import { PaginatedDto } from 'src/common/dtos/paginates.dto';
 import { User } from 'src/users/entities/user.entity';
 import { AthletesService } from './athletes.service';
 import { CreateAthleteDto } from './dto/create-athlete.dto';

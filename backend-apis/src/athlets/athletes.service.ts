@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Password } from 'src/common/password';
 import { S3Provider } from 'src/providers/s3.provider';
-import { PaginatedDto } from 'src/sports/dto/paginates.dto';
+import { PaginatedDto } from 'src/common/dtos/paginates.dto';
 import { SportsService } from 'src/sports/sports.service';
 import { Gender, Role } from 'src/users/entities/types';
 import { User } from 'src/users/entities/user.entity';

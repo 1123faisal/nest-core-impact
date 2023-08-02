@@ -25,7 +25,7 @@ import { isMongoIdPipe } from 'src/common/pipes/is-mongo-id.pipe';
 import { checkLogoAndBannerPipe } from 'src/common/pipes/validate-logo-banner.pipe';
 import { OrgSettingDto } from 'src/org-users/dto/org-db-setting.dto';
 import { OrgSetting } from 'src/org-users/entities/settings.entity';
-import { PaginatedDto } from 'src/sports/dto/paginates.dto';
+import { PaginatedDto } from 'src/common/dtos/paginates.dto';
 import { AdminsService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
