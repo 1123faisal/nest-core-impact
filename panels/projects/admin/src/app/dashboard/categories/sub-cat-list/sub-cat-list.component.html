@@ -65,16 +65,24 @@
                 <tbody>
                   <!-- athlete rows -->
 
+                  <ng-template #loading>
+                    <span style="color: white"> Loading... </span>
+                  </ng-template>
+
                   <ng-container
-                    *ngFor="let item of categories.at(0)?.subCategories"
+                    *ngIf="categories | async; let items; else: loading"
                   >
-                    <tr
-                      *ngIf="item"
-                      app-cat-item
-                      [item]="item"
-                      (getTableData)="getTableData()"
-                      [isSubCat]="true"
-                    ></tr>
+                    <ng-container
+                      *ngFor="let item of items.at(0)?.subCategories"
+                    >
+                      <tr
+                        *ngIf="item"
+                        app-cat-item
+                        [item]="item"
+                        (getTableData)="getTableData()"
+                        [isSubCat]="true"
+                      ></tr>
+                    </ng-container>
                   </ng-container>
 
                   <!-- athlete rows -->

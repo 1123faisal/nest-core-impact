@@ -1,8 +1,7 @@
-FROM node:alpine
+FROM node:16
 WORKDIR /app
-RUN npm i -g pnpm
 COPY package.json .
-RUN pnpm i
+RUN npm i
 COPY . .
 EXPOSE 7001
 CMD ["npm", "run","start:dev"]

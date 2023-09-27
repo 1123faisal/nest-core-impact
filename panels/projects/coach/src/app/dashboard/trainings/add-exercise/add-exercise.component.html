@@ -30,11 +30,15 @@
                   formControlName="name"
                   type="text"
                   class="form-control"
+                  minlength="3"
+                  maxlength="100"
                 />
                 <app-input-error
                   [control]="form.get('name')!"
                   [fieldName]="'Name'"
                   [patternMsg]="'Name should accept alphabet only.'"
+                  [minLength]="3"
+                  [maxLength]="100"
                 ></app-input-error>
               </div>
             </div>
@@ -106,9 +110,10 @@
                   formControlName="title"
                   type="text"
                   class="form-control"
+                  placeholder="Title"
                 />
                 <app-input-error
-                  [control]="form.get('title')!"
+                  [control]="getFormArr().controls[i].get('title')!"
                   [fieldName]="'Title'"
                 ></app-input-error>
                 <a
@@ -133,7 +138,9 @@
             </div>
           </div>
           <div class="traingSubmit flex-1">
-            <button class="btn btn-primary">Submit</button>
+            <button [disabled]="submitting" class="btn btn-primary">
+              Submit {{ submitting ? "..." : "" }}
+            </button>
             <button
               type="button"
               (click)="addStep()"

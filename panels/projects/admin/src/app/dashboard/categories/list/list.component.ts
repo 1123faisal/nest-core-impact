@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewContainerRef } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
 import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { CatItemComponent } from '../cat-item/cat-item.component';
@@ -15,10 +15,9 @@ declare var $: any;
   imports: [CommonModule, CatItemComponent],
 })
 export class ListComponent {
-  categories: Category[] = [];
+  categories?: Observable<Category[]>;
 
   constructor(
-    private snackbar: MatSnackBar,
     private dbService: DashboardService,
     private viewContainerRef: ViewContainerRef
   ) {}
@@ -36,9 +35,7 @@ export class ListComponent {
   }
 
   getTableData() {
-    this.dbService.getCategories().subscribe((rs) => {
-      this.categories = rs;
-    });
+    this.categories = this.dbService.getCategories();
   }
 
   deleteCategory(id: string) {

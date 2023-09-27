@@ -7,7 +7,7 @@ export type CmsPageDocument = HydratedDocument<CmsPage>;
 
 @Schema()
 export class CmsPage extends Document {
-  @ApiProperty({ example: 'About Us' })
+  @ApiProperty({ example: 'About Us,,.,.' })
   @Prop({ default: '' })
   name: string;
 

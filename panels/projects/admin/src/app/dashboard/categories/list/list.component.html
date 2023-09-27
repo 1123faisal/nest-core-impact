@@ -65,13 +65,21 @@
                 <tbody>
                   <!-- athlete rows -->
 
-                  <ng-container *ngFor="let item of categories">
-                    <tr
-                      *ngIf="item"
-                      app-cat-item
-                      [item]="item"
-                      (getTableData)="getTableData()"
-                    ></tr>
+                  <ng-template #loading>
+                    <span style="color: white"> Loading... </span>
+                  </ng-template>
+
+                  <ng-container
+                    *ngIf="categories | async; let items; else: loading"
+                  >
+                    <ng-container *ngFor="let item of items">
+                      <tr
+                        *ngIf="item"
+                        app-cat-item
+                        [item]="item"
+                        (getTableData)="getTableData()"
+                      ></tr>
+                    </ng-container>
                   </ng-container>
 
                   <!-- athlete rows -->

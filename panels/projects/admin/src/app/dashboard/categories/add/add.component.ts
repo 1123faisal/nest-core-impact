@@ -14,6 +14,7 @@ import { Category } from '../../../models/category.model';
 import { REGX } from 'regex';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { UiService } from '../../../services/ui.service';
 
 declare var $: any;
 
@@ -38,6 +39,7 @@ export class AddComponent {
   subCategories?: Observable<Category[]>;
   selectedItems: any[] = [];
   dropdownSettings: any = {};
+  submitting: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,7 +47,8 @@ export class AddComponent {
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
-    private location: Location
+    private location: Location,
+    private uiSrv: UiService
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +94,11 @@ export class AddComponent {
     this.form = this.fb.group({
       name: [
         rs?.name || '',
-        [Validators.required, Validators.pattern(REGX.Name)],
+        [
+          Validators.required,
+          Validators.pattern(REGX.Name),
+          Validators.minLength(3),
+        ],
       ],
       subCategories: [rs?.subCategories || []],
     });
@@ -99,9 +106,10 @@ export class AddComponent {
 
   submit() {
     if (this.form?.invalid) {
-      this.form.markAllAsTouched();
+      return this.form.markAllAsTouched();
     }
 
+    this.submitting = true;
     const { name, subCategories } = this.form?.value;
 
     if (!this.isEditMode) {
@@ -127,8 +135,14 @@ export class AddComponent {
   createCategory(name: string, subCategories: string[]) {
     this.dbService.createCategory(name, subCategories).subscribe({
       next: (rs) => {
+        this.uiSrv.openSnackbar('category created successfully.');
         this.formReset();
         this.router.navigate(['/dashboard/categories']);
+        this.submitting = false;
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.uiSrv.handleErr(err);
       },
     });
   }
@@ -136,8 +150,14 @@ export class AddComponent {
   updateCategory(id: string, name: string, subCategories: string[]) {
     this.dbService.updateCategory(id, name, subCategories).subscribe({
       next: (rs) => {
+        this.uiSrv.openSnackbar('category updated successfully.');
         this.formReset();
         this.router.navigate(['/dashboard/categories']);
+        this.submitting = false;
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.uiSrv.handleErr(err);
       },
     });
   }

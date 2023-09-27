@@ -12,6 +12,7 @@ import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { REGX } from 'regex';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
+import { UiService } from '../../../services/ui.service';
 
 declare var $: any;
 
@@ -27,11 +28,12 @@ export class AddSubCatComponent {
   isEditMode: boolean = false;
   onUpdateRecordId?: string;
   categoryId?: string;
+  submitting: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
-    private snackbar: MatSnackBar,
+    private uiSrv: UiService,
     private dbService: DashboardService,
     private location: Location
   ) {}
@@ -65,7 +67,12 @@ export class AddSubCatComponent {
     this.form = this.fb.group({
       name: [
         rs?.name || '',
-        [Validators.required, Validators.pattern(REGX.Name)],
+        [
+          Validators.required,
+          Validators.pattern(REGX.Name),
+          Validators.minLength(3),
+          Validators.maxLength(100),
+        ],
       ],
       categoryId: [this.categoryId],
     });
@@ -73,27 +80,19 @@ export class AddSubCatComponent {
 
   submit() {
     if (this.form?.invalid) {
-      this.form.markAllAsTouched();
-      this.snackbar.dismiss();
-      this.snackbar.open('invalid form', undefined, {
-        duration: 2 * 1000,
-      });
-      return;
+      return this.form.markAllAsTouched();
     }
 
     const { name, categoryId } = this.form?.value;
+    this.submitting = true;
 
     if (!this.isEditMode) {
       this.createSubCategory(name, categoryId);
     } else {
       if (!this.onUpdateRecordId) {
-        this.snackbar.dismiss();
-        this.snackbar.open('update record id not found.', undefined, {
-          duration: 2 * 1000,
-        });
+        this.uiSrv.openSnackbar('update record id not found.');
         return;
       }
-
       this.updateCategory(this.onUpdateRecordId, name);
     }
   }
@@ -106,8 +105,13 @@ export class AddSubCatComponent {
   createSubCategory(name: string, categoryId: string) {
     this.dbService.createSubCategory(name, categoryId).subscribe({
       next: (rs) => {
+        this.submitting = false;
         this.formReset();
         this.location.back();
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.uiSrv.handleErr(err);
       },
     });
   }
@@ -115,8 +119,13 @@ export class AddSubCatComponent {
   updateCategory(id: string, name: string) {
     this.dbService.updateSubCategory(id, name).subscribe({
       next: (rs) => {
+        this.submitting = false;
         this.formReset();
         this.location.back();
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.uiSrv.handleErr(err);
       },
     });
   }

@@ -72,6 +72,7 @@ export class AppController {
     // await this.cacheManager.set(req.url, 'optimizedImageBuffer');
     console.log({
       vv: await this.cacheManager.get(req.url),
+      text: 'hello',
     });
 
     res.set({

@@ -1,5 +1,5 @@
 export const REGX = {
-  Name: /^[a-zA-Z\s'-]+$/,
+  Name: /^(?=.*[a-zA-Z])^[a-zA-Z\s'-]+$/,
   Mobile: /^\+?\d{1,4}?[-. ]?\d{3,4}[-. ]?\d{3,9}$/,
   Email: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
   Password:

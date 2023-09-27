@@ -103,7 +103,13 @@
             </div>
           </div>
           <div class="traingSubmit">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button
+              [disabled]="submitting"
+              type="submit"
+              class="btn btn-primary"
+            >
+              Submit {{ submitting ? "..." : "" }}
+            </button>
           </div>
         </form>
       </div>

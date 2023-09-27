@@ -16,4 +16,10 @@ export class UiService {
       duration: 1000 * 2,
     });
   }
+
+  handleErr(err: any) {
+    this.openSnackbar(
+      err?.message ?? err?.error?.message ?? 'An error occurred.'
+    );
+  }
 }

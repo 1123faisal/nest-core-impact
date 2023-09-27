@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Category } from '../../../models/category.model';
 import { DashboardService } from '../../dashboard.service';
 import { CatItemComponent } from '../cat-item/cat-item.component';
+import { Observable } from 'rxjs';
 
 declare var $: any;
 
@@ -16,7 +17,7 @@ declare var $: any;
   imports: [CatItemComponent, CommonModule],
 })
 export class SubCatListComponent {
-  categories: Category[] = [];
+  categories?: Observable<Category[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,10 +40,9 @@ export class SubCatListComponent {
 
   getTableData() {
     this.route.queryParams.subscribe((rs) => {
-      rs['parentId'] &&
-        this.dbService.getCategories(false, rs['parentId']).subscribe((rs) => {
-          this.categories = rs;
-        });
+      if (rs['parentId']) {
+        this.categories = this.dbService.getCategories(false, rs['parentId']);
+      }
     });
   }
 

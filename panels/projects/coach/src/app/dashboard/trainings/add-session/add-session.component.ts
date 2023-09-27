@@ -14,6 +14,7 @@ import { Exercise } from '../../../models/excercise.model';
 import { Category } from '../../../models/category.model';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { UiService } from '../../../services/ui.service';
 
 interface Item {
   _id: string;
@@ -43,11 +44,13 @@ export class AddSessionComponent {
   selectedItems: any[] = [];
   dropdownSettings: any = {};
 
+  submitting: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private dbService: DashboardService,
-    private location: Location
+    private uiSrv: UiService
   ) {}
 
   ngOnInit(): void {
@@ -110,17 +113,22 @@ export class AddSessionComponent {
     }
 
     const { exCategory, exSubCategory, exercise, athletes } = this.form.value;
+    this.submitting = true;
 
     this.dbService
       .createTrainingSession(exCategory, exSubCategory, exercise, athletes)
-      .subscribe((rs) => {
-        this.snackbar.dismiss();
-        this.snackbar.open('Session Added.', undefined, {
-          duration: 2 * 1000,
-        });
-        (document.getElementById('file') as HTMLInputElement).value = '';
-        // this.location.back();
-        this.form.reset();
+      .subscribe({
+        next: (rs) => {
+          this.submitting = false;
+          this.uiSrv.openSnackbar('Session Added.');
+          (document.getElementById('file') as HTMLInputElement).value = '';
+          // this.location.back();
+          this.form.reset();
+        },
+        error: (err) => {
+          this.submitting = false;
+          this.uiSrv.handleError(err);
+        },
       });
   }
 

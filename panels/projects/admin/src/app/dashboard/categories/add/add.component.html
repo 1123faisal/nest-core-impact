@@ -59,11 +59,15 @@
                       type="text"
                       class="form-control"
                       maxlength="100"
+                      minlength="3"
+                      placeholder="Name"
                     />
                     <app-input-error
                       [control]="form.get('name')!"
                       [fieldName]="'Name'"
                       [patternMsg]="'Name should accept alphabet only.'"
+                      [minLength]="3"
+                      [maxLength]="100"
                     ></app-input-error>
                   </div>
 
@@ -90,7 +94,9 @@
                   </div>
                 </div>
                 <div class="traingSubmit">
-                  <button class="btn btn-primary">Submit</button>
+                  <button [disabled]="submitting" class="btn btn-primary">
+                    Submit {{ submitting ? "..." : "" }}
+                  </button>
                 </div>
               </div>
             </form>

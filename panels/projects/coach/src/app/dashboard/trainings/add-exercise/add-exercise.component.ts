@@ -7,12 +7,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { REGX } from 'regex';
 import { Observable, map } from 'rxjs';
 import { InputErrorComponent } from '../../../components/input-error/input-error.component';
 import { Category } from '../../../models/category.model';
-import { DashboardService } from '../../dashboard.service';
 import { UiService } from '../../../services/ui.service';
+import { DashboardService } from '../../dashboard.service';
 
 @Component({
   selector: '[app-add-exercise]',
@@ -25,13 +25,13 @@ export class AddExerciseComponent {
   form!: FormGroup;
   subCategories?: Observable<Category[] | undefined>;
   @Input() categories?: Observable<Category[]>;
+  submitting: boolean = false;
 
   constructor(
     private fb: FormBuilder,
-    private snackbar: MatSnackBar,
+    private uiSrv: UiService,
     private dbService: DashboardService,
-    private location: Location,
-    private uiService: UiService
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +46,15 @@ export class AddExerciseComponent {
 
   formInit() {
     this.form = this.fb.group({
-      name: ['', [Validators.required]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(REGX.Name),
+          Validators.minLength(3),
+          Validators.maxLength(100),
+        ],
+      ],
       exCategory: [null, [Validators.required]],
       exSubCategory: [null, [Validators.required]],
       steps: this.fb.array([this.getNewStep()]),
@@ -57,8 +65,8 @@ export class AddExerciseComponent {
 
   getNewStep() {
     return this.fb.group({
-      title: [],
-      content: [],
+      title: ['', [Validators.required]],
+      content: ['', [Validators.required]],
     });
   }
 
@@ -81,22 +89,27 @@ export class AddExerciseComponent {
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.snackbar.dismiss();
       return;
     }
+
+    this.submitting = true;
 
     const { name, steps, file, description, exCategory, exSubCategory } =
       this.form.value;
     this.dbService
       .createExercise(name, steps, file, description, exCategory, exSubCategory)
-      .subscribe((rs) => {
-        this.snackbar.dismiss();
-        this.snackbar.open('Exercise Added.', undefined, {
-          duration: 2 * 1000,
-        });
-        this.form.reset();
-        (document.getElementById('file') as HTMLInputElement).value = '';
-        // this.location.back();
+      .subscribe({
+        next: (rs) => {
+          this.submitting = false;
+          this.uiSrv.openSnackbar('Exercise Added.');
+          this.form.reset();
+          (document.getElementById('file') as HTMLInputElement).value = '';
+          // this.location.back();
+        },
+        error: (err) => {
+          this.submitting = false;
+          this.uiSrv.handleError(err);
+        },
       });
   }
 
@@ -104,21 +117,16 @@ export class AddExerciseComponent {
     const el = e.target as HTMLInputElement;
 
     if (!el.files?.length) {
-      this.snackbar.dismiss();
-      this.snackbar.open('Please select file', undefined, {
-        duration: 2 * 1000,
-      });
+      this.uiSrv.openSnackbar('Please select file');
       return;
     }
 
     if (
       !['image/png', 'image/jpeg', 'image/jpg'].includes(el.files.item(0)!.type)
     ) {
-      this.uiService.openSnackbar('Please select jpg,png file');
+      this.uiSrv.openSnackbar('Please select jpg,png file');
       return;
     }
-
-    console.log(el.files?.item(0));
 
     this.form.get('file')?.patchValue(el.files?.item(0));
   }

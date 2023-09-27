@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  nestjs:
+    image: nestjs
+    ports:
+      - "7001:7001"
+    build:
+      context: ./backend-apis
+      dockerfile: Dockerfile
+    command: npm run start:dev
+    volumes:
+      - ./backend-apis:/app
+      - /app/node_modules
+
+  admin:
+    image: panels
+    ports:
+      - "4200:4200"
+    build:
+      context: ./panels
+      dockerfile: Dockerfile
+    command: ng s admin --host 0.0.0.0 --port 4200
+    volumes:
+      - ./panels:/app
+      - /app/node_modules
+
+  coach:
+    image: panels
+    ports:
+      - "4201:4201"
+    build:
+      context: ./panels
+      dockerfile: Dockerfile
+    command: ng s coach --host 0.0.0.0 --port 4201
+    volumes:
+      - ./panels:/app
+      - /app/node_modules
+
+  org:
+    image: panels
+    ports:
+      - "4202:4202"
+    build:
+      context: ./panels
+      dockerfile: Dockerfile
+    command: ng s org --host 0.0.0.0 --port 4202
+    volumes:
+      - ./panels:/app
+      - /app/node_modules
