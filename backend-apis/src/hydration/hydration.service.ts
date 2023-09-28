@@ -14,28 +14,30 @@ export class HydrationService {
     private readonly hydrationModel: Model<Hydration>,
   ) {}
 
-  async getLastTarget(): Promise<Hydration> {
-    const item = await this.hydrationModel.findOne().sort({ date: -1 });
+  async getLastTarget(uid: string): Promise<Hydration> {
+    const item = await this.hydrationModel
+      .findOne({ user: uid })
+      .sort({ date: -1 });
     if (!item) {
       throw new NotFoundException('item not found.');
     }
     return item;
   }
 
-  async setTarget(setTargetDto: SetTargetDto): Promise<Hydration> {
+  async setTarget(setTargetDto: SetTargetDto, uid: string): Promise<Hydration> {
     const currentDate = moment().toDate();
     const startOfDay = moment().startOf('day').toDate();
     const endOfDay = moment().endOf('day').toDate();
 
     return await this.hydrationModel.findOneAndUpdate(
-      { date: { $gte: startOfDay, $lt: endOfDay } },
+      { date: { $gte: startOfDay, $lt: endOfDay }, user: uid },
       { target: setTargetDto.target, date: currentDate },
       { new: true, upsert: true },
     );
   }
 
-  async create(createHydrationLogDto: CreateHydrationLogDto) {
-    const item = await this.getLastTarget();
+  async create(createHydrationLogDto: CreateHydrationLogDto, uid: string) {
+    const item = await this.getLastTarget(uid);
     const { quantity, in: hIn } = createHydrationLogDto;
     item.logs.push({ in: hIn, quantity });
     return await item.save();

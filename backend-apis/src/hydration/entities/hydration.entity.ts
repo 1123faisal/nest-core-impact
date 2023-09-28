@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document, HydratedDocument } from 'mongoose';
+import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
+import { User } from 'src/users/entities/user.entity';
 
 export type HydrationDocument = HydratedDocument<Hydration>;
 
@@ -21,6 +22,10 @@ export class Hydration extends Document {
   })
   @Prop({ type: [{ quantity: Number, in: String }] })
   logs: { quantity: number; in: string }[];
+
+  @ApiProperty({ example: new Types.ObjectId(), required: false })
+  @Prop({ default: null, type: mongoose.Schema.Types.ObjectId, ref: 'users' })
+  user: User;
 }
 
 const HydrationSchema = SchemaFactory.createForClass(Hydration);
