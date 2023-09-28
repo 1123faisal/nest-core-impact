@@ -28,6 +28,7 @@ import { BullModule } from '@nestjs/bull';
 import { DateTimeProvider } from './providers/datetime.provider';
 import { AppConsumer } from './app.consumer';
 // import { AppConsumer } from './app.consumer';
+import { HydrationModule } from './hydration/hydration.module';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import { AppConsumer } from './app.consumer';
     TrainingSessionsModule,
     AdminsModule,
     ExerciseCategoriesModule,
+    HydrationModule,
   ],
   controllers: [AppController],
   providers: [
