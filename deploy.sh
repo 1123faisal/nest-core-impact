@@ -17,7 +17,7 @@ git push || true
 cd ..
 
 cd backend-apis
-nest build
+npm run build
 
 git add .
 git commit -m "$msg" || true
@@ -25,9 +25,9 @@ git push || true
 
 cd ..
 
-rsync -av --exclude='node_modules/' --exclude='.vscode/' --exclude='.angular/' --exclude='core_Impact_admin_theme/' --exclude='.git/' --exclude='dist/' --include='.*' ./ /home/faisal/Projects/shalesh_projects/core-impact-project/copy
+rsync -av --exclude='node_modules/' --exclude='.vscode/' --exclude='.angular/' --exclude='core_Impact_admin_theme/' --exclude='.git/' --exclude='dist/' --include='.*' ./ /home/faisal/projects/shalesh_projects/core-impact-project/copy
 
-cd /home/faisal/Projects/shalesh_projects/core-impact-project/copy
+cd /home/faisal/projects/shalesh_projects/core-impact-project/copy
 
 git add .
 git commit -m "$msg" || true
@@ -35,9 +35,9 @@ git push || true
 
 cd -
 
-cd /home/faisal/Projects
+cd /home/faisal/projects
 
-ssh -i Fetch-delivery.pem ubuntu@44.195.125.80 <<EOF
+ssh -i wm_nodejs.pem ubuntu@44.195.125.80 <<EOF
     cd /var/www/html/coreimpact3 && git pull && npm i --omit=dev && pm2 reload coreimpact
     exit
 EOF

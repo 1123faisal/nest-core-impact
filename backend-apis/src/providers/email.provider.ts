@@ -29,7 +29,7 @@ export class EmailProvider {
 
   async sentEmail(to: string, subject: string, text: string): Promise<boolean> {
     const mailOptions = {
-      from: 'your-email@example.com',
+      from: this.configService.get('NODE_MAILER_USER'),
       to,
       subject,
       text,

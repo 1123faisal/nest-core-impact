@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateHydrationLogDto {
   @ApiProperty({ example: 2 })
@@ -9,4 +9,8 @@ export class CreateHydrationLogDto {
   @ApiProperty({ example: 'ml' })
   @IsString()
   in: string;
+
+  @ApiProperty({ example: 56 })
+  @IsOptional()
+  totalQ;
 }

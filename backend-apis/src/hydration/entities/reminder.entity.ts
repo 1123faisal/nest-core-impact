@@ -17,26 +17,26 @@ const validTime = {
 
 export type ReminderDocument = HydratedDocument<Reminder>;
 
-@Schema()
+@Schema({timestamps:true})
 export class Reminder extends Document {
   @ApiProperty({ example: ReminderType.Auto, required: false })
   @Prop({
-    type: String,
-    enum: ReminderType,
+    // type: String,
+    enum: Object.values(ReminderType),
     default: ReminderType.Auto,
   })
   reminderType: ReminderType;
 
   @ApiProperty({ example: '12:12 AM', required: false })
-  @Prop({ default: null, validate: validTime })
+  @Prop({ default: '' })
   time: string;
 
   @ApiProperty({ example: '12:12 AM', required: false })
-  @Prop({ default: null, validate: validTime })
+  @Prop({ default: '' })
   startTime: string;
 
   @ApiProperty({ example: '12:12 AM', required: false })
-  @Prop({ default: null, validate: validTime })
+  @Prop({ default: '' })
   endTime: string;
 
   @ApiProperty({

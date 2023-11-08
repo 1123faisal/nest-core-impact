@@ -1,0 +1,64 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: core-impact
+build:
+  local:
+    push: false
+  artifacts:
+    - image: backend
+      context: backend-apis
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: admin
+      context: panels
+      docker:
+        dockerfile: admin.Dockerfile
+      sync:
+        manual:
+          - src: "projects/admin/src/**/*"
+            dest: .
+    - image: coach
+      context: panels
+      docker:
+        dockerfile: coach.Dockerfile
+      sync:
+        manual:
+          - src: "projects/coach/src/**/*"
+            dest: .
+    - image: org
+      context: panels
+      docker:
+        dockerfile: org.Dockerfile
+      sync:
+        manual:
+          - src: "projects/org/src/**/*"
+            dest: .
+portForward:
+  - resourceType: deployment
+    resourceName: backend
+    namespace: default
+    port: 7001
+    localPort: 7001
+  - resourceType: deployment
+    resourceName: admin
+    namespace: default
+    port: 4200
+    localPort: 4200
+  - resourceType: deployment
+    resourceName: coach
+    namespace: default
+    port: 4201
+    localPort: 4201
+  - resourceType: deployment
+    resourceName: org
+    namespace: default
+    port: 4202
+    localPort: 4202
+manifests:
+  rawYaml:
+    - k8s/*

@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -35,6 +36,14 @@ export class HydrationController {
   @Post()
   create(@Body() createHydrationDto: CreateHydrationLogDto, @Req() req: any) {
     return this.hydrationService.create(createHydrationDto, req.user.id);
+  }
+
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('getHydrationByUserId')
+  async getHydrationByUserId (@Request() req:any){
+    return await this.hydrationService.getHydrationByUserId(req.user.id ) ;
   }
 
   @Get()

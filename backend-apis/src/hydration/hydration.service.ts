@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as moment from 'moment';
 import { Model } from 'mongoose';
@@ -31,7 +35,12 @@ export class HydrationService {
 
     return await this.hydrationModel.findOneAndUpdate(
       { date: { $gte: startOfDay, $lt: endOfDay }, user: uid },
-      { target: setTargetDto.target, date: currentDate },
+      {
+        target: setTargetDto.target,
+        date: currentDate,
+        totalQuantity: 0,
+        $unset: { logs: 1 },
+      },
       { new: true, upsert: true },
     );
   }
@@ -39,8 +48,29 @@ export class HydrationService {
   async create(createHydrationLogDto: CreateHydrationLogDto, uid: string) {
     const item = await this.getLastTarget(uid);
     const { quantity, in: hIn } = createHydrationLogDto;
-    item.logs.push({ in: hIn, quantity });
+
+    const totalQuantity = item.logs.reduce(
+      (total, log) => total + log.quantity,
+      0,
+    );
+    item.totalQuantity = totalQuantity + quantity;
+
+    if (item.target >= item.totalQuantity) {
+      item.logs.push({ in: hIn, quantity });
+
+      // Update the 'totalQuantity' with the new total
+    } else {
+      // Handle the case where the target is less than or equal to the current totalQuantity
+      throw new BadRequestException(
+        'Your target is less than  current total quantity.',
+      );
+    }
     return await item.save();
+  }
+
+  async getHydrationByUserId(userId:string):Promise<Hydration>{
+    const userData = this.hydrationModel.findOne({user:userId});
+    return   userData ;
   }
 
   findAll(match?: object): Promise<Hydration[]> {

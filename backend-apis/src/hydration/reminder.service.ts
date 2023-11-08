@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Reminder } from './entities/reminder.entity';
+import { Reminder, ReminderType } from './entities/reminder.entity';
 import { FilterQuery, Model } from 'mongoose';
 import { CreateReminderDto } from './dto/create-reminder-log.dto';
 
@@ -16,10 +16,12 @@ export class ReminderService {
   ) {}
 
   async create(createReminderDto: CreateReminderDto, uid: string) {
-    const item = await this.reminderModel.findOne({});
-    if (item) {
-      throw new BadRequestException('duplicate entry found.');
-    }
+    const item = await this.reminderModel.findOne({ ReminderType: { $ne: ReminderType.Custom } });
+    // console.log(item);
+    
+    // if (ReminderType.Auto) {
+    //   throw new BadRequestException('duplicate entry found.');
+    // }
     return this.reminderModel.create({ ...createReminderDto, user: uid });
   }
 
@@ -27,6 +29,12 @@ export class ReminderService {
     return this.reminderModel.find(filter);
   }
 
+  async findUserReminder(userId: string): Promise<{ data: Reminder[] }> {
+    const userReminder = await this.reminderModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 });
+    return { data: userReminder };
+  }
   async findOne(id: string) {
     const item = await this.reminderModel.findById(id);
     if (!item) {

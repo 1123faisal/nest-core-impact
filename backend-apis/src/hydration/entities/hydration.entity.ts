@@ -17,11 +17,14 @@ export class Hydration extends Document {
 
   @ApiProperty({
     type: [Object],
-    example: [{ quantity: 200, in: 'ml' }],
+    example: [{ quantity: 200, in: 'Oz' }],
     required: false,
   })
   @Prop({ type: [{ quantity: Number, in: String }] })
   logs: { quantity: number; in: string }[];
+
+  @Prop({default:0,example:50})
+  totalQuantity:number;
 
   @ApiProperty({ example: new Types.ObjectId(), required: false })
   @Prop({ default: null, type: mongoose.Schema.Types.ObjectId, ref: 'users' })

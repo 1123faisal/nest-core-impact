@@ -35,6 +35,13 @@ export class ReminderController {
     return this.reminderSrv.findAll(filter);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('findUserReminder')
+  async findUserReminder (@Req() req:any){
+    return await  this.reminderSrv.findUserReminder(req.user._id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Reminder> {
     return this.reminderSrv.findOne(id);
